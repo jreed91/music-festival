@@ -43,6 +43,8 @@ struct ScheduleView: View {
                             .buttonStyle(.plain)
                         }
                     }
+
+                    freshness
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)
@@ -64,6 +66,25 @@ struct ScheduleView: View {
             .onReceive(ticker) { now = $0 }
             .onAppear { selectedDay = selectedDay ?? store.defaultDay()?.date }
         }
+    }
+
+    /// Where the set times came from and when. The Info tab used to carry this alongside
+    /// its own refresh button; pull-to-refresh on this screen does the same job, so all
+    /// that's left to say is how stale the list is and whether the last check failed.
+    private var freshness: some View {
+        VStack(spacing: 4) {
+            if let error = store.refreshError {
+                Text(error).foregroundStyle(Theme.warning)
+            }
+            Text("Set times last updated "
+               + store.data.generatedAt.formatted(date: .abbreviated, time: .shortened)
+               + ". Pull down to check for updates.")
+                .foregroundStyle(Theme.tertiaryText)
+        }
+        .font(.system(size: 11))
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 10)
     }
 
     private var header: some View {
