@@ -39,6 +39,7 @@ struct InfoView: View {
                 } else {
                     quickFacts
                     mapsSection
+                    foodSection
                     ForEach(store.guide.categories) { category in
                         Section {
                             ForEach(category.topics) { topic in
@@ -67,6 +68,9 @@ struct InfoView: View {
                 if let topic = store.guide.allTopics.first(where: { $0.id == id }) {
                     GuideTopicView(topic: topic, maps: store.guide.maps(for: topic))
                 }
+            }
+            .navigationDestination(for: VendorRoute.self) { _ in
+                FoodDrinkView()
             }
             .navigationDestination(for: MapRoute.self) { route in
                 switch route {
@@ -125,6 +129,36 @@ struct InfoView: View {
                 .font(.system(size: 11))
         }
         .listRowBackground(Theme.surface)
+    }
+
+    /// Sits under the maps for the same reason they're up top: on site, "what's near me
+    /// and can I eat it" is a question people open the app to answer.
+    private var foodSection: some View {
+        Section {
+            NavigationLink(value: VendorRoute.directory) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Label("\(store.vendors.vendorCount) food & drink stands",
+                          systemImage: "fork.knife")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text(foodSubtitle)
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.secondaryText)
+                }
+                .padding(.vertical, 2)
+            }
+        } header: {
+            Label("Food & Drink", systemImage: "cup.and.saucer")
+                .foregroundStyle(Theme.accent)
+        }
+        .listRowBackground(Theme.surface)
+    }
+
+    private var foodSubtitle: String {
+        let tags = store.vendors.presentTags.map { $0.label.lowercased() }
+        let named = tags.prefix(3).joined(separator: ", ")
+        return "Across \(store.vendors.areas.count) areas of the site — filter by "
+            + (tags.count > 3 ? "\(named) and more." : "\(named).")
     }
 
     /// Drops a pin on the site itself. The coordinate comes from `map.json`, which is
@@ -222,6 +256,20 @@ struct GuideTopicView: View {
                         }
                     }
                     .buttonStyle(.plain)
+                }
+
+                // The site's own entry ends on "view the 2026 food vendors", which on the
+                // web is a link to the page this directory was built from.
+                if topic.id == "food-drink" {
+                    NavigationLink(value: VendorRoute.directory) {
+                        Label("Browse the vendor directory", systemImage: "fork.knife")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Theme.accent)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(Theme.surface,
+                                        in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    }
                 }
 
                 if let links = topic.links, !links.isEmpty {

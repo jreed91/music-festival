@@ -22,6 +22,10 @@ cache what they fetch and fall back to what's already on the phone.
 - **Info** — the complete festival guide (67 topics), searchable and fully offline:
   parking routes, gate times, box office hours, camping rules, what you can and can't
   bring, accessibility, and more.
+- **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
+  Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
+  they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
+  nut-free and sugar-free.
 - **Maps** — the festival's four maps (grounds, concourse, driving routes, shuttle
   parking) bundled as artwork and pinch-zoomable, plus a MapKit view that georeferences
   the grounds map so the blue dot shows where you are on it.
@@ -114,6 +118,7 @@ Pages are cached under `scripts/.cache`, so pass `--refresh` to re-fetch.
 cd scripts
 python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios, Spotify IDs
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
+python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
@@ -129,8 +134,15 @@ designer uses (`Grounds_Map`, `Concourse_Map`, `Route`, `Shuttle`), ignoring the
 photography alongside them. It exits non-zero if any of the four has gone missing, which
 means the artwork was renamed — update `MAPS` at the top of the script.
 
-Both scrapers exit non-zero if they parse nothing, which is the signal that the site's
-markup changed and the selectors need attention.
+All three scrapers exit non-zero if they parse nothing, which is the signal that the
+site's markup changed and the selectors need attention. `vendors.py` also exits on a
+dietary code it doesn't recognise: the codes are printed on the vendor page with no
+legend of their own, so a new one means both `DIETARY` in the script and `DietaryTag` in
+the app need it added, or it would quietly disappear from the filters.
+
+`python3 validate.py` checks all three files against what the Swift models require —
+missing fields, unparseable dates, duplicate ids, dietary codes the app would drop —
+before a bad file reaches a build.
 
 ## The maps on MapKit
 
@@ -204,14 +216,16 @@ to load them.
 ```
 Hinterland/
   App/         HinterlandApp.swift — entry point, appearance
-  Models/      FestivalData, GuideData, MapData, WeatherData — Codable mirrors of the JSON
+  Models/      FestivalData, GuideData, MapData, VendorData, WeatherData — Codable
+               mirrors of the JSON
   Services/    ScheduleStore (loading + refresh), WeatherStore, Favorites,
                NotificationManager
-  Views/       Schedule, MyLineup, Artists, Info, ArtistDetail, GroundsMap, MapImage,
-               Weather, WeatherCard, Theme
+  Views/       Schedule, MyLineup, Artists, Info, FoodDrink, ArtistDetail, GroundsMap,
+               MapImage, Weather, WeatherCard, Theme
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
+               vendors.json — food & drink stands by area
 scripts/       scrapers, the map bundler and the icon generator
 ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```

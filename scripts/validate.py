@@ -89,6 +89,34 @@ for category in info.get("categories", []):
             errors.append(f'duplicate topic id: {topic["id"]}')
         topic_ids.add(topic["id"])
 
+# -------------------------------------------------------------------- vendors.json
+with open(os.path.join(ROOT, "Data", "vendors.json"), encoding="utf-8") as handle:
+    vendors = json.load(handle)
+
+require(vendors, ["version", "areas"], "vendors")
+DIETARY_CODES = {"GF", "DF", "VG", "V", "NF", "SF"}
+area_ids, stands = set(), 0
+for area in vendors.get("areas", []):
+    require(area, ["id", "name", "vendors"], "vendor area")
+    if area["id"] in area_ids:
+        errors.append(f'duplicate vendor area id: {area["id"]}')
+    area_ids.add(area["id"])
+
+    vendor_ids = set()
+    for vendor in area.get("vendors", []):
+        stands += 1
+        require(vendor, ["id", "name", "offerings"], f'vendor {vendor.get("name", "?")}')
+        # A vendor may run stands in two areas, but not two in the same one — the list
+        # renders straight from these ids.
+        if vendor.get("id") in vendor_ids:
+            errors.append(f'duplicate vendor id in {area["id"]}: {vendor["id"]}')
+        vendor_ids.add(vendor.get("id"))
+
+        # DietaryTag ignores codes it doesn't know, so a typo would silently drop a tag.
+        for code in vendor.get("dietary", []) + vendor.get("dietaryOptions", []):
+            if code not in DIETARY_CODES:
+                errors.append(f'vendor {vendor["name"]}: unknown dietary code "{code}"')
+
 # ------------------------------------------------------------ bundled artwork
 catalog = os.path.join(ROOT, "Hinterland", "Resources", "Assets.xcassets")
 for artist in schedule["artists"]:
@@ -107,4 +135,4 @@ if errors:
     sys.exit(1)
 
 print(f"OK — {len(schedule['days'])} days, {total} sets, {len(artist_ids)} artists, "
-      f"{topics} guide topics, artwork and icon present")
+      f"{topics} guide topics, {stands} food stands, artwork and icon present")
