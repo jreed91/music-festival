@@ -1,0 +1,888 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-28T15:08:05Z",
+  "festival": {
+    "name": "Hinterland",
+    "year": 2026,
+    "venue": "Avenue of the Saints Amphitheater",
+    "city": "St. Charles, Iowa",
+    "latitude": 41.2861,
+    "longitude": -93.813,
+    "timeZone": "America/Chicago",
+    "startDate": "2026-07-30",
+    "endDate": "2026-08-02",
+    "website": "https://www.hinterlandiowa.com"
+  },
+  "artists": [
+    {
+      "id": "amble",
+      "name": "Amble",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5b4a35e1d4a6ff370e_69165c1718436dda9f65fdca_Amble.webp",
+      "sourceSlug": "amble",
+      "spotifyArtistID": "5ZC7GPz5h9zkEfjZBUDNzI",
+      "instagram": "ambleofficial",
+      "bio": "Channeling the power of tried-and-true friendship and tapping into the serenity of the surrounding countryside, Irish trio Amble harness a rare magic threaded into the fabric of their novelistic folk. The group—Robbie Cunningham (lead vocals/guitar), Ross McNerney (mandolin/bouzouki), and Oisin McCaffrey (guitar/vocals)—have unassumingly gone from quitting their day jobs in rural Western Ireland to the doorstep of an international breakthrough buoyed by over 100 million streams and sold-out shows around the world. After just one gig together, they unlocked uncanny creative interplay with each member penning songs and pouring life experience into the lyrics. Amble fueled buzz with breakouts “Mariner Boy” and “Lonely Island,” but life changed when the band received a call from Warner Records with an offer. Signing to the label in 2024, the band had an unimaginable past year that spawned their latest EP The Commons and a captivating live presence, as they canvased North America and Europe with packed houses on both sides of the Atlantic. Their relatability, intimate storytelling, and authenticity marry seamlessly with no-frills acoustic instrumentation, serene soundscapes, and heavenly natural harmonies. Now, this spirit courses through their 2025 full-length debut LP, Reverie [Warner Records], and much more to come.",
+      "imageAsset": "artist-amble"
+    },
+    {
+      "id": "ashnikko",
+      "name": "ASHNIKKO",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691b3360da3fc42c419440ba_Ashnikko.webp",
+      "sourceSlug": "ashnikko",
+      "spotifyArtistID": "3PyJHH2wyfQK3WZrk9rpmP",
+      "instagram": "ashnikko",
+      "bio": "Ashnikko’s second album Smoochies is a bold, playful evolution—equal parts sexy, absurd, and unapologetically feminine. Moving beyond viral fame, Ashnikko embraces a maximalist pop identity that fuses club, country, and hip-hop. Framed through the 'Smoochie Girl', a messy, liberated figure rejecting beauty standards and the male gaze, the album trades fantasy for raw autobiography. As the “older sister” to DEMIDEVIL and a freer follow-up to WEEDKILLER, it’s Ashnikko’s most personal and collaborative work yet. With multi-platinum hits like “Daisy,” “Stupid,” and “Slumber Party,” Smoochies signals a thrilling new chapter for the genre-bending artist.",
+      "imageAsset": "artist-ashnikko"
+    },
+    {
+      "id": "audrey-hobert",
+      "name": "Audrey Hobert",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5d4a35e1d4a6ff3782_69165c312a68d017505bdf7f_Audrey-Hobart.webp",
+      "sourceSlug": "audrey-hobert",
+      "spotifyArtistID": "4N0TAwz9vhnQtjCqS65aKS",
+      "instagram": "audreyhobert",
+      "bio": "Audrey Hobert is an American singer-songwriter at just 26 years old. She released her debut album “Who’s the Clown?” on August 15, featuring 12 songs featuring Sue me which was her breakout first single. Audrey enjoys writing, reading, and surfing the net.",
+      "imageAsset": "artist-audrey-hobert"
+    },
+    {
+      "id": "audrey-nuna",
+      "name": "AUDREY NUNA",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f581312cd2e43b54ef0_69165c4bbf8ab0dad82b734f_Audrey-Nuna.webp",
+      "sourceSlug": "audrey-nuna",
+      "spotifyArtistID": "0Wwji82sLA0Hcvtuak3omb",
+      "instagram": "audreynuna",
+      "bio": "Singer/rapper/songwriter Audrey Nuna is a shape shifing visionary blurring the lines between pop, R&B, and alternative. Known for her razor-sharp lyricism, genre-fluid sound, and self creative-directed visuals, she broke out with her acclaimed albums a liquid breakfast and TRENCH, featuring standouts like “DamnRight” and “ComicSans” with Jack Harlow. This year, she wrapped her first U.S. headline tour and just returned from her debut international run across Japan, Korea, and Australia, where she performed to wild, sold-out crowds. Now fully independent and working on her third album, Audrey is entering a new era at the exact moment her voice and presence are reaching their largest global audience yet.Netflix's KPop: Demon Hunters has become a cultural phenomenon. The film is now the streamer’s most-watched movie ever, and its global sing-along screenings delivered Netflix's first ever No.1 weekend at the box office. On the charts, the companion soundtrack hit No.1 on the Billboard 200 and made history as the first soundtrack ever with four songs simultaneously in the Hot 100 Top 10, led by HUNTR/X’s “Golden”(performed by EJAE, Audrey Nuna, and REI AMI).",
+      "imageAsset": "artist-audrey-nuna"
+    },
+    {
+      "id": "beabadoobee",
+      "name": "beabadoobee",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f58b93398c2773f44bf_69165c6019349b9272fbfe39_Beabadoobee.webp",
+      "sourceSlug": "beabadoobee",
+      "spotifyArtistID": "35l9BRT7MXmM8bv2WDQiyB",
+      "instagram": "radvxz",
+      "bio": "London-based artist Beatrice Laus (Beabadoobee) has emerged as one of the most vital voices in British indie, with three acclaimed albums and five diverse EPs, she's garnered BRIT Award & BBC Sound Of nominations, and won the NME’s Radar award. ‍ Her highly anticipated 2020 debut, Fake It Flowers, an introspective outpouring, received widespread critical acclaim and debuted in the UK top 10. Her following album Beatopia in 2022, plunged into more experimental territory & debuted in the UK top 5 ‍ With over 5 billion streams worldwide and a +10 million social reach, Beabadoobee has performed at major festivals from Coachella and Glastonbury, while being chosen as the first artist to main support Taylor Swift on The Eras Tour. She’s toured with The 1975, Halsey, and Clairo amongst others and now sold-out headline tours across the US, UK, EU and Asia. She continues to cement her place as one of the most compelling and influential indie artists of her generation. ‍ Her most recent LP in 2024, This Is How Tomorrow Moves, produced with legendary Rick Rubin & recorded at the iconic Shangri-La Studios reached No. 1 in the UK charts. ‍",
+      "imageAsset": "artist-beabadoobee"
+    },
+    {
+      "id": "between-friends",
+      "name": "Between Friends",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7e7461dc129eff2e336e_hland_artists-02.webp",
+      "sourceSlug": "between-friends",
+      "spotifyArtistID": "2HkSsS8O2U2gPhnCGVN5vn",
+      "instagram": "betweenfriends",
+      "imageAsset": "artist-between-friends"
+    },
+    {
+      "id": "buffalo-traffic-jam",
+      "name": "Buffalo Traffic Jam",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7f11e63dabd370b297a5_hland_artists-07.webp",
+      "sourceSlug": "buffalo-traffic-jam",
+      "spotifyArtistID": "22LEPYRDhoThnbpShy6fV7",
+      "instagram": "buffalotrafficjam",
+      "bio": "Performing on the Campfire Stage ‍ Buffalo Traffic Jam is a folk band born in the heart of Bozeman, Montana, where its members, Frankie Cassidy and Nathan Ross, first crossed paths as students at Montana State University. United by a love for storytelling and the raw beauty of acoustic sound, they began crafting music that evokes wide-open landscapes and the emotions that live quietly beneath the surface of everyday life. The result was a self-titled debut EP followed by singles “Rescue Me” and “Forgot Your Roots,” the latter of which saw the band gain their first bit of online momentum, leading to explosive growth in the past 3 months. Their newest release, the Take Me Home EP, marks a defining moment in Buffalo Traffic Jam’s evolution—showcasing a deeper, more expansive sound while staying grounded in the heartfelt lyricism and raw instrumentals that first won them fans. The project weaves together themes of resilience, nostalgia, and self-discovery, subjects that have become commonplace in the songwriting of Buffalo Traffic Jam. Since its release on Oct. 24, the EP has picked up over 8 million streams across DSP’s. In 2025 Buffalo Traffic Jam made their festival debuts at Under the Big Sky, Redwest Fest, and went on tour with country singer-songwriter Dylan Gossett. From dorm room jam sessions to packed venues across the US, Buffalo Traffic Jam has stayed true to their roots. ‍",
+      "imageAsset": "artist-buffalo-traffic-jam"
+    },
+    {
+      "id": "cmat",
+      "name": "CMAT",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5bddd5a0fb06215402_69165c7266e994be650f131b_CMAT.webp",
+      "sourceSlug": "cmat",
+      "spotifyArtistID": "3VBNIRx1LxVdRqOiPgkLwv",
+      "instagram": "cmatbaby",
+      "bio": "International pop star. Writer of songs. Fearer of bugs. Girlboss of the Very Sexy CMAT Band. Once, twice, three times a loser at 2024’s BRITs, Mercury Music Prize and Ivors. Has just released her album, EURO-COUNTRY, which will no doubt rectify these errors. ‍ Selected praise for EURO-COUNTRY: The Guardian 5/5 “A rolling sea of charm, chaos, substance, sadness and piercing insight - and yet more proof this nascent star is in a class of her own” The Telegraph 5/5 “The flame-haired Irish singer is exactly what the industry is crying out for” ‍ The i 5/5 “(CMAT) is a singular artist and EURO-COUNTRY is the album of the year” ‍ Rolling Stone UK 5/5 “A catchy, important and hilarious album from a singer who is deservedly set to be the breakout star of 2025” ‍ Pitchfork (CMAT’s) new album overflows with comedy, tragedy, and self-lacerating wit. It’s a bold statement from a true original. ‍",
+      "imageAsset": "artist-cmat"
+    },
+    {
+      "id": "crooked-torus",
+      "name": "Crooked Torus",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2b0ce3ed18538ea1c9d6e3_hland_artists-15.webp",
+      "sourceSlug": "crooked-torus",
+      "instagram": "crookedtorusmusic",
+      "imageAsset": "artist-crooked-torus"
+    },
+    {
+      "id": "derry-the-dirty-dishes",
+      "name": "Derry & the Dirty Dishes",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd5eec2e85c8f6c98ea9_hland_artists-14.webp",
+      "sourceSlug": "derry-the-dirty-dishes",
+      "spotifyArtistID": "26Ohif0N4qfO4214jgnb8t",
+      "instagram": "derryandthedirtydishes",
+      "bio": "Performing on the Miniland Stage Derry & the Dirty Dishes is a rock band for kids and grown-ups alike. Born out of music written by Derek and Ramona Muse Lambert to entertain their children, they're now a full band playing kid-friendly songs ranging from bouncy punk to playful indie rock to quirky folk/country.",
+      "imageAsset": "artist-derry-the-dirty-dishes"
+    },
+    {
+      "id": "die-spitz",
+      "name": "Die Spitz",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a355ed3f627e89be2297714_hland_artists_v-04.webp",
+      "sourceSlug": "die-spitz",
+      "spotifyArtistID": "0zfZmpHTu0MlkkNr5KHeXE",
+      "instagram": "diespitz",
+      "imageAsset": "artist-die-spitz"
+    },
+    {
+      "id": "duo-beats",
+      "name": "Duo Beats",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd30367881d90d8351f0_hland_artists-11.webp",
+      "sourceSlug": "duo-beats",
+      "instagram": "duo._.beat",
+      "imageAsset": "artist-duo-beats"
+    },
+    {
+      "id": "frost-children",
+      "name": "Frost Children",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5803f4da00843eef01_69165c7264d5f8260e675ca4_Frost-Children.webp",
+      "sourceSlug": "frost-children",
+      "spotifyArtistID": "6R1kfr0GIWnwxY4zW11Vag",
+      "instagram": "thefrostchildren",
+      "bio": "For Angel and Lulu Prost, the sibling duo behind Frost Children, home has always sounded like dance music. The St. Louis-born musicians grew up steeped in the sleek catharsis of golden-age EDM: huddling over YouTube videos of 2010s festival staples like Zedd, Skrillex, and Krewella; watching rapt as Virtual Riot commanded a headline show at their neighborhood outdoor amphitheater; digging through their eldest brother�s dubstep collection. The duo�s third album SISTER, out September 12th via True Panther/Dirty Hit, is an exhilarating return to those first sounds that moved them, echoing with the reverence and refinement of two formidable artists crafting exactly what they want to hear. But it�s also a striking portrait of Frost Children�s singular creative partnership: as bandmates, as roommates, as symbiotic savants practicing the art of what Angel calls �twin telepathy.� Boldly revitalizing and revolutionizing a too-often-devalued subgenre, Frost Children have delivered their most forthright and full-bodied identity statement yet. As Lulu puts it:\"This is so confidently what we love, and what we breathe.�Melding the sensitivity and songcraft of Hearth Room with the propulsive power of SPEED RUN, SISTER puts forward an arrestingly personal vision for modern dance music that transcends nostalgia and trend-chasing. Delicately weaving strains of emo, electro, and pure pop, Frost Children explore close-to-home themes of co-dependence, consistency, and change, exemplified by the roaring refrain on lead single �CONTROL�: �Tell me the way to live / I�m falling apart.� For all the uncertainty of thrilling anthems, SISTER pulses with the electric energy of two artists confidently reveling in their element.",
+      "imageAsset": "artist-frost-children"
+    },
+    {
+      "id": "geese",
+      "name": "Geese",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5e8d8c9a872e89bc26_69165c72ee8db8385c98079e_Geese.webp",
+      "sourceSlug": "geese",
+      "spotifyArtistID": "0WCo84qtCKfbyIf1lqQWB4",
+      "instagram": "geesebandnyc",
+      "bio": "New York City’s Geese return with their highly anticipated 3rd studio album, ‘Getting Killed’. After being approached by Kenneth ‘Kenny Beats’ Blume at a music festival, Geese tracked the album in his LA studio over the course of ten fast-paced days. With scant time for overdubbing, the finished project emerges as something of a chaotic comedy, shambolic in structure but passionately performed, informed by an exacting vision. Garage riffs are layered upon Ukrainian choir samples; hissing drum machines pulse softly behind screeching guitars; strange, lullaby-esque songs are interspersed with furious, repetitive experiments. With ‘Getting Killed,’ Geese balances a disarming new tenderness with an intensified anger, seemingly trading their love of classic rock for a disdain for music itself.",
+      "imageAsset": "artist-geese"
+    },
+    {
+      "id": "gouge-away",
+      "name": "Gouge Away",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7f1cc432ca96b20e681b_hland_artists-08.webp",
+      "sourceSlug": "gouge-away",
+      "instagram": "gougeawayfl",
+      "bio": "Performing on the Campfire Stage ‍ Forming in South Florida with the intention torecord a short EP and play one show, Gouge Away were driven by the need towrite music and take a stab at topics they weren’t hearing in their localscene. They were influenced by bands like Fugazi, Unwound, The Jesus Lizard,Nirvana, Sonic Youth, and Paint it Black. A couple years later, they put out “, Dies” onlocal label, Eighty-Sixed Records, which they didn’t expect to reach beyondtheir hometown. After some touring, they released “Burnt Sugar” on DeathwishInc. in 2018 which naturally took a more personal approach when ChristinaMichelle was dealing with her mom’s heart complications and misdiagnoses.Following the release of the album, they toured extensively throughout the USand beyond. While on tour and in their small pockets of downtime, they eagerlywrote and demoed songs for a third album, pulling influence not only from thenostalgia of the bands they grew up listening to, but developing and pushingthe sense of urgency, noise, and introspective lyrics they felt mostrepresented them. Touring came to a halt in 2020, canceling afull year of plans in an instant. Gouge Away took time for themselves to moveto different parts of the country and focus on their personal lives. On NewYears Eve just beginning 2022, they decided it was time to revisit their demoedmaterial, and to do it justice by allowing it to see the light of day. They recorded with Jack Shirley at AtomicGarden East in March 2023, completely analog to tape and almost entirely live,without the use of a computer. The goal was to sound like five friends playingmusic in a room together, unpolished and far from being over-produced, which iswhat the heart of Gouge Away has always been. ‍",
+      "imageAsset": "artist-gouge-away"
+    },
+    {
+      "id": "haute-freddy",
+      "name": "Haute & Freddy",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/698b62a24e0d65dfdb7e7f6c_Haute.webp",
+      "sourceSlug": "haute-freddy",
+      "spotifyArtistID": "66T34XqGkEWbzKWALSBDuR",
+      "instagram": "hauteandfreddy",
+      "bio": "Haute & Freddy is the dazzling brainchild of Michelle Buzz and Lance Shipp. The duo released their first single, Scantily Clad, sparking a devoted fanbase. The song landed them on Spotify playlists Lorem, Obsessed, and the cover of Fresh Finds, paving the way for their second single, Anti-Superstar, which has been embraced with equal support—earning placements on New Music Friday, Noteable, Limelight, Nightpop, and more.Fast forward to now, and the comment sections are buzzing with fans speaking in Ren Faire lingo, while their shows are filled with attendees crafting their own jester hats, as a mime clown joyfully twists balloon crowns for the rest of the Royal Court—aka H&F’s loyal followers. With their debut album on the horizon, Haute & Freddy’s momentum is picking up speed, and fans are eagerly awaiting the drop of their next single, Shy Girl, following their latest February release, Fashion Over Function.Their love for theater, obscure synths, and underground club culture runs deep, infusing every track with an audacious energy. The duo moves through their music like runaway carnies, crashing through the veneer of polite society with all the flair of an 18th-century escapade.",
+      "imageAsset": "artist-haute-freddy"
+    },
+    {
+      "id": "jane-remover",
+      "name": "Jane Remover",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5752d4f34cc30fd5c6_69165caff3ac7688715104af_Jane.webp",
+      "sourceSlug": "jane-remover",
+      "spotifyArtistID": "2rLGlNI6htigNxx172qxLu",
+      "instagram": "jane_remover",
+      "bio": "Jane Remover is something of an internet legend. They are credited with playing a key role in the creation of the digicore music microgenre, an overstimulated relative of hyperpop. In fact, everything Jane Remover does has an overdose of stimuli: their songs are like the Tasmanian devil from Looney Tunes. A whirlwind of warped and excessive digital pop.",
+      "imageAsset": "artist-jane-remover"
+    },
+    {
+      "id": "jeffery-lewis",
+      "name": "Jeffery Lewis",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd406a4a51e59b4beca6_hland_artists-12.webp",
+      "sourceSlug": "jeffery-lewis",
+      "spotifyArtistID": "2Icsf5D1lAs2EFx6kggg5D",
+      "instagram": "jeffreylewisband",
+      "imageAsset": "artist-jeffery-lewis"
+    },
+    {
+      "id": "jessie-murph",
+      "name": "Jessie Murph",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5d3005e2b30d2c0b5e_69165caf9d5a3ca59cc8f633_Jesse-Murph.webp",
+      "sourceSlug": "jessie-murph",
+      "spotifyArtistID": "2yLzlEFtIS0Q9UkyBZdQA7",
+      "instagram": "jessiemurphhh",
+      "bio": "In 2024, Jessie Murph released her debut album That Ain’t No Man That’s the Devil—a certified Gold project that chased her 2023 mixtape Drowning—and ignited what quickly became Jessie’s signature sound. With raw and honest lyrics, mixed with a voice that lives where soul and grit collide, Jessie turned personal tragedy into a genre-blending triumph. The momentum was massive: That Ain’t No Man That’s the Devil cracked the Top 25 on the Billboard 200, while the Platinum “Wild Ones” racked up nearly 300M Spotify streams alone, scoring her two 2024 MTV VMA nods including Best Pop Collaboration and Best PUSH Artist. Other standouts like “Someone In This Room” with Bailey Zimmerman and “High Road” ft. Koe Wetzel marked their strongest chart debuts to date—landing at #29 on the Billboard Hot 100 and hitting #1 at Billboard Country Radio, respectively. But Jessie Murph doesn’t sit still. She headlined a sold-out global tour, packing over 85,000 tickets, including Coachella, Governors Ball, Boston Calling, BottleRock, and a proud return to Hangout Fest. Her In The Sticks North American tour closed with a hometown arena blowout—10,000 fans deep at Huntsville’s Von Braun Center. In July of 2025, she kicked off her largest tour to date, the WORLDWIDE HYSTERIA tour, currently on the North American trek the tour will also hit Europe, and Australia before concluding in New Zealand in November. Her sophomore album Sex Hysteria, which debuted at #8 on the Billboard 200 chart, is her vice-laden manifesto where Jessie trades sorrow for sensation. It’s dopamine in album form—part ‘60s Pop, part early-2000s Trap, yet entirely Jessie. The album debuted at #8 on the Billboard 200 Chart, marking her first top 10 album on the chart. The record’s early breakout “Blue Strips” featuring Sexyy Red skyrocketed her to her highest Billboard Hot 100 peak yet at #15, while “Gucci Mane” (the song) became an underground fan anthem. “Touch Me Like A Gangster” debuted at #56 on the Billboard Hot 100, which saw Jessie chart 2 songs in the top half of the Hot 100 simultaneously. The album also sees real-life Gucci Mane tap in for the bouncy “Donuts,” while Lil Baby’s moody turn on “Best Behavior” is a smooth addition. She also celebrates a nomination for New Female Artist of the Year at the 2025 Academy of Country Music Awards and Favorite Country Song at the 2025 American Music Awards. Sex Hysteria isn’t about what happened to Jessie. It’s about what Jessie’s about to do. From viral TikToks to sold-out tours to genre-defying records, Jessie Murph has made a name for herself without ever chasing fame. What she’s chasing is freedom—and she’s finally caught it.",
+      "imageAsset": "artist-jessie-murph"
+    },
+    {
+      "id": "julia-wolf",
+      "name": "Julia Wolf",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5b95492c4ddd62b0b9_69165caf847a1b8d9b373187_Julia-Wolf.webp",
+      "sourceSlug": "julia-wolf",
+      "spotifyArtistID": "5yvGiZLSWJTPBlZpVbPnEZ",
+      "instagram": "juliawolfnyc",
+      "bio": "Julia Wolf is the Long Island-born, Los Angeles-based singer/songwriter whose instinctive pop sensibilities have a way of shining through even her darkest sonic inclinations, attracting a steady stream of fans and industry followers. Instead of polishing her sound in the wake of 2023’s trap-pop-inflected breakthrough, Good Thing We Stayed, Wolf goes rawer, heavier, and grittier on her most recent album Pressure, swan-diving through emo and shoegaze, metallic textures and shredded electronics, and putting her evocative vocals to work over an always shifting soundscape of feelings-first music. Pressure is an enrapturing journey through dualities — a celebration of dark meets light, of piercing pain that leads to relief and catharsis.",
+      "imageAsset": "artist-julia-wolf"
+    },
+    {
+      "id": "kali-uchis",
+      "name": "Kali Uchis",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691b334fd5d1bad02b9e150b_Kali-Uchis.webp",
+      "sourceSlug": "kali-uchis",
+      "spotifyArtistID": "1U1el3k54VvEUzo3ybLPlM",
+      "instagram": "kaliuchis",
+      "imageAsset": "artist-kali-uchis"
+    },
+    {
+      "id": "katseye",
+      "name": "KATSEYE",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a0b403b7f6a8235bec9ee9e_KATSEYE-2026.webp",
+      "sourceSlug": "katseye",
+      "spotifyArtistID": "3c0gDdb9lhnHGFtP4prQpn",
+      "instagram": "katseyeworld",
+      "bio": "KATSEYE – the first-ever global girl group formed using KPOP artist development methodologies – is “out to change the look and sound of modern pop as we know it,” as Vogue recently noted. Ranging in age from 16 to 22 and coming from immensely different cultures, the six members of KATSEYE are: DANIELA (Atlanta, GA USA); LARA (Los Angeles, CA USA); MANON (Zurich, Switzerland); MEGAN (Honolulu, HI USA); SOPHIA (Manila, Philippines); and YOONCHAE (Seoul, South Korea); PEOPLE declared, “Feminine, powerful and unique is the only way to describe the hot new girl group that is KATSEYE.” Their name is a fitting one. A cat’s eye is a gemstone that radiates a variety of colors, depending on the direction from which it’s viewed – much like the group’s members. Each exudes her own distinct aesthetic and talents. Hailing from six different cities across three conƟnents, this diverse group is united as one in KATSEYE, glowing powerfully together. Now based in Los Angeles, KATSEYE’s members emerged from 120,000 submissions that were narrowed down to a field of 20 contestants who participated in The Dream Academy, an intensive program developed jointly by HYBE and GEFFEN. Fans got to know the young women over the course of the 2023 audition program, which was seen on YouTube, Weverse and ABEMA (Japan). The years-long process of creating this one-of-a-kind international girl group became the subject of Netflix documentary series KATSEYE: Pop Star Academy, directed by Nadia Hallgren (Becoming) and produced by HYBE, Interscope Films and Boardwalk Pictures. KATSEYE released their first single “Debut” in June 2024 and released their debut EP, SIS (Soft is Strong), in August 2024. Their second EP, BEAUTIFUL CHAOS, released in June 2025 earned the group their first top 10 on the Billboard 200 chart at #4 and was preceded by a pair of singles “Gnarly” and “Gabriela” earlier in the year. ‍",
+      "imageAsset": "artist-katseye"
+    },
+    {
+      "id": "koo-koo",
+      "name": "Koo Koo",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a355ede394da170d65b751f_hland_artists_v-09.webp",
+      "sourceSlug": "koo-koo",
+      "spotifyArtistID": "7BZ3v2GTT5KHVmc9Gk1sRb",
+      "instagram": "kookoo",
+      "bio": "Performing on the Miniland Stage ‍ Koo Koo was created by Bryan and Neil in 2008. They met four years prior as freshman at St. Mary’s University in Winona, MN. After being in a campus rock band for the first few years of college, the guys created Koo Koo as an experimental project for SMU’s annual battle of the bands. The idea centered around crowd participation, comedy and dance music, stretching the concept of a what a “band” could be. The next few years saw Bryan and Neil touring throughout the midwest playing bars, basements and barbecues. Meanwhile they released their first few albums and music videos. In 2010 the band was chosen to support Orange County superhero rock band The Aquabats on their east coast tour. This turned into more support slots with Reel Big Fish and Yo Gabba Gabba Live. Meanwhile Koo Koo began creating “dance-a-long” videos (initially as something of a joke) for their songs in order to help demonstrate the moves that audiences would need to know at their shows. These videos were unexpectedly a hit with elementary school teachers, which led Koo Koo into the world of children’s music and becoming a “real” kids band. More domestic and international touring followed as the guys hit the road with The Vans Warped Tour, Frank Turner & Sleeping Souls, and MC Lars. Concept albums about cats, potty humor, self-help, holidays and Panera Bread added to the band’s discography. Simultaneously, the popularity of their “brain break” dance-a-long videos continued to skyrocket in classrooms around the world. In 2021 Bryan and Neil released their first non-concept album since 2013, partnering with Twin Cities producer extraordinaire Lazerbeak. “Slow Clap” presents a more hip-hop-centric sound with plenty of grooving bass lines and monstrous drums, while retaining the catchy, weirdo-energy fans expect from the band. Now they are ready to step into a new realm with their TV series “Oh Yeah Heck Yeah.” This fast-paced variety clip show features music videos, sketches, animation and interactive games in their irreverent, high-energy style. The first season consists of five ten minute episodes each premiering a brand new Koo Koo song and video. You can watch their self produced show on the Koo Koo YouTube channel. More shows, videos, podcast episodes and antics are yet to come! We hope you’ll join in on the fun as we write the next chapter of Koo Koo. ‍",
+      "imageAsset": "artist-koo-koo"
+    },
+    {
+      "id": "leslie-the-ly-s",
+      "name": "Leslie & The Ly's",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2b0ccb4158fa49c632bca1_hland_artists-16.webp",
+      "sourceSlug": "leslie-the-lys",
+      "spotifyArtistID": "6qojFeNZnpVQxdL2IFSDEy",
+      "instagram": "iamlesliehall",
+      "bio": "Performing on the Miniland Stage ‍ A musical act. The vision is to put on Las Vegas style production on the small stage. With midwestern woman running the ship. Songs are thoughts, aditudes of my personal journey through craftings, lonelness and star power fantasy. The first song Ring-A-Ding-Ding was a improve performce piece that was recorded and performed in Ames, Iowa open mic nights.",
+      "imageAsset": "artist-leslie-the-ly-s"
+    },
+    {
+      "id": "lipstick-homicide",
+      "name": "Lipstick Homicide",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd177165d17ad887c614_hland_artists-09.webp",
+      "sourceSlug": "lipstick-homicide",
+      "spotifyArtistID": "5J6uj0yBahnpt2roe5lY6t",
+      "instagram": "lipstickhomicide",
+      "imageAsset": "artist-lipstick-homicide"
+    },
+    {
+      "id": "lorde",
+      "name": "Lorde",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691796d7edc071ceb36b2493_Lorde.webp",
+      "sourceSlug": "lorde",
+      "spotifyArtistID": "163tK9Wjr9P9DmM0AVK7lm",
+      "instagram": "lorde",
+      "bio": "Lorde is a Grammy-winning artist and cultural force, known for her genre-defying sound, introspective lyricism, and striking creative vision. Since her breakthrough with Pure Heroine in 2013, she has redefined the contours of modern pop—merging poetic storytelling with minimalist, emotionally resonant production. To date, she has amassed over 18 billion global streams and 18 million album sales worldwide. In April 2025, she returned with What Was That, her first original release in four years. The single debuted to widespread acclaim and commercial success, hitting #1 on Spotify in the US — her first US #1 on the platform since “Royals.”The release was followed by her fourth studio album, Virgin, which debuted at #1 in the UK and #2 on the Billboard 200, further cementing her reputation as one of the most influential artists of her generation.",
+      "imageAsset": "artist-lorde"
+    },
+    {
+      "id": "mumford-sons",
+      "name": "Mumford & Sons",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5debb4b7f6b3c2a41a_69165caf506f088355a075c9_Mumford-And-Sons.webp",
+      "sourceSlug": "mumford-sons",
+      "spotifyArtistID": "3gd8FJtBJtkRxdfbTu19U2",
+      "instagram": "mumfordandsons",
+      "bio": "Mumford & Sons formed in West London in 2008 and quickly rose from small gigs to headlining festivals, winning Grammys, and topping charts worldwide. The renowned band will release their sixth studio album, Prizefighter, on February 13, which was co-produced and co-written with The National’s Aaron Dessner at his Long Pond Studio and features collaborations with Hozier, Gracie Abrams, Chris Stapleton and Gigi Perez. The new project comes less than a year after their album RUSHMERE, which debuted at No. 1 in the U.K. this past spring and fuelled a sold-out global arena tour. Along the way, they’ve collaborated with legends like Bob Dylan, Bruce Springsteen, and Brandi Carlile, among others, building genuine creative partnerships. Live performance has defined their story, from global tours and community stopovers to playing the White House. Through creative changes and evolving sounds, the band remains driven by passion, continually finding new ways to connect with audiences.",
+      "imageAsset": "artist-mumford-sons"
+    },
+    {
+      "id": "muna",
+      "name": "MUNA",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691cab63da8105a06942d7b9_MUNA.webp",
+      "sourceSlug": "muna",
+      "spotifyArtistID": "6xdRb2GypJ7DqnWAI2mHGn",
+      "instagram": "whereismuna",
+      "imageAsset": "artist-muna"
+    },
+    {
+      "id": "ninajirachi",
+      "name": "Ninajirachi",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7f06e541e365c6220d04_hland_artists-06.webp",
+      "sourceSlug": "ninajirachi",
+      "spotifyArtistID": "3MekbRujJg5VZThubOlrkR",
+      "instagram": "ninajirachi",
+      "bio": "Performing on the Campfire Stage ‍ At only 24 years old, Ninajirachi is raising the flag for a new generation of Australian electronic artists on the international stage, from festival appearances at Lollapalooza, EDC, Laneway and Spilt Milk, to sold out headline shows on both sides of the Pacific Ocean. Prior to releasing 2024's girl EDM, milestone moments of Nina's career include discrete firsts - first magazine cover (NME) in 2022 for her mixtape Second Nature, first Triple J #1 with 2023's 1x1, first US headline tour in January 2024. However, it's the release of girl EDM that most clearly marks the breakout moment for Ninajirachi, serendipitously arriving on the same day she made her EDC Las Vegas debut on the mainstage. The project arrived via long-term mentor and label partner Nina Las Vegas’ NLV Records, and in the wake of it’s release, girl EDM has evolved into an adjective, a genre, a celebrated catchphrase and symbol amongst Nina's fans across the globe. Following the arrival of girl EDM, Nina made on good one her\"one to watch\" promises with a cover story for Music Tech magazine, blazing through a series of headline dates from Tokyo to Shenzhen on the girl EDM Asia tour, and a single (Angel Music with MGNA Crrrta) in Billboard's Best of 2024, with Billboard declaring\"the female equivalent of Scary Monster's era Skrillex\" With girl EDM seated in a spread of year end wraps, Nina entered 2025 with extraordinary momentum, touring Australia with Porter Robinson, immediately again with Laneway Festival, and embarking on a sold-out US co-headline tour with PC Music's umru, all within six weeks between February and March. The same period saw her release the anthemic All I Am, which propelled to the top of triple j's most played chart and landed her an ARIA Singles Charts debut. A fan-favourite ID from her shows across the world throughout 2024, the song's official release marks the start of a new chapter for Ninajirachi; the first glimpse of a larger project from across the horizon. With a sound and style ‘simultaneously garnering respect from the experimental underground and the mainstream’ (Rolling Stone), Nina has remixed Princess Nokia, Deadmau5 and The Neptunes and opened for the likes of Charli XCX, Cashmere Cat and Porter Robinson. Her production prowess has seen her tapped by Nike, Sega and even Ableton themselves to produce the official demo project for the Ableton Live software. Growing up in Australia's small-town Central Coast, Nina remains tethered to her curiosity and appetite for discovery born out of an adolescence spent on the internet, trawling Youtube, Soundcloud and forums for the neoteric electronic music that inspired her earliest productions. This manifests in collaborations with peers from all corners of the internet as well as her annual Australian headline event Dark Crystal; a dream-lineup event made manifest, platforming singular and developing artists from a variety of genres and Australian underground niches. 2024's edition welcomed New York producer/DJ legend Doss to Australia for the first time, and since the event's debut in 2022, Dark Crystal has become a touchstone for Australia's new generation of underground EDM fans. ‍",
+      "imageAsset": "artist-ninajirachi"
+    },
+    {
+      "id": "nourished-by-time",
+      "name": "Nourished by Time",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7e60eaba03f19777e423_hland_artists-01.webp",
+      "sourceSlug": "nourished-by-time",
+      "spotifyArtistID": "7zNkqI6qRr0OJ4XO1Pw29g",
+      "instagram": "nourishedbytime_",
+      "bio": "Performing on the Campfire Stage Nourished By Time is the musical project of Baltimore-born artist Marcus Brown, who’s emotionally charged blend of post-punk, New Wave, R&B, electro-funk, and experimental indie pop reflects a deeply personal and sharply observational voice, as captured on his breakout debut releases Erotic Probiotic 2 (2023) and Catching Chickens (2024). A Metamodernist, Brown crafts music that is as soulful as it is subversive – tackling themes of love, labor, existentialism, dreams, disillusionment, and hope. This summer Nourished By Time will release his first full-length album on XL Recordings titled The Passionate Ones. Crafted between Baltimore, London and NYC, The Passionate Ones is a sermon, a twelve-track catharsis, howled from the underbelly of late-stage capitalism, written, produced, mixed and sung entirely by Brown. Initially created in Los Angeles' Koreatown in late 2019, Nourished By Time emerged as Brown's escape from the monotony of his day jobs, channeling his experiences into songwriting, developing the dreamlike, uncanny sound that would come to defi ne Nourished by Time. Marcus' first project - Erotic Probiotic – came in the form of a two-song EP via London indie label Scenic Route which was quickly followed up by the critically acclaimed breakout debut album Erotic Probiotic 2. Picking up Pitchfork's 'Best New Music' upon release, it went on to feature on 'Best Of 2024' lists on Gorilla vs Bear (#1), Pitchfork (#5), The Guardian, The FADER, Paste, and more. In the same year, Brown collaborated with Yaeji on\"Happy\" off her debut album With A Hammer and remixed Dry Cleaning's\"Gary Ashby,\" while also supporting them on a 20-stop North American tour. 2024 would go on to be a transformative year for Nourished By Time. Signing to XL Recordings, he released Catching Chickens - a five-track EP inspired by the iconic scene in Rocky where his trainer makes him chase and catch a flock of chickens as a test of agility. The record saw him land the cover of CRACK Magazine - who declared\"Hell Of A Ride\" their track of 2024 - and feature in 'Best of 2024' lists with the likes of NPR, Pitchfork, The FACE Magazine, Resident Advisor, CLASH, Mixmag, Gorilla vs Bear, and UPROXX.\"Hell of a Ride\" also featured in Spotify's Best Songs of 2024, and Brown delivered a memorable performance of the track on The Late Show with Stephen Colbert’s #LateShowMeMusic live series. In the same year, Nourished By Time erupted across the live circuit, performing his first North American headline tour across 13 stops and a UK headline tour, selling out Bowery Ballroom (New York), Echoplex (Los Angeles) and ICA (London). He also expanded his collaborative projects, working with artists Kacy Hill and Metronomy, solidifying his position as one of contemporary music's most intriguing voices. ‍",
+      "imageAsset": "artist-nourished-by-time"
+    },
+    {
+      "id": "oklou",
+      "name": "Oklou",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/697faf9414eb833051fdcf27_Oklou.webp",
+      "sourceSlug": "oklou",
+      "spotifyArtistID": "6fFcUOFcbjeIuEomuUthkw",
+      "instagram": "oklou_",
+      "bio": "Oklou’s deluxe album builds on choke enough’s warm production and its blend of ambient textures with minimal club rhythms. The project adds four new songs that expand the album’s universe including Oklou’s single “viscus” featuring FKA twigs. The announcement follows Oklou’s stunning Tiny Desk performance where Oklou played the marimba and piano alongside an eight-piece choir, as well as her cover story forPitchfork, where journalist Anna Gaca traveled to Pau, France to reflect on her breakthrough year and artistic evolution. Oklou also recently featured on PinkPantheress’ remix album Fancy Some More? On the track “Girl Like Me”. Named among the best albums of the year by Rolling Stone, Pitchfork, Billboard, The FADER, and Stereogum, and landing France's Le Prix Joséphine Album of the Year award, choke enough has cemented Oklou's status as a cultish outsider pop star. In the wake of the album’s success, Oklou has drawn high profile co-signs from Billie Eilish who noted,\"Honestly, she’s the first thing that’s gotten me excited in a while,\" and Ethel Cain who added,\"I'm obsessed with this album, it's like if they made pop music for bugs\", as well as Rosalíaand Lorde. Born Marylou Mayniel in rural western France, Oklou's musical foundation was built on classical piano and cello, before she fell in love with electronic production and began performing her first shows in Paris. Her 2020 mixtape Galore marked a creative breakthrough, blending introspective songwriting with futuristic sound design. Dazed praised Galore as, “sophisticated in its composition yet totally cutting edge in its sound.” With choke enough, Oklou has evolved into one of the most compelling voices in modern music—bridging intimacy and innovation with fearless emotional clarity. ‍",
+      "imageAsset": "artist-oklou"
+    },
+    {
+      "id": "paris-paloma",
+      "name": "Paris Paloma",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691797343f561040972156d4_Paris-Paloma.webp",
+      "sourceSlug": "paris-paloma",
+      "spotifyArtistID": "2EXpthNgSeTDeX8nGwxppp",
+      "instagram": "parispaloma",
+      "imageAsset": "artist-paris-paloma"
+    },
+    {
+      "id": "pixel-grip",
+      "name": "Pixel Grip",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7ef1f85fea113dc25255_hland_artists-05.webp",
+      "sourceSlug": "pixel-grip",
+      "spotifyArtistID": "4NmxBuCBL7Y5nqxDawpYKW",
+      "instagram": "_pixelgrip_",
+      "bio": "Performing on the Campfire Stage Pixel Grip’s sound is both seductive and confrontational – a dark, club-driven sound that blends elements of synth-pop, EBM (electronic body music), house, and industrial into their own edgy, danceable, and immersive ethos. Pixel Grip is known for their high-energy live performances and moody, avant-garde aesthetic. In 2024 they toured as direct support to noise-rock contemporaries, HEALTH. Followed by a (sold out) North American headline run of their own, which included a stop at the iconic punk festival RIOT Fest. Often exploring themes of desire, power, and liberation, underground cult classics such as “ALPHAPUSSY” & “Demon Chaser” have been used in campaigns by fashion powerhouses such as VERSACE & Alexander Vauthier. Relentless touring and placements with major brands have helped push Pixel Grip to the forefront of indie music. Pixel Grip’s ensuing LP (Summer 2025) arrives as they prepare to expand their reach into the EU & UK for the first time. On their third album, Percepticide the Death of Reality, the Chicago-trio looks within and around at a shifting landscape of fragmented perceptions and social disengagement. The album marks an important part in each of their lives, both musically and personally. Recorded over three years in Los Angeles & Chicago, each member privately faced their own demons, including betrayal, addiction, and neglect.\"Percepticide\" a portmanteau – a term that originates from –\"percipere\" (to perceive) and -cide (to kill) – in essence\"the killing of perception.\" ‘Percepticide’ is a cognitive distortion and a symptom of trauma – beliefs you hold to be true are shattered – as you question everyone and everything around you. My dream is that the expression of my rage can help someone else feel empowered and at the very least, less alone. You’re never stuck, and you’re never alone, say Lukea. ‍",
+      "imageAsset": "artist-pixel-grip"
+    },
+    {
+      "id": "porch-light",
+      "name": "Porch Light",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691bb32c66268a27f93ed967_Porch-Light.webp",
+      "sourceSlug": "porch-light",
+      "spotifyArtistID": "71gxkPYviG8kwEzEZGM1FH",
+      "instagram": "porchlighttheband",
+      "bio": "'Porch Light’ is an indie-rock group based out of Minneapolis, consisting of members Zac Fogarty (guitar), Jackie Uhas (vocals), Henry Hughes (bass), Kyle Siemon (guitar) and Isaiah Trimbo (drums). The project quickly came together in the Summer of 2024 with a mission to break the barriers that they have been accustomed to in the Indie world. Leaning into a raw and authentic live process “Porch Light’ creates a sense of relatability and intimacy for anyone experiencing this group. Inspired by blending the sounds of ’90s Radiohead with Hayley Williams’ Paramore, Slow Pulp, Big Thief and many more. The organic content with their signature 'basement rock' vibe has amassed them over 450k combined followers on socials. With just 3 songs released, be on the look out for their debut EP arriving on April 11th! ‍",
+      "imageAsset": "artist-porch-light"
+    },
+    {
+      "id": "quintron-miss-pussycat",
+      "name": "Quintron & Miss Pussycat",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd5216608ea619dd0578_hland_artists-13.webp",
+      "sourceSlug": "quintron-and-miss-pussycat",
+      "instagram": "quintronnn",
+      "bio": "Performing on the Miniland Stage Quintron and Miss Pussycat have been making genre-defying noise and hard rocking dance music in New Orleans for over thirty years. The majority of their 19 full-length albums have the psychedelic soul of traditional New Orleans party music, filtered through a Hammond organ, technicolor puppets, and a battalion of distorted, homemade instruments. After the release of “Goblin Alert” (Goner 2020), the duo expanded to sometimes include other New Orleans musicians for live shows. Quintron and Miss Pussycat’s sweaty musical blasts are paralleled in spirit and performance by Miss Pussycat’s dreamy puppet worlds – elaborate, and beautifully crafted for success in intimate venues of late-night drinking and dancing. She has also had several major solo museum exhibitions of ceramics, paintings and other visual work related to her puppetry. In addition to his work with Miss Pussycat, Quintron has been releasing albums featuring a self-made weather synthesizer called Weather Warlock, which uses sun, rain, temperature, and wind to make music. He has also played organ on a number of records by other artists, most notably The Oblivians (“9 songs”) and Steve Riley's\"Grand Isle\" which was nominated for a Grammy in 2012. Miss Pussycat and Quintron have also produced several puppet films, including “North Pole Nutrias” (WLAE), “Trixie and the Treetrunks” (Vice Media), and “Frenchy and Jett” (Disney). The Quintron / Miss Pussycat experience is one of barely controlled electronic chaos,\"Swamp-Tech\" dance beats, small explosions, incredible clothes, and entertaining puppet stories. You can see them perform regularly at The Spellcaster Lodge in New Orleans 9th Ward, or on one of their many tours around the world. This act somehow has equal relevance in sleazy nightclubs, pizza restaurants, and university lecture halls. Quintron regards his most significant creation to be a patented instrument called THE DRUM BUDDY, a light activated analog synthesizer which creates murky, low-fidelity, rhythmic patterns. Notable DRUM BUDDY clients include performers Nels Cline of Wilco, Laurie Anderson, Fred Armisen, and DJ Mr. Dibbs. ‍",
+      "imageAsset": "artist-quintron-miss-pussycat"
+    },
+    {
+      "id": "saint-avangeline",
+      "name": "Saint Avangeline",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691b8b7b2b2f2545a750a650_Saint-Avangeline.webp",
+      "sourceSlug": "saint-avangeline",
+      "spotifyArtistID": "0j49VqyyFRbclqg8Jv3Sdq",
+      "instagram": "saintavangeline",
+      "bio": "Saint Avangeline is a queer Atlanta-based independent artist exploring ethereal sounds infused with metal elements. Her hit songs include\"Lilith\" from her debut album,\"Gardener of Eden\" (2022), and\"Blood You Shed\" from her sophomore album,\"Inferno\" (2024).",
+      "imageAsset": "artist-saint-avangeline"
+    },
+    {
+      "id": "samia",
+      "name": "Samia",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5df5d4857c31c64091_69165cb0cf0d52e6940853a2_Samia.webp",
+      "sourceSlug": "samia",
+      "spotifyArtistID": "1Uk1GyijF6fSfX4mWq5bfR",
+      "instagram": "samiatheband",
+      "imageAsset": "artist-samia"
+    },
+    {
+      "id": "santigold",
+      "name": "Santigold",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5b52d4f34cc30fd724_69165cafc2b2dc1424583792_Santigold.webp",
+      "sourceSlug": "santigold",
+      "spotifyArtistID": "6Jrxnp0JgqmeUX1veU591p",
+      "instagram": "santigold",
+      "bio": "SANTIGOLD–born Santi White–is a creative visionary across multiple platforms who is renowned for her ability to fuse unexpected elements in her boundaryless work. Her era-defining self-titled debut album has been credited as a catalyst for the cross-genre sound of contemporary pop music. Her eclecticism has led to musical collaborations including Jay Z, David Byrne, Tyler the Creator, The Yeah Yeah Yeahs, Amadou and Mariam, Beastie Boys, Drake, and Pharrell. Along with creating the iconography of her album covers, live shows, and videos, her visual work includes collaborations with artists Wangechi Mutu, Kehinde Wiley, Sanford Biggers, and Kara Walker. Santigold has also brought her signature wit to television with comedic roles on The Office and Adult Swim’s NTSF:SD:SUV. In 2022, Santigold released her album Spirituals as a multi-sensory experience with a corresponding line of teas whose ingredients speak to the record’s themes and a series of video vignettes. She also launched her podcast Noble Champions which is a modern day salon that unites today's leading artists, authors, activists, and progressive thinkers around important issues to push culture forward. An inimitable pioneer, Santigold’s unwillingness to conform to conventions has made her a profound inspiration to many.",
+      "imageAsset": "artist-santigold"
+    },
+    {
+      "id": "sarah-tonin",
+      "name": "Sarah Tonin",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a2afd0a95bac3790482f3e2_hland_artists-10.webp",
+      "sourceSlug": "sarah-tonin",
+      "instagram": "sarahtoninmusic",
+      "imageAsset": "artist-sarah-tonin"
+    },
+    {
+      "id": "snow-strippers",
+      "name": "Snow Strippers",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5972866fe64c540247_69165caf1ba273dd316fafdb_Snow-Strippers.webp",
+      "sourceSlug": "snow-strippers",
+      "spotifyArtistID": "6TsAG8Ve1icEC8ydeHm3C8",
+      "instagram": "snowstrippers",
+      "bio": "Snow Strippers are an American EDM band consisting of Tatiana Schwaninger and Graham Perez, who initially met in Clearwater, Florida. Since their 2021 debut single, “Keep Holding On,” Snow Strippers have become one of electronic music’s most vital acts, releasing a prolific amount of music, first under their own imprint Nice Bass Bro and most recently in conjunction with NYC record label, Surf Gang (evilgiane, Eera, Slimesito). Their music combines big room EDM, trance, witch house and more to create something simultaneously familiar and unique. They have also collaborated with Lil Uzi Vert twice. Their fully sold out North American and European shows have become cross points of various underground scenes - bringing together artists like Ayesha Erotica, Slimesito, Xaviersobased, evilgiane and Evian Christ.",
+      "imageAsset": "artist-snow-strippers"
+    },
+    {
+      "id": "sofia-isella",
+      "name": "SOFIA ISELLA",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691b332d7402d7bec671d4d7_Sofia-Isella.webp",
+      "sourceSlug": "sofia-isella",
+      "spotifyArtistID": "40Aif8AfzbNGA2s52ESEE2",
+      "instagram": "sofia_isella",
+      "imageAsset": "artist-sofia-isella"
+    },
+    {
+      "id": "suki-waterhouse",
+      "name": "Suki Waterhouse",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69cedab86e64ccdc3530c8e3_Suki-Waterhouse-April2026.webp",
+      "sourceSlug": "suki-waterhouse",
+      "spotifyArtistID": "5GGJosGMs08YEmKTZJe1fL",
+      "instagram": "sukiwaterhouse",
+      "bio": "Suki Waterhouse’s music sounds like a collage of her inspirations, experiences, and emotions stitched together by honeyed vocal delivery, bright-eyed melodies, and evocative storytelling. It doubles as a mirror image of her life as a consummate creative, artist, actress, model, and mother, yet it also breaks the glass to unveil raw truth. She leans on an ever-evolving sonic palette to convey what she’s feeling—whether it be folky Americana, nineties alternative, turn-of-the-century indie, or handcrafted otherworldly pop. You’ll hear Suki’s longing in a swooning chorus, fearlessness in a crunchy chord, elation in a danceable waltz, and wonder in a soft coo befitting of a lullaby. She faithfully followed a lifelong passion for music to her 2022 full-length debut, I Can’t Let Go. Adorned by “Moves” and “Melrose Meltdown,” it incited widespread critical applause from Variety, Nylon, NME, The Line of Best Fit, and more. Between headlining shows and touring with Father John Misty, “Good Looking” surged online, generating nearly a billion streams, going RIAA platinum, and paving the way for the Milk Teeth EP. Simultaneously, she absorbed inspiration from a season of change earmarked by unforgettable moments a la gracing the stage of Lollapalooza 2023, performing on multiple continents, becoming a mom, and closing out the Gobi Tent at Coachella in 2024. Everything just set the stage for the gold-certified songstress to assert herself as a versatile, vibrant, and vital presence on her 2024 double-LP, Memoir of a Sparklemuffin [Sub Pop]. ‍",
+      "imageAsset": "artist-suki-waterhouse"
+    },
+    {
+      "id": "the-brook-the-bluff",
+      "name": "The Brook & The Bluff",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69ea7ec461dc129eff2e3ad9_hland_artists-03.webp",
+      "sourceSlug": "the-brook-the-bluff",
+      "spotifyArtistID": "4dWtsQvuME6tCWFycaTvO7",
+      "instagram": "brookandbluff",
+      "bio": "Performing on the Campfire Stage ‍ The Brook & The Bluff return to their rock & roll roots with Werewolf - a high-voltage, live-inspired album that turns up the amps, pushes the tempo, and howls in four-part harmony. Fueled by the sharp songwriting and stacked vocals that have defined their catalog, the collection captures the raw, supercharged energy of the band’s concerts. After nearly a decade of nonstop touring - earning hundreds of millions of streams with fan favorites like “Halfway Up” and “Everything Is Just a Mess” - the band regrouped in Nashville, meeting every morning to write and rehearse like their early days in Birmingham, Alabama. Life unfolded in the background: weddings, divorces, real-world growing pains. Inside the room, it was all music. The band channels the swamp rock spirit of legendary artists like Creedence, Petty, and The Eagles, delivering loud, melodic, deeply human songs like lead single “Super Bowl Sunday” - a crashing, introspective anthem about ego and emotional blind spots. “The goal was to treat the record like a live set,” says frontman Joseph Settine. And that’s exactly what they’ve done. Armed with a new album and an unflinching spirit, The Brook & The Bluff are ready to hit the road again on their upcoming 2026 Werewolf tour. The band boasts a history of sold out headline tours across the continent, a number of major festival performances, and have supported artists like Noah Kahan, Mt. Joy, The Avett Brothers, Ashe, and Rainbow Kitten Surprise. ‍",
+      "imageAsset": "artist-the-brook-the-bluff"
+    },
+    {
+      "id": "the-format",
+      "name": "The Format",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5cfe4d945d494d5fea_69165caf53e6057e7a85e0f6_The-Format.webp",
+      "sourceSlug": "the-format",
+      "spotifyArtistID": "3ZJC8cLts8Q8s8JbNJKsLf",
+      "instagram": "theformat",
+      "imageAsset": "artist-the-format"
+    },
+    {
+      "id": "waylon-wyatt",
+      "name": "Waylon Wyatt",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5baa567b61ec629791_69165caf792529ca341923a5_Waylon-Wyatt.webp",
+      "sourceSlug": "waylonwyatt2",
+      "spotifyArtistID": "6Ff2omMMZOd8FWNqb980Ol",
+      "instagram": "waylonwyatt",
+      "bio": "Waylon Wyatt is a 19-year-old folk-country artist from Hackett, Arkansas, known for his raw, red-dirt take on Americana. He began writing songs as a kid, often after long days working construction with his father. Waylon recorded and produced his debut EP Til The Sun Goes Down in the rec room of his childhood home. The EP has amassed over 225 million streams and two of its standout tracks\"Arkansas Diamond\" and\"Jailbreak\" have earned RIAA Gold certifications. Drawing inspiration from modern trailblazers like Tyler Childers and Zach Bryan, Waylon has cemented his place as a\"rising country star to know\" ( GRAMMY.com ) and was named one of VEVO's 2026 DSCVR Artists to Watch. He has played sold-out stages worldwide, headlining major U.S. venues and delivering standout performances at Stagecoach, Cavendish Beach Music Festival, and FairWell Festival, as well as joining Zach Bryan at London's Hyde Park. In 2026, Waylon will continue his global momentum with appearances at C2C Festival across Europe, select North American dates supporting Sam Barber, and major festivals including Under the Big Sky, Railbird, Bonnaroo, and more, all while preparing to release his highly anticipated debut album this coming Summer. ‍ ‍",
+      "imageAsset": "artist-waylon-wyatt"
+    },
+    {
+      "id": "wet-leg",
+      "name": "Wet Leg",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/69174f5d15f91791d800bbcb_69165caf55d7697303ae499a_Wet-Leg.webp",
+      "sourceSlug": "wet-leg",
+      "spotifyArtistID": "2TwOrUcYnAlIiKmVQkkoSZ",
+      "instagram": "wetlegband",
+      "bio": "Wet Leg - the Isle of Wight five-piece founded by Rhian Teasdale and Hester Chambers - have announced their eagerly anticipated second album moisturizerwill be released on July 11th on Domino. Alongside the album announcement, the band also share the first taste of moisturizer with its frenetic, alluringly combative lead single “catch these fists.” Kicking things off with an untameable, electrified groove from its opening seconds, “catch these fists” is dance-punk par excellence – bass notes ricocheting off a wall of howling synth, thunderous beats catching strays from Teasdale’s cruel deadpan. The video, directed by the band and shot on the Isle of Wight, nods to Ti West, Cameron Crowe and their own “Wet Dream” video and is a suitably off-kilter introduction to moisturizer valley. The band will return to The Tonight Showstage at 30 Rockefeller Center on Wednesday, to give the song its international television debut. Touring with Ellis Durand (bass), Henry Holmes (drums), and Joshua Mobaraki(guitar, synth), Wet Leg developed into a taut, caustic live operation that made good on their debut's success: #1 chart placements at home and abroad, three GRAMMYs, two BRIT Awards and over half a billion streams. If success presents a fork in the road for any new band – to “go pop” or keep following your muse – Wet Leg emphatically chose the latter path – including working with Dan Carey again as their producer. In March 2024, the band decamped to the remote seaside town of Southwold in Norfolk, England, to write; living together, working all day, watching horror movies all night, they soon locked into a new sense of symbiosis. Subsequently, all five members of Wet Leg have writing credits on moisturizer - “We were just kind of having fun and exploring,” says Hester Chambers. “We focussed on: Is this going to be fun to play live? It was very natural that we would write the second record together” adds Rhian Teasdale. As happens a couple of times on moisturizer, the major animus behind “catch these fists” was an interaction with a belligerent man, as chronicled in the song’s final verse. This is not to say shitty men are the sole focus of moisturizer — no matter how much album track “mangetout”, with its withering chorus of “get lost forever” may feel like the Nicole Kidman divorce photo in song form. On the contrary, this is largely an album about being, as the band exclaim on “pond song”, so “DEEP! IN! LOVE!!!!” moisturizer contains love songs of every stripe: stressed-out, gooey-eyed, gratuitously horny, blissed out, obsessive and mysterious. Although Teasdale previously felt allergic to writing love songs, moisturizer is defined by its sheer exuberance and Teasdale ended up finding the process empowering. That new sense of ownership extends to moisturizer’s album art, an instant-classic freak-fest in which Chambers and Teasdale bare long, ghoulish claws; Teasdale, sporting long, kitschy socks and sans eyebrows, grins fiendishly into the camera. It reflects the album, moisturizer is the band turning the dial up and delivering a record that is unapologetically bolder, stronger and raunchier.",
+      "imageAsset": "artist-wet-leg"
+    },
+    {
+      "id": "wisp",
+      "name": "Wisp",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/697fb4eb33aa3ad70b0fc4a6_Wisp.webp",
+      "sourceSlug": "wisp",
+      "spotifyArtistID": "3TJZG17pjOKXwx1ELKJPfm",
+      "instagram": "whirrwhoreforlyfe",
+      "imageAsset": "artist-wisp"
+    },
+    {
+      "id": "young-miko",
+      "name": "Young Miko",
+      "imageURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/691b333cb92237b3605fc631_YoungMiko.webp",
+      "sourceSlug": "young-miko",
+      "spotifyArtistID": "3qsKSpcV3ncke3hw52JSMB",
+      "instagram": "itsyoungmiko",
+      "imageAsset": "artist-young-miko"
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-07-30",
+      "weekday": "Thursday",
+      "sets": [
+        {
+          "id": "2026-07-30-main-stage-porch-light",
+          "artistId": "porch-light",
+          "artist": "Porch Light",
+          "stage": "Main Stage",
+          "start": "2026-07-30T13:00:00-05:00",
+          "end": "2026-07-30T13:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-frost-children",
+          "artistId": "frost-children",
+          "artist": "Frost Children",
+          "stage": "Main Stage",
+          "start": "2026-07-30T14:00:00-05:00",
+          "end": "2026-07-30T14:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-jane-remover",
+          "artistId": "jane-remover",
+          "artist": "Jane Remover",
+          "stage": "Main Stage",
+          "start": "2026-07-30T15:00:00-05:00",
+          "end": "2026-07-30T15:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-oklou",
+          "artistId": "oklou",
+          "artist": "Oklou",
+          "stage": "Main Stage",
+          "start": "2026-07-30T16:00:00-05:00",
+          "end": "2026-07-30T17:00:00-05:00"
+        },
+        {
+          "id": "2026-07-30-miniland-stage-duo-beats",
+          "artistId": "duo-beats",
+          "artist": "Duo Beats",
+          "stage": "Miniland Stage",
+          "start": "2026-07-30T16:45:00-05:00",
+          "end": "2026-07-30T17:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-audrey-nuna",
+          "artistId": "audrey-nuna",
+          "artist": "AUDREY NUNA",
+          "stage": "Main Stage",
+          "start": "2026-07-30T17:15:00-05:00",
+          "end": "2026-07-30T18:15:00-05:00"
+        },
+        {
+          "id": "2026-07-30-miniland-stage-lipstick-homicide",
+          "artistId": "lipstick-homicide",
+          "artist": "Lipstick Homicide",
+          "stage": "Miniland Stage",
+          "start": "2026-07-30T18:00:00-05:00",
+          "end": "2026-07-30T19:00:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-ashnikko",
+          "artistId": "ashnikko",
+          "artist": "ASHNIKKO",
+          "stage": "Main Stage",
+          "start": "2026-07-30T18:30:00-05:00",
+          "end": "2026-07-30T19:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-beabadoobee",
+          "artistId": "beabadoobee",
+          "artist": "beabadoobee",
+          "stage": "Main Stage",
+          "start": "2026-07-30T20:00:00-05:00",
+          "end": "2026-07-30T21:45:00-05:00"
+        },
+        {
+          "id": "2026-07-30-main-stage-katseye",
+          "artistId": "katseye",
+          "artist": "KATSEYE",
+          "stage": "Main Stage",
+          "start": "2026-07-30T22:00:00-05:00",
+          "end": "2026-07-30T23:30:00-05:00"
+        },
+        {
+          "id": "2026-07-30-campfire-stage-nourished-by-time",
+          "artistId": "nourished-by-time",
+          "artist": "Nourished by Time",
+          "stage": "Campfire Stage",
+          "start": "2026-07-30T23:30:00-05:00",
+          "end": "2026-07-31T00:15:00-05:00"
+        },
+        {
+          "id": "2026-07-30-campfire-stage-pixel-grip",
+          "artistId": "pixel-grip",
+          "artist": "Pixel Grip",
+          "stage": "Campfire Stage",
+          "start": "2026-07-31T00:30:00-05:00",
+          "end": "2026-07-31T01:30:00-05:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-31",
+      "weekday": "Friday",
+      "sets": [
+        {
+          "id": "2026-07-31-main-stage-saint-avangeline",
+          "artistId": "saint-avangeline",
+          "artist": "Saint Avangeline",
+          "stage": "Main Stage",
+          "start": "2026-07-31T14:00:00-05:00",
+          "end": "2026-07-31T14:45:00-05:00"
+        },
+        {
+          "id": "2026-07-31-miniland-stage-crooked-torus",
+          "artistId": "crooked-torus",
+          "artist": "Crooked Torus",
+          "stage": "Miniland Stage",
+          "start": "2026-07-31T14:30:00-05:00",
+          "end": "2026-07-31T16:15:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-wisp",
+          "artistId": "wisp",
+          "artist": "Wisp",
+          "stage": "Main Stage",
+          "start": "2026-07-31T15:00:00-05:00",
+          "end": "2026-07-31T15:45:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-sofia-isella",
+          "artistId": "sofia-isella",
+          "artist": "SOFIA ISELLA",
+          "stage": "Main Stage",
+          "start": "2026-07-31T16:00:00-05:00",
+          "end": "2026-07-31T16:45:00-05:00"
+        },
+        {
+          "id": "2026-07-31-miniland-stage-sarah-tonin",
+          "artistId": "sarah-tonin",
+          "artist": "Sarah Tonin",
+          "stage": "Miniland Stage",
+          "start": "2026-07-31T16:30:00-05:00",
+          "end": "2026-07-31T17:30:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-paris-paloma",
+          "artistId": "paris-paloma",
+          "artist": "Paris Paloma",
+          "stage": "Main Stage",
+          "start": "2026-07-31T17:00:00-05:00",
+          "end": "2026-07-31T18:00:00-05:00"
+        },
+        {
+          "id": "2026-07-31-miniland-stage-leslie-the-ly-s",
+          "artistId": "leslie-the-ly-s",
+          "artist": "Leslie & The Ly's",
+          "stage": "Miniland Stage",
+          "start": "2026-07-31T17:45:00-05:00",
+          "end": "2026-07-31T18:45:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-snow-strippers",
+          "artistId": "snow-strippers",
+          "artist": "Snow Strippers",
+          "stage": "Main Stage",
+          "start": "2026-07-31T18:15:00-05:00",
+          "end": "2026-07-31T19:15:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-muna",
+          "artistId": "muna",
+          "artist": "MUNA",
+          "stage": "Main Stage",
+          "start": "2026-07-31T19:30:00-05:00",
+          "end": "2026-07-31T21:15:00-05:00"
+        },
+        {
+          "id": "2026-07-31-main-stage-lorde",
+          "artistId": "lorde",
+          "artist": "Lorde",
+          "stage": "Main Stage",
+          "start": "2026-07-31T21:30:00-05:00",
+          "end": "2026-07-31T23:00:00-05:00"
+        },
+        {
+          "id": "2026-07-31-campfire-stage-between-friends",
+          "artistId": "between-friends",
+          "artist": "Between Friends",
+          "stage": "Campfire Stage",
+          "start": "2026-07-31T23:30:00-05:00",
+          "end": "2026-08-01T00:15:00-05:00"
+        },
+        {
+          "id": "2026-07-31-campfire-stage-ninajirachi",
+          "artistId": "ninajirachi",
+          "artist": "Ninajirachi",
+          "stage": "Campfire Stage",
+          "start": "2026-08-01T00:30:00-05:00",
+          "end": "2026-08-01T01:30:00-05:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-01",
+      "weekday": "Saturday",
+      "sets": [
+        {
+          "id": "2026-08-01-main-stage-amble",
+          "artistId": "amble",
+          "artist": "Amble",
+          "stage": "Main Stage",
+          "start": "2026-08-01T12:45:00-05:00",
+          "end": "2026-08-01T13:30:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-waylon-wyatt",
+          "artistId": "waylon-wyatt",
+          "artist": "Waylon Wyatt",
+          "stage": "Main Stage",
+          "start": "2026-08-01T13:45:00-05:00",
+          "end": "2026-08-01T14:30:00-05:00"
+        },
+        {
+          "id": "2026-08-01-miniland-stage-derry-the-dirty-dishes",
+          "artistId": "derry-the-dirty-dishes",
+          "artist": "Derry & the Dirty Dishes",
+          "stage": "Miniland Stage",
+          "start": "2026-08-01T14:15:00-05:00",
+          "end": "2026-08-01T15:00:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-julia-wolf",
+          "artistId": "julia-wolf",
+          "artist": "Julia Wolf",
+          "stage": "Main Stage",
+          "start": "2026-08-01T14:45:00-05:00",
+          "end": "2026-08-01T15:30:00-05:00"
+        },
+        {
+          "id": "2026-08-01-miniland-stage-quintron-miss-pussycat",
+          "artistId": "quintron-miss-pussycat",
+          "artist": "Quintron & Miss Pussycat",
+          "stage": "Miniland Stage",
+          "start": "2026-08-01T15:15:00-05:00",
+          "end": "2026-08-01T16:15:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-cmat",
+          "artistId": "cmat",
+          "artist": "CMAT",
+          "stage": "Main Stage",
+          "start": "2026-08-01T15:45:00-05:00",
+          "end": "2026-08-01T16:45:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-santigold",
+          "artistId": "santigold",
+          "artist": "Santigold",
+          "stage": "Main Stage",
+          "start": "2026-08-01T17:00:00-05:00",
+          "end": "2026-08-01T18:15:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-the-format",
+          "artistId": "the-format",
+          "artist": "The Format",
+          "stage": "Main Stage",
+          "start": "2026-08-01T18:30:00-05:00",
+          "end": "2026-08-01T19:45:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-jessie-murph",
+          "artistId": "jessie-murph",
+          "artist": "Jessie Murph",
+          "stage": "Main Stage",
+          "start": "2026-08-01T20:00:00-05:00",
+          "end": "2026-08-01T21:30:00-05:00"
+        },
+        {
+          "id": "2026-08-01-main-stage-mumford-sons",
+          "artistId": "mumford-sons",
+          "artist": "Mumford & Sons",
+          "stage": "Main Stage",
+          "start": "2026-08-01T21:45:00-05:00",
+          "end": "2026-08-01T23:15:00-05:00"
+        },
+        {
+          "id": "2026-08-01-campfire-stage-the-brook-the-bluff",
+          "artistId": "the-brook-the-bluff",
+          "artist": "The Brook & The Bluff",
+          "stage": "Campfire Stage",
+          "start": "2026-08-01T23:30:00-05:00",
+          "end": "2026-08-02T00:15:00-05:00"
+        },
+        {
+          "id": "2026-08-01-campfire-stage-buffalo-traffic-jam",
+          "artistId": "buffalo-traffic-jam",
+          "artist": "Buffalo Traffic Jam",
+          "stage": "Campfire Stage",
+          "start": "2026-08-02T00:30:00-05:00",
+          "end": "2026-08-02T01:30:00-05:00"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-02",
+      "weekday": "Sunday",
+      "sets": [
+        {
+          "id": "2026-08-02-main-stage-haute-freddy",
+          "artistId": "haute-freddy",
+          "artist": "Haute & Freddy",
+          "stage": "Main Stage",
+          "start": "2026-08-02T12:15:00-05:00",
+          "end": "2026-08-02T13:00:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-samia",
+          "artistId": "samia",
+          "artist": "Samia",
+          "stage": "Main Stage",
+          "start": "2026-08-02T13:15:00-05:00",
+          "end": "2026-08-02T14:00:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-audrey-hobert",
+          "artistId": "audrey-hobert",
+          "artist": "Audrey Hobert",
+          "stage": "Main Stage",
+          "start": "2026-08-02T14:15:00-05:00",
+          "end": "2026-08-02T15:15:00-05:00"
+        },
+        {
+          "id": "2026-08-02-miniland-stage-koo-koo",
+          "artistId": "koo-koo",
+          "artist": "Koo Koo",
+          "stage": "Miniland Stage",
+          "start": "2026-08-02T15:00:00-05:00",
+          "end": "2026-08-02T16:00:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-suki-waterhouse",
+          "artistId": "suki-waterhouse",
+          "artist": "Suki Waterhouse",
+          "stage": "Main Stage",
+          "start": "2026-08-02T15:30:00-05:00",
+          "end": "2026-08-02T16:30:00-05:00"
+        },
+        {
+          "id": "2026-08-02-miniland-stage-jeffery-lewis",
+          "artistId": "jeffery-lewis",
+          "artist": "Jeffery Lewis",
+          "stage": "Miniland Stage",
+          "start": "2026-08-02T16:15:00-05:00",
+          "end": "2026-08-02T17:15:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-wet-leg",
+          "artistId": "wet-leg",
+          "artist": "Wet Leg",
+          "stage": "Main Stage",
+          "start": "2026-08-02T16:45:00-05:00",
+          "end": "2026-08-02T17:45:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-geese",
+          "artistId": "geese",
+          "artist": "Geese",
+          "stage": "Main Stage",
+          "start": "2026-08-02T18:00:00-05:00",
+          "end": "2026-08-02T19:15:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-young-miko",
+          "artistId": "young-miko",
+          "artist": "Young Miko",
+          "stage": "Main Stage",
+          "start": "2026-08-02T19:30:00-05:00",
+          "end": "2026-08-02T21:15:00-05:00"
+        },
+        {
+          "id": "2026-08-02-main-stage-kali-uchis",
+          "artistId": "kali-uchis",
+          "artist": "Kali Uchis",
+          "stage": "Main Stage",
+          "start": "2026-08-02T21:30:00-05:00",
+          "end": "2026-08-02T23:00:00-05:00"
+        },
+        {
+          "id": "2026-08-02-campfire-stage-die-spitz",
+          "artistId": "die-spitz",
+          "artist": "Die Spitz",
+          "stage": "Campfire Stage",
+          "start": "2026-08-02T23:30:00-05:00",
+          "end": "2026-08-03T00:15:00-05:00"
+        },
+        {
+          "id": "2026-08-02-campfire-stage-gouge-away",
+          "artistId": "gouge-away",
+          "artist": "Gouge Away",
+          "stage": "Campfire Stage",
+          "start": "2026-08-03T00:30:00-05:00",
+          "end": "2026-08-03T01:30:00-05:00"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,533 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "ticketing",
+      "name": "Ticketing",
+      "topics": [
+        {
+          "id": "box-office",
+          "title": "Box Office",
+          "body": "If you need to pick up wristbands or parking/camping window stickers, replace a wristband or get help with other ticketing questions, head to one of our Box Office locations.\n\nOn-Site\nTemporary parking is available in the Box Office Parking Lot at Gate C.\n– Wed., July 29 - 9 AM–9 PM\n– Thurs., July 30 – 9 AM–9 PM\n– Fri., July 31 – 9 AM–9 PM\n– Sat., Aug. 1 – 9 AM–9 PM\n– Sun., Aug. 2 – 9 AM–9 PM\n\nOff-Site\nVal Air Ballroom, 301 Ashworth Rd, West Des Moines\n– Tues., July 28 – 10 AM–8 PM\n\nWhen picking up passes, please bring a photo ID (or picture of the photo ID) of the original purchaser. Head here for info on wristband shipping.",
+          "url": "https://www.hinterlandiowa.com/info/box-office"
+        },
+        {
+          "id": "wristband-order-shipping",
+          "title": "Wristband & Order Shipping",
+          "body": "Orders with your wristbands and camping/parking passes are currently shipping.\n\nSome orders will ship in multiple packages and on different dates. Don't fret if only part of your order arrives. Keep an eye out for an email from AXS with tracking information.\n\nIf you haven't received your order 4 days before the fest OR if you purchased after July 12th, swing by one of our festival box offices before entering a parking lot or heading to a festival entrance. Bring a photo ID (or picture of the photo ID) of the original purchaser.\n\nExceptions: Tent Camping and Shuttle Passes are mobile tickets. Single day parking purchased after July 12th are also mobile tickets. Login to the AXS app to access.\n\nAXS Support\nHours:\nMon-Fri: 8 AM-10 PM CST\nSat & Sun: 12 PM-10 PM CST\nLive Chat is also available!",
+          "url": "https://www.hinterlandiowa.com/info/shipping",
+          "links": [
+            "https://support.axs.com/"
+          ]
+        },
+        {
+          "id": "wristband-policy",
+          "title": "Wristband Policy",
+          "body": "• All sales are final - no refunds or exchanges.\n• Only wristbands purchased through AXS are valid for entry. If you purchased from an unauthorized source or have a counterfeit wristband, entry will not be permitted.\n• Wristbands must be worn securely on your wrist and cannot be slipped on or off.\n• Keep your wristband on for the entire festival—it must not be removed, stretched, or tampered with, as doing so will void entry.\n• To re-enter the festival on the same day, your wristband must be scanned upon exiting.\n• Wristbands are non-transferable and non-exchangeable.\n\nLost or Damaged Wristbands?\nNo worries! They can be replaced one time only for the original purchaser, for a $25 replacement fee. Just head to our Box Office and they'll get you taken care of. Please bring a photo ID (or picture of the photo ID) of the original purchaser.\n\nPlease Note:\n\n• Counterfeit or duplicated wristbands will be confiscated by security.\n• This wristband policy is strictly enforced, and there are no exceptions.\n\nYour wristband is your ticket to an incredible experience! Please treat it with care-it's a revocable license, and entry may be denied or revoked for non-compliance with festival policies or protocols. By attending the festival, you voluntarily assume all risks, including potential injury or loss of property.",
+          "url": "https://www.hinterlandiowa.com/info/wristband-policy"
+        },
+        {
+          "id": "90-degree-guarantee",
+          "title": "90 Degree Guarantee",
+          "body": "Hinterland's 90 Degree Guarantee allows ticket holders the option to request festival admission ticket returns for any day that is predicted to reach 90° or higher.\n\nIf on Monday 7/27 at 10am CT, the weather.gov forecast for 7/30, 7/31, 8/1, or 8/2 has a true temperature of 90° or higher for the 50240 zip code, ticket purchasers will have the option to request a return of their festival admission ticket for that day. Return requests are only available for the day/s the forecast is 90° or higher. 4-Day ticket holders can request a return for specific day/s at a rate of 1/4 of the total 4-Day ticket price.\n\nStarting Monday, July 27 at 10:00 AM CT you will be able to complete a 90 Degree Guarantee Ticket Return Request Form at hinterlandiowa.com/tickets. To guarantee your return you must submit the form before 5:00 PM CT on Tuesday, July 28.\n\nEligible returns will be processed within approximately 14 days.\n\nPLEASE NOTE:\nApplies to festival admission tickets only\nCamping, parking, and shuttle passes are not eligible\nTickets must have been purchased directly through AXS.com\nThird-party resale tickets are not eligible\n\nHinterland's Commitment to Climate Awareness:\nThe 10 hottest years on record have all occurred in the past decade. At Hinterland, we are committed to raising awareness about climate change and its impact on our daily lives. We will continue striving to make sustainable choices, both this year and in the years ahead. Together, we can make a difference.",
+          "url": "https://www.hinterlandiowa.com/info/90-degree-gurantee",
+          "links": [
+            "http://AXS.com",
+            "http://hinterlandiowa.com/tickets"
+          ]
+        },
+        {
+          "id": "free-look-return-policy-vips",
+          "title": "Free Look Return Policy (VIPs)",
+          "body": "At Hinterland, we want our premium guests to feel their extra dollars were well spent. We think you'll love what we've put together! If you don't, you have options.\n\nAll 4-Day VIP and VIP+ purchasers will have the opportunity for a \"Free Look\" onsite after scanning in. If you decide within one hour of scanning into the festival that you aren't satisfied with the premium amenities, you can return your ticket or downgrade to a lower level. Simply visit the VIP Concierge Tent on the north side of the premium area.\n\nTo qualify for the Free Look Return Policy, purchasers must scan into the festival grounds by 6pm on Thursday, July 30.\n\nThis policy only applies to 4-Day VIP and VIP+ festival admission tickets. It does not include camping, parking, or shuttle tickets. To qualify, tickets must have been purchased directly via AXS.com. Tickets purchased from a third-party are not eligible.",
+          "url": "https://www.hinterlandiowa.com/info/free-look-return-policy-vip"
+        },
+        {
+          "id": "avoid-scammers-buying-tickets-from-unofficial-partners",
+          "title": "Avoid Scammers & Buying Tickets from Unofficial Partners",
+          "body": "The only tickets we can guarantee are tickets purchased directly through our official ticketing partner, AXS.com.\n\nWe are unable to facilitate or provide support to tickets purchased from a third-party website or individual.\n\nPlease be aware that scammers often try to sell invalid tickets on Facebook, Instagram, StubHub, Vivid Seats, SeatGeek, Craigslist, and Marketplace by fake accounts. Tickets purchased through third-parties will not be accepted.",
+          "url": "https://www.hinterlandiowa.com/info/avoid-scammers",
+          "links": [
+            "http://axs.com/"
+          ]
+        },
+        {
+          "id": "refund-and-reselling-policy",
+          "title": "Refund and Reselling Policy",
+          "body": "Hinterland is rain or shine. No refunds or exchanges. Only exceptions are the 90 Degree Guarantee and Free Look Policy for VIP.\n\nFestival performers are subject to change or cancellation at any time without notice. Prices subject to change without notice.\n\nThe only tickets we can guarantee are tickets purchased directly through our official ticketing partner, AXS.com. We are unable to facilitate or provide support to tickets purchased from a third-party website or individual.",
+          "url": "https://www.hinterlandiowa.com/info/refund-reselling-policy",
+          "links": [
+            "http://axs.com/"
+          ]
+        },
+        {
+          "id": "tiered-ticket-pricing",
+          "title": "Tiered Ticket Pricing",
+          "body": "Festival tickets are sold in tiers — same pass type, different price. This system rewards fans who buy early with the best prices.\n\nEach tier offers the exact same access and benefits, but lower-priced tiers sell out first.\n\nWhen you buy tickets:\n\n- You may see multiple tiers listed. Choose the lowest available tier for the best price.\n- Once a tier sells out, it's marked as unavailable and prices move to the next tier.\n- Tiers can change quickly based on demand.",
+          "url": "https://www.hinterlandiowa.com/info/ticket-tiers"
+        },
+        {
+          "id": "payment-plans",
+          "title": "Payment Plans",
+          "body": "The last chance to buy tickets with a payment plan was Friday, May 29th. If you have questions about your existing payment plan, please reach out to AXS Support.\n\nBuy Now and Pay Later is still currently available at AXS checkout via Klarna or PayPal.",
+          "url": "https://www.hinterlandiowa.com/info/payment-plans",
+          "links": [
+            "https://support.axs.com/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "general-info",
+      "name": "General Info",
+      "topics": [
+        {
+          "id": "lockers",
+          "title": "Lockers",
+          "body": "Charging lockers at Hinterland provide a place for you and your friends to store your freshly scored merchandise, jackets, bags and more - while also providing a charging place for phones, battery banks, and other devices. Each locker is internally equipped with a 3-in-1 USB charging cable that features USB-C, Lightning (Apple) and Micro USB connectors to charge devices securely within your locker.\n\nReserve a charging locker HERE.",
+          "url": "https://www.hinterlandiowa.com/info/lockers",
+          "links": [
+            "https://www.tixr.com/groups/lockandrock/events/hinterland-2026-charging-lockers-188561"
+          ]
+        },
+        {
+          "id": "festival-maps",
+          "title": "Festival Maps",
+          "body": "Hinterland Music Festival is located in St. Charles, Iowa.\n\nMaps are subject to change.",
+          "url": "https://www.hinterlandiowa.com/info/festival-maps-2",
+          "links": [
+            "https://g.co/kgs/QC1hAkT"
+          ]
+        },
+        {
+          "id": "allowed-not-allowed-on-festival-grounds",
+          "title": "Allowed/Not Allowed on Festival Grounds",
+          "body": "Every person, vehicle and belonging entering the festival or camp grounds is subject to a full airport-style search, which may include a magnetometer screening and/or pat-down. Information is subject to change.\n\nThese items ARE NOT allowed into the festival grounds:\n\nNO Weapons of any sort\nNO Chairs (see more on chairs below)\nNO Coolers\nNO Smoking\nNO Glass\nNO Styrofoam\nNO Drones\nNO Laser pointers\nNO Pets (service animals are welcome, see policy)\nNO Fireworks\nNO Professional cameras\nNO Sun tent\nNO Umbrellas\nNO Wagons\nNO Totems\nNO Outside food or beverage\n\nThese items ARE allowed into the festival grounds:\n\nYES Refillable water bottles (empty), camelpacks (empty) - clear bottles are preferred, but not required\nYES Blankets or legless chairs (see more on chairs below)\nYES Backpacks, purses, bags (no larger than 18\"x13\"x8.5\", don't need to be clear)\nYES Point and click film and digital cameras (No detachable lenses, please)\nYES Sunblock\nYES Bug spray (The reality of Iowa summers. Do NOT forget your bug spray, people!)\nYES Strollers\nYES Hand sanitizer\nYES Liquid IV/Gatorade type packets, must be sealed\n\nPlease note that other items may be deemed prohibited at event organizers discretion.\n\nChairs with legs, including camping and low-lying beach chairs, are not allowed in the festival grounds. You are welcome to bring a legless chair or blanket. If you have a medical need for a chair and would like info on how to be granted an exception through our ADA services, please email access@hinterlandiowa.com or visit our ADA Tent onsite.\n\nClick here to see what's allowed/not allowed in the campgrounds.",
+          "url": "https://www.hinterlandiowa.com/info/allowed-not-allowed-on-festival-grounds",
+          "links": [
+            "https://www.hinterlandiowa.com/info/ada-accessibility-accomodations"
+          ]
+        },
+        {
+          "id": "food-drink",
+          "title": "Food & Drink",
+          "body": "View the 2026 food vendors and offerings.\n\nWe will have a wide variety of food & beverage options to satisfy all including vegan, vegetarian, gluten-free, dairy-free, and non-alcoholic.\n\nPlease note that we do not allow outside food or drink inside the festival venue. You are allowed to bring your own food & drink into the camping areas. If you require special accommodation for dietary restrictions, please make this request by emailing access@hinterlandiowa.com. Advance request by July 10th is recommended.",
+          "url": "https://www.hinterlandiowa.com/info/food-drink"
+        },
+        {
+          "id": "gates",
+          "title": "Gates",
+          "body": "Festival gates open daily at 12pm. Gate lines may begin forming at 10am; earlier arrivals will be redirected to the campgrounds.",
+          "url": "https://www.hinterlandiowa.com/info/gates"
+        },
+        {
+          "id": "set-times",
+          "title": "Set Times",
+          "body": "View the set times here: https://www.hinterlandiowa.com/set-times-2026.",
+          "url": "https://www.hinterlandiowa.com/info/set-times",
+          "links": [
+            "https://www.hinterlandiowa.com/set-times-2026"
+          ]
+        },
+        {
+          "id": "lost-and-found",
+          "title": "Lost and Found",
+          "body": "There is a lost and found tent inside the festival grounds near the south entrance (see map).\n\nAll items turned into lost and found will be posted on Hinterland Lost and Found, where you can search for and claim your missing items.\n\nIf you do not see your lost item, you can create a Loss Report to notify the Guest Services team. If the item gets turned in, you will be notified.\n\nAny lost and found items not claimed during the festival will be held for a year at the Liff storage facility and can be claimed during this time at Hinterland Lost and Found; Liff will then ship the item back to you.",
+          "url": "https://www.hinterlandiowa.com/info/lost-and-found",
+          "links": [
+            "https://hinterlandiowa.liff.app/#/",
+            "https://hinterlandiowa.liff.app/#/loss"
+          ]
+        },
+        {
+          "id": "cashless",
+          "title": "Cashless",
+          "body": "Activate your wristband prior to the festival and link a credit card/debit card for swift payments with all vendors by registering for cashless. This is the easiest way to pay for food, drinks, merch, and more. During the festival, order at any food, drink, or merch vendor and let them know you’re paying with your wristband. Tap your wristband, enter your PIN, and you’re done!",
+          "url": "https://www.hinterlandiowa.com/info/cashless"
+        },
+        {
+          "id": "playlists",
+          "title": "Playlists",
+          "body": "Tune in to our official playlists:\n\nSpotify\n\nYouTube\n\nApple",
+          "url": "https://www.hinterlandiowa.com/info/playlists",
+          "links": [
+            "https://music.apple.com/profile/hinterlandiowa",
+            "https://open.spotify.com/user/hinterlandmusicfestival?si=2ff2a19c1bd64993",
+            "https://youtube.com/playlist?list=PLbodDVn0We5gTrYwl9GKD0sEgVagr-eLO&amp;si=4b2o3G19siPTS5XT"
+          ]
+        },
+        {
+          "id": "information-tents",
+          "title": "Information Tents",
+          "body": "Have questions? Missing an item? Found a lost item? Visit an Information Tent (see map). Guest Services staff members in Pink Vests will be stationed throughout the festival grounds. They are your best resource if you have any questions.\n\nThere are three Information Tents inside the venue open daily 12 PM–8 PM, and one in Basecamp open daily from 10 AM–9 PM.",
+          "url": "https://www.hinterlandiowa.com/info/information-tents"
+        }
+      ]
+    },
+    {
+      "id": "activities-merch",
+      "name": "Activities & Merch",
+      "topics": [
+        {
+          "id": "basecamp",
+          "title": "Basecamp",
+          "body": "Basecamp is the new central hub in the campgrounds. Located just west of Dollar General.  \n\n24/7 Food Vendors\nSpace Fruit, Pizza Nova, Iowah Noodz\n\nFull-Service Bar\nOpen Wednesday 4 PM–Midnight; Thursday-Saturday 9 AM–1 PM and 9 PM–1 AM; Sunday 9 AM–1 PM and 9 PM-Midnight.\n\nVinyl DJ Sets\nPlus playlists curated by Billy B. Well Weathers.\n\nVinyl Cup Record Store\nShop records & more from Vinyl Cup.\n\nHinterland Throwback Merch\nGear up with a wide assortment of merch from Hinterland’s past year stock. Open Wednesday 12 PM–11 PM; Thursday-Sunday 10 AM–4 PM and 9 PM–1 AM.\n\nMarket Vendors\nShop cool finds from Wander & Co., Then Now Always, and Sunny Life Hats. Open Wednesday 12 PM–11 PM; Thursday-Sunday 9 AM–Midnight.\n\nSolFarm Organic Farm Stand \nA sustainable, beyond-organic produce farm and homestead located just east of the Hinterland festival grounds. Their Basecamp farm stand will be selling fresh produce including tomatoes, peppers, cucumbers, potatoes, onions, garlic, zucchini and more. Open Thursday-Sunday 10 AM–2 PM.\n\nSubaru Outpost\nCheck out the new Outback Wilderness, often-forgotten camp items, games, and giveaways. Open Wednesday 1 PM–6 PM and Thursday-Sunday 9 AM–3 PM.\n\nB.WELL Foundation \nA Des Moines non-profit with a mission to develop and expand young minds and lift them to a place of prosperity through mentorship and education.\n\nDisc Golf Course\nPlay a round at our mini disc golf course just west of Basecamp. Discs will be available for rent from the Freak Disc Golf tent, along with other goodies to buy. Open Wednesday 12 PM–Midnight; Thursday-Sunday 10 AM–Midnight.\n\nWater and Ice Stations \nBring your refillable containers to stock up.\n\nPlus, be on the lookout for surprise and delight moments from our partners throughout the weekend!\n- Happy Thursday\n- Yerba Madre\n- Four Loko\n- Too Far Media\n- Peta2",
+          "url": "https://www.hinterlandiowa.com/info/basecamp-2"
+        },
+        {
+          "id": "hintermarket",
+          "title": "HinterMarket",
+          "body": "Do a little shopping at the fest! We have an amazing lineup for the 2026 HinterMarket.\n\nAmerican Dance Party | Lakeland, FL\n\nWe use vintage clothing along with repurposed materials to create nostalgic yet fashion-forward products. All products are made in central Florida.\n\nAzapaza | Sioux City, IA\n\nIndia imports, tapestries, festival garments, djembe drums, scarves, bags, jewelry, and incense.\n\nBaraka | Cincinnati, OH\n\nAt Baraka, our small team travels to Asia every year in search of unique and handmade jewelry, clothing, and textiles to share at festivals. All items are handmade or hand-assembled, sourced from dozens of makers across Asia. Inventory includes brass and sterling silver jewelry, clothing including tanks, tees, dresses, skirts, and pants, and accessories including bags, wall hangings, and notebooks. Plastic-free booth; post-purchase bags are made from upcycled silk from used sarees.\n\nBrim|Stone Hat Bar | Humboldt/Algona, IA\n\nCustom hat boutique and studio specializing in personalized headwear where you can have your hat custom-burned and embellished.\n\nIowa Henna | Des Moines, IA\n\nHenna, glitter, face/body painting, clothes, fans, and light-up toys.\n\nKIN DSM | Des Moines, IA\n\nSterling silver jewelry, crystals and crystal jewelry, intentional items, and great festival additions like cute travel pouches and lip balm.\n\nLarissa Loden | Twin Cities, MN\n\nJewelry, hair claws, hats, socks, and permanent jewelry.\n\nLucid Wood | Columbus, NE\n\nHand-carved jewelry using wood, antler, bone, and stone — pendants, bracelets, and earrings, all one of a kind. Also sells hand-carved animal skulls inlaid with crystals, moss, mushrooms, and LED lights, and driftwood lamps inlaid with quartz crystals. All sustainable and natural materials.\n\nMaddy Fusco Illustration | Des Moines, IA\n\nVarious forms of original art, including originals, prints, T-shirts, and stickers.\n\nMatt Meyung | Alexandria, KY\n\nHandmade and CNC-engraved mixed media woodwork. Paintings on wood with fractal burning. Bourbon barrel decor.\n\nNVision Guitars | Ankeny, IA\n\nHandmade guitars, picks, art, apparel, and music accessories.\n\nPermanent Collection | Des Moines, IA\n\nVintage letterpress art prints, cards, pennants, tote bags, coasters, and sweatshirts.\n\nPepper Harrow | Winterset, IA\n\nFlower crowns, wearable florals, lavender self-care products.\n\nRoadie Rack | Des Moines, IA / Seattle, WA\n\nRoadie Rack is a music driven thrift store built from life on the road. We specialize in rare and authentic shirts collected from music tours around the world. Every piece has a story tied to live music culture, touring, and the communities that keep it moving.\n\nSad Girls Club | Seattle, WA\n\nLatina-owned, Seattle-based slow fashion festival wear brand. Creates clothes inspired by culture, femininity, and original oil paintings translated into handmade lino-cut printed and crochet clothing/accessories including tops, purses, leg warmers, sweaters, dresses, and skirts. Available in sizes XS–4X. Uses thrifted yarn and reworked fabrics; every piece is one of a kind.\n\nSangüich Designs | Des Moines, IA\n\nSangüich is a Des Moines-based queer, Latine artist merging vibrant cuteness with bold, thought-provoking messaging. Their creative studio, Club Sangüich, serves as the home for all their visual and sonic work.Roadie Rack is a music driven thrift store built from life on the road. We specialize in rare and authentic shirts collected from music tours around the world. Every piece has a story tied to live music culture, touring, and the communities that keep it moving.\n\nSunny Life Hats | Lake Helen, FL\n\nFamily-run, hand-crafted hemp sun hats, satchels, organic cotton bandanas, and small-batch shea-based sunblock. All items are hand-loomed/crocheted using eco-textiles and hand screen-printed from original art. Donates a portion of proceeds to service projects including tree planting, disaster relief, ocean plastic removal, and rural health clinics.\n\nThe Dust Collective | Des Moines, IA\n\nVintage clothing and accessories, plus handmade goods.\n\nThen Now Always | Orlando, FL\n\nEngraved wooden sunglasses and leather bracelets, hand-woven blankets, original design tees, tanks, sweats, and headwear.\n\nTo Write Love on Her Arms | Melbourne, FL\n\nMerchandise and apparel that directly funds the mental health nonprofit To Write Love on Her Arms, dedicated to presenting hope and finding help for those struggling with depression, addiction, self-injury, and suicide.\n\nWander & Co. | Milwaukee, WI\n\nSocial cause shop where every product benefits a nonprofit or cause. Apparel and camping accessories.",
+          "url": "https://www.hinterlandiowa.com/info/market-vendors"
+        },
+        {
+          "id": "miniland",
+          "title": "Miniland",
+          "body": "Check out Hinterland's Miniland! Curated by Des Moines' own Ramona Muse Lambert, Miniland is a creative experience for all, focused on DIY art, music, and a welcoming spot for families to gather throughout the festival.\n\nAll festival long, guests are invited to try their hand at button making, patch making, keychain construction, and contributing to our bootleg Hinterland flyer wall. All are welcome to draw on our giant inflatable bear, hop in the photobooth, and give our artist-made carnival games a whirl.\n\nFamilies can find some relief in our chill zone, make a Miniland kids pass, weave rainbow loom bracelets, free draw, grab an activity bag to go, and pick up a Hinterland activity newspaper while supplies last.\n\nYou can also come visit the Miniland Stage each day for a unique mix of musical performances, unconventional instrument demonstrations, and more!",
+          "url": "https://www.hinterlandiowa.com/info/miniland"
+        },
+        {
+          "id": "hiking-trails",
+          "title": "Hiking Trails",
+          "body": "Explore our new hiking trails throughout the campgrounds. With nearly 3.5 miles of beautifully wooded paths, the trails are more than just a way to get where you’re going they’re a destination all their own.\n\nAlong the way, you’ll find plenty of surprises, including covered bridges, art installations, lemonade stands, a silent disco, a disc golf course and more. The trails will be lit at night, making them easy to enjoy throughout the festival weekend. After Hinterland, the trails will remain open year-round for locals and visitors to enjoy.\n\nWe recommend wearing comfortable, closed-toe shoes so you’re ready to explore!\n\nDragonfly Trail\nBluegill Bend\nJunebug Drive\nCedar Tree Path\nDoe Drive\nWild Turkey Way\nGoldfinch Trail\nFirefly Pass\nRaccoon Run\n\nView the festival grounds map.",
+          "url": "https://www.hinterlandiowa.com/info/hiking-trails"
+        },
+        {
+          "id": "yoga-sound-bath",
+          "title": "Yoga & Sound Bath",
+          "body": "Join us for yoga daily (Thursday-Sunday) at 9 AM by the Campfire Stage. These Vinyasa yoga classes led by Mayce at Mindful Healing Co. will focus on connecting body with breath, relaxation, mindfulness, and letting go. After the flow, there will be a 10-15 minute sound bath during savasana to bring awareness inwards and fully immerse in the soothing sounds. All levels welcome, just bring a mat/towel & water. Follow @yogimayce on Instagram!",
+          "url": "https://www.hinterlandiowa.com/info/yoga",
+          "links": [
+            "http://bio.site/mindfulhealingco",
+            "https://www.instagram.com/yogimayce"
+          ]
+        },
+        {
+          "id": "merch",
+          "title": "Merch",
+          "body": "Gear up with a wide assortment of merch from Hinterland and artists. Head to our socials closer to the festival for a look at this year's Hinterland styles and trinkets!",
+          "url": "https://www.hinterlandiowa.com/info/merch"
+        },
+        {
+          "id": "white-claw-hammock-hangout",
+          "title": "White Claw Hammock Hangout",
+          "body": "Come relax in the shaded White Claw Hammock Hangout in the camping area. Bring your own hammock or use one of ours. All ticket holders are welcome!",
+          "url": "https://www.hinterlandiowa.com/info/white-claw-hammock-hang"
+        },
+        {
+          "id": "silent-disco",
+          "title": "Silent Disco",
+          "body": "Dance it out in the woods at our Silent Disco. Located on the north side of the campgrounds by the Raccoon Run and Dragonfly Trails. It’s free for all ticket holders to participate. Open Wednesday-Sunday 12 PM–7 PM and 11 PM–3 AM.\n\nInsider Tip: Stop by the nearby face-glitter stand and lemonade cart while you’re there.",
+          "url": "https://www.hinterlandiowa.com/info/silent-disco-2"
+        },
+        {
+          "id": "sunflower-field",
+          "title": "Sunflower Field",
+          "body": "Take a stroll to our new sunflower field for a great photo op or a relaxing place to enjoy the view. It is located just west of Car Camping.",
+          "url": "https://www.hinterlandiowa.com/info/sunflower-field"
+        },
+        {
+          "id": "vinyl-cup-record-store",
+          "title": "Vinyl Cup Record Store",
+          "body": "Shop records & more from Vinyl Cup. Located inside the festival venue and Basecamp.",
+          "url": "https://www.hinterlandiowa.com/info/vinyl-cup-record-store"
+        },
+        {
+          "id": "subaru-recharge-zone",
+          "title": "Subaru Recharge Zone",
+          "body": "Visit the Subaru Recharge Zone near the West Entrance for car karaoke, interactive art, and a place to cool down and recharge.",
+          "url": "https://www.hinterlandiowa.com/info/subaru-recharge-zone"
+        },
+        {
+          "id": "experiences",
+          "title": "Experiences",
+          "body": "Discover all the things to see and do at Hinterland beyond the music.\n\nBasecamp\n\nHinterMarket\n\nMiniland\n\nHiking Trails\n\nYoga & Sound Bath\n\nMerch\n\nWhite Claw Hammock Hangout\n\nSilent Disco\n\nSunflower Field\n\nVinyl Cup Record Store\n\nSubaru Recharge Zone\n\n& More!",
+          "url": "https://www.hinterlandiowa.com/info/experiences",
+          "links": [
+            "https://www.hinterlandiowa.com/info/basecamp-2",
+            "https://www.hinterlandiowa.com/info/hiking-trails",
+            "https://www.hinterlandiowa.com/info/market-vendors",
+            "https://www.hinterlandiowa.com/info/merch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "getting-here-maps",
+      "name": "Getting Here & Maps",
+      "topics": [
+        {
+          "id": "driving-parking",
+          "title": "Driving & Parking",
+          "body": "Directions\n\nHinterland is located in St. Charles, Iowa, just 30 minutes south of Des Moines.\n\nTake I-35 to St. Charles, Iowa, then use the route assigned to your parking pass, even if your GPS suggests differently. Road closures and traffic patterns are in place throughout the festival weekend, and following festival signage will get you to your lot (or home) the fastest.\n\nNORTH ROUTE - Exit 56\nBox Office, 4-Day General Parking, Premium Parking, ADA Parking, Tent Camping, RV Camping, Rideshare/Dropoffs\n\nSOUTH ROUTE - Exit 47\n1-Day Parking, Car Camping\n\nExit 52 off-ramps are closed Thurs, July 30 – Sun, Aug 2.\n\nCheck-in Times\nParking lots open at 9 AM each day.\n\nPeak Traffic Times\n9AM on Thursday, 1 PM–6 PM each day, and exiting the festival each night.\n\nLot Entrances\n4-Day General Parking - Gate C\nSingle Day Parking - Gate N\nPremium Parking - Gate C\nADA Parking - Gate F\nBox Office - Gate C\n\nCamping in any of these lots is prohibited.\n\nWhen You Arrive\n\nParking pass window stickers and festival wristbands are required to enter the parking lots.\n\nPlace your parking sticker on the driver’s side front windshield before you arrive, and make sure everyone in your vehicle is wearing their wristband.\n\nDon’t have a window sticker or wristband, or did you purchase your pass after July 12? Before going to the parking lot, head to the Box Office onsite (Gate C with temporary parking) or offsite (Tuesday only at Val Air Ballroom in West Des Moines)\n\nReminder: Festival admission passes do not include parking and must be purchased separately.\n\nADA Parking\nADA Parking is located just west of the South Entrance. Please enter through Gate F and show your valid DMV issued accessible parking placard or license plate and Hinterland parking or camping pass for access to these areas. Transportation is unavailable from General Day Parking, Tent Only, and Car Camping areas. If you have any accessibility related concerns, please reach out to us at access@hinterlandiowa.com\n\nVehicle Re-Entry\n1-Day Parking Lot – re-entry NOT ALLOWED\n\n4-Day, Premium, ADA Lots – re-entry ALLOWED during daylight hours\n\nHiking Trails to Parking Lots\nThe festival grounds are connected by hiking trails. Closed toed shoes are highly encouraged for the walk from the parking lots to the venue. It’s a lovely stroll, but no one likes rocks in their sandals!\n\nAlways walk along the marked hiking trails. Walking along Highway G50 is NOT permitted for your safety.",
+          "url": "https://www.hinterlandiowa.com/info/getting-here-non-campers"
+        },
+        {
+          "id": "driving-camping",
+          "title": "Driving & Camping",
+          "body": "Directions\n\nHinterland is located in St. Charles, Iowa, just 30 minutes south of Des Moines.\n\nTake I-35 to St. Charles, Iowa, then use the route assigned to your camping pass, even if your GPS suggests differently. Road closures and traffic patterns are in place throughout the festival weekend, and following festival signage will get you to your lot (or home) the fastest.\n\nNORTH ROUTE - Exit 56\nBox Office, 4-Day General Parking, Premium Parking, ADA Parking, Tent Camping, RV Camping, Rideshare/Dropoffs\n\nSOUTH ROUTE - Exit 47\n1-Day Parking, Car Camping\n\nExit 52 off-ramps are closed Thurs, July 30 – Sun, Aug 2.\n\nCampers Arriving on Wednesday: Exit 52 for St. Charles will be open during this time.\n\nCheck-in Times\nWednesday: 12 PM–8 PM\nThursday-Saturday: 9 AM–7 PM\nSunday: 9 AM–12 PM\n\nYou can NOT check in if you arrive (for the first time) outside of these hours.\n\nWednesday camping is encouraged! Food and drink vendors will be open.\n\nPeak Traffic Times\n9AM on Thursday, 1 PM–6 PM each day, and exiting the festival each night.\n\nLot Entrances\nTent Camping Parking - Gate H\nTent Camping Gear Drop Zone - Gate I\nCar Camping - Gate N\nRV Camping - Gate J\nGlamping - Gate C\nADA Camping - Gate F\nBox Office - Gate C\n\nWhen You Arrive\n\nParking/camping pass window stickers and festival wristbands are required to enter the parking lots.\n\nPlace your parking/camping sticker on the driver’s side front windshield before you arrive, and make sure everyone in your vehicle is wearing their wristband.\n\nTent Camping passes are digital tickets. Login to the AXS app to access. Have it ready to scan when you arrive in exchange for a tent bandana you’ll place on a visible part of your tent at all times.Don’t have a window sticker or wristband, or did you purchase your pass after July 12? Before going to the parking lot, head to the Box Office onsite (Gate C with temporary parking) or offsite (Tuesday only at Val Air Ballroom in West Des Moines)\n\nReminder: Festival admission passes do not include parking and must be purchased separately.\n\nADA Parking\nADA Parking is located just west of the South Entrance. Please enter through Gate F and show your valid DMV issued accessible parking placard or license plate and Hinterland parking or camping pass for access to these areas. Transportation is unavailable from General Day Parking, Tent Only, and Car Camping areas. If you have any accessibility related concerns, please reach out to us at access@hinterlandiowa.com\n\nVehicle Re-Entry\n1-Day Parking Lot – re-entry NOT ALLOWED\n\n4-Day, Premium, ADA Lots – re-entry ALLOWED during daylight hours\n\nHiking Trails to Parking Lots\nThe festival grounds are connected by hiking trails. Closed toed shoes are highly encouraged for the walk from the parking lots to the venue. It’s a lovely stroll, but no one likes rocks in their sandals!\n\nAlways walk along the marked hiking trails. Walking along Highway G50 is NOT permitted for your safety.\n\nReminder: Tent Camping and Glamping passes do not include parking and must be purchased separately.\n\nTent Camping Gear Drop Zone\nAn optional gear drop off/pick-up zone is available at Gate I. Wagons are also recommended for easier transport.\n\nWednesday: 12 PM–8 PM\nThursday-Saturday: 9 AM–7 PM\nSunday: 9 AM–12 PM\n\nVehicle Re-Entry\nTent Camping Parking, Glamping Parking, ADA Camping, RV Camping Companion Vehicles - re-entry ALLOWED during daylight hours\n\nCar Camping, RV Camping - re-entry NOT ALLOWED\n\nLeaving the Campgrounds\nAll campers must be packed out by Monday at Noon.",
+          "url": "https://www.hinterlandiowa.com/info/getting-here-campers"
+        },
+        {
+          "id": "des-moines-shuttle",
+          "title": "Des Moines Shuttle",
+          "body": "Reduce your carbon footprint and save time by riding to Hinterland on our shuttle. The Des Moines Shuttle provides convenient transportation between Southridge Mall and the festival grounds.\n\nPickup/Drop off Location\nDes Moines: Southridge Mall, 1111 E. Army Post Road, Des Moines. The pickup/drop off location is on the northwest side of the mall. Parking is free. View map below.\n\nFestival Grounds: Gate C, south of the South Entrance. Follow the marked trails.\n\nDigital Shuttle Passes\nShuttle passes are digital tickets. Login to the AXS app to access. Have it ready to scan each time you enter the shuttle.\n\nTimes\nThursday-Sunday: 10 AM–2 AM\n\nThe last shuttle leaves the festival grounds at 2 AM, please plan accordingly.\n\nPeak Traffic Times\n1 PM–6 PM each day, and exiting the festival each night.\n\nWhen You Arrive\nFestival wristbands are required to enter the festival venue.\n\nDon’t have a wristband, or purchased after July 12th? Before going to the festival venue entrance, head to the Box Office onsite (Gate C next to shuttle stop) or offsite (Tuesday only at Val Air Ballroom in West Des Moines).\n\nADA\nThere will be buses in rotation that have ADA accommodations that drop off at the ADA Parking Lot.",
+          "url": "https://www.hinterlandiowa.com/info/getting-here-shuttle"
+        },
+        {
+          "id": "rideshare-or-drop-off",
+          "title": "Rideshare or Drop-Off",
+          "body": "Directions\nHinterland is located in St. Charles, Iowa, just 30 minutes south of Des Moines.\n\nTake I-35 to St. Charles, Iowa. Use the North Route - Exit 56 to access the designated rideshare pick-up/drop-off location and parking lot at Gate C.\n\nRoad closures and traffic patterns are in place throughout the festival weekend, and following festival signage will get you to your lot (or home) the fastest.\n\nExit 52 off-ramps are closed Thurs, July 30 – Sun, Aug 2.\n\nCheck-in Times\nParking lots open at 9 AM each day.\n\nPeak Traffic Times\n9 AM on Thursday, 1 PM–6 PM each day, and exiting the festival each night.\n\nWhen You Arrive\nFestival wristbands are required to enter the festival venue.\n\nDon’t have a wristband, or purchased after July 12th? Before going to the festival grounds entrance, head to the Box Office onsite (Gate C next to rideshare/dropoff spot) or offsite (Tuesday only at Val Air Ballroom in West Des Moines).",
+          "url": "https://www.hinterlandiowa.com/info/getting-here-rideshare"
+        },
+        {
+          "id": "hotels",
+          "title": "Hotels",
+          "body": "Official Hinterland hotel and ticket packages are available now through Crewfare. Bundle your stay and passes in one seamless booking at crewfare.com/events/hinterland-26.",
+          "url": "https://www.hinterlandiowa.com/info/hotels",
+          "links": [
+            "https://crewfare.com/events/hinterland-26?utm_source=hinterland-26&amp;utm_medium=referral&amp;utm_campaign=home_page"
+          ]
+        },
+        {
+          "id": "getting-around-pedicabs",
+          "title": "Getting Around & Pedicabs",
+          "body": "The entire festival grounds span about 2 miles from end to end, so be prepared to walk. There are designated hiking trails between campgrounds and parking lots. Closed toed shoes are highly encouraged for the walk from the parking lots to the venue. It’s a lovely stroll, but no one likes rocks in their sandals!\n\nWalk on the festival hiking trail (marked on the map) to get around the campgrounds and from parking to festival grounds entrances. Walking along Highway G50 is NOT permitted for safety reasons.\n\nPedicabs\nSkip the stroll and grab a ride! Coors Light will be offering pedicab rides at Hinterland this year. Perfect for getting from the parking lot or campgrounds to the festival entrance with zero fuss. Prices start at $15, all forms of payment accepted including cash, card, Venmo, PayPal, etc. Ready to ride? Flag one down or head to a pedicab pickup spot located throughout the grounds. Pedicabs are first-come, first-serve.",
+          "url": "https://www.hinterlandiowa.com/info/pedicabs"
+        },
+        {
+          "id": "the-road-to-hinterland",
+          "title": "The Road to Hinterland",
+          "body": "Make a road trip out of your drive to Hinterland with some suggestions from our friends at Subaru.",
+          "url": "https://www.hinterlandiowa.com/info/road-to-hinterland"
+        }
+      ]
+    },
+    {
+      "id": "health-safety-security",
+      "name": "Health, Safety & Security",
+      "topics": [
+        {
+          "id": "code-of-conduct",
+          "title": "Code of Conduct",
+          "body": "Being a welcoming community for all Hinterlanders is one of our primary goals. As a guest at Hinterland, we ask you to actively work with us to create an enjoyable and accepting atmosphere for everyone. This includes speaking up when you witness unacceptable behavior.\n\nWe have a zero-tolerance policy for harassment or discrimination of any kind, including but not limited to: race, color, national origin, sex, gender, sexual orientation, gender identity or expression, age, religion, and disability status.\n\nOffensive behavior includes, but is not limited to:\n\n- Acts of physical assault or battery\n- Verbal abuse\n- Racial or ethnic slurs\n- Groping, sexual assault, or unwanted sexual remarks\n- Stalking\n- Threatening language\n\nAny individuals or groups found in violation of this policy may have their Hinterland pass revoked.\n\nIf you feel you've been harassed, or feel unsafe, please visit Guest Services or talk to Hinterland staff or security.",
+          "url": "https://www.hinterlandiowa.com/info/code-of-conduct"
+        },
+        {
+          "id": "security-safety",
+          "title": "Security & Safety",
+          "body": "Hinterland works closely with local, state, and federal authorities to help ensure a safe experience for all our patrons.\n\nEvery person, vehicle and belonging entering the festival or campgrounds is subject to a full airport-style search, which may include a magnetometer screening and/or pat-down.\n\nPlease review what isn't allowed within festival and campgrounds prior to attending.\n\nEmergency exits are positioned throughout the festival grounds and clearly marked on signage and maps.\n\nWe encourage all of our guests to familiarize themselves with the festival maps to be aware of where emergency exits and medical stations are located. Please make sure that if you need any assistance to contact our guest services and event staff security team members.\n\nThe National Weather Service will be monitoring any weather events that may occur for our specific location during the festival and we have procedures in place to react appropriately to keep all attendees safe.\n\nPlease be advised that many of the performances will include flashing and strobing lights, theatrical haze, pyrotechnics, and loud sounds. Patrons with sensitivities to these effects are advised to take necessary precautions.\n\nSubscribe to SMS to receive onsite announcements\n\nor\n\nSign up for the Hinterland SMS by texting Hinterland to 42606",
+          "url": "https://www.hinterlandiowa.com/info/security-safety",
+          "links": [
+            "https://hinterland.attn.tv/p/TMi/landing-page"
+          ]
+        },
+        {
+          "id": "first-aid",
+          "title": "First Aid",
+          "body": "First Aid tents are located throughout the festival & campgrounds and staffed by trained personnel to provide any medical aid needed. In case of an emergency, notify any staff member or our security team. When in doubt: see something, say something.\n\nRemember:\n- Drink water early and often. Stay hydrated so you can enjoy the show all day long.\n- Take advantage of the shade and cooling areas located around the venue.\n- Don't hesitate to ask a staff member for help. They are there to help you have fun and keep you safe.",
+          "url": "https://www.hinterlandiowa.com/info/first-aid"
+        },
+        {
+          "id": "nursing-area",
+          "title": "Nursing Area",
+          "body": "You are welcome to breastfeed or pump anywhere on festival grounds. There will also be a nursing and pumping area located in Miniland.\n\nIf you have medical related items or breastmilk that requires a cooler within the festival concourse, please visit the ADA Services tent for an accessibility tag.",
+          "url": "https://www.hinterlandiowa.com/info/nursing-area"
+        }
+      ]
+    },
+    {
+      "id": "accessibility",
+      "name": "Accessibility",
+      "topics": [
+        {
+          "id": "ada-accessibility-accommodations",
+          "title": "ADA & Accessibility Accommodations",
+          "body": "We are committed to ensuring all Hinterlanders have an inclusive and accessible experience. Please review the accommodations available below and feel free to reach out to us at access@hinterlandiowa.com with any questions.\n\nRequesting Accommodations and Accessibility Wristbands\nGuests with disabilities or a special medical need, can request these accommodations by emailing access@hinterlandiowa.com. Advance request by July 10th is recommended to ensure availability. Once you arrive, please visit the ADA check-in tent just outside of the South Entrance to finish registering and receive your Accessibility Wristband - this wristband will allow access to our available accommodations. One companion wristband is also available. Children under the age of 18 will be allowed as additional companions. There is not an accessibility ticket that needs to be purchased to utilize accommodations.\n\nWe accept requests for any of the following services:\n\n- ASL Interpretation\n\n- Other forms of Effective Communication (such as: live captioning, large format print/braille literature, guided tours for guests with visual disabilities, assistive listening devices, or any other accommodation not listed)\n\nTo ensure adequate time for planning, requests for these services should be made by July 10th. While we will strive to accommodate requests, we cannot guarantee fulfillment after the cutoff date. To submit a request, please fill out the 2026 Effective Communication Request Form.\n\nOnce you arrive, please check-in at the Accessibility Services Hub to be connected with our interpreting team.\n\nParking - Gate F\nA separate accessibility parking lot is available for attendees with a valid government-issued persons with disability parking placard, permit, or license plate. For ADA parking, purchase an ADA Parking Pass at hinterlandiowa.com/tickets.\n\nViewing Area\nAn accessible viewing area with shade, small bar, folding chairs, accessible restrooms, and a water filling station is located inside the festival grounds.\n\nSensory Supportive Space\nA tented space where sensory stimuli is more controlled for folks that may need a break or an opportunity to regulate.\n\nChairs\nChairs with legs are not allowed in festival grounds. However, if you have a medical need, you may bring your own from home. All chairs must have a tag from ADA Services.\n\nPortable Toilets and Showers\nAccessible portable toilets are located throughout the festival. Accessible showers are also offered (showers are available to all guests for a fee).\n\nCharging Medical Devices\nYou are welcome to bring your powered medical device to ADA Services for recharging. Please note that staff are not responsible for devices left charging.\n\nFirst Aid\nFirst Aid tents are located in the festival grounds & campgrounds and staffed by trained personnel to provide any medical aid needed.\n\nFood & Drink\nOutside food or drink are not allowed in festival grounds. However, if you require special accommodation for dietary restrictions, please visit ADA Services for assistance.\n\nCoolers\nIf you have medical related items or breastmilk that requires a cooler within the festival concourse, please visit the ADA Services tent for an accessibility tag.\n\nShuttles\nThe Des Moines Shuttle will have buses in rotation that have ADA accommodations and will drop off at the ADA Parking Lot.\n\nService Animals\n\nService animals are permitted throughout the venue. However, this does not include emotional support animals, therapy animals, or companion animals. Only legitimate service animals that are properly trained and under the proper care of their owners will be provided with the appropriate credentials.\n\nThe following guidelines must be followed:\n\n• All service animals must be registered with the ADA department upon entry into the event. Please ask a security guard to call ADA upon entry.\n• All service animals must remain by the handler's side at all times and must be harnessed, leashed, or tethered. If these devices interfere with the service animal's work or if the handler's disability prevents the use of these devices, the handler must maintain control of the animal through voice, signal, or other effective controls\n• Service animals must be housebroken\n• Anyone bringing an animal will be responsible for and liable for any damage or injury caused by the animal\n• All service animals should have legally required vaccinations (which ADA staff may ask to see for verification)",
+          "url": "https://www.hinterlandiowa.com/info/ada-accessibility-accomodations",
+          "links": [
+            "https://airtable.com/app8Lqc4XjWBkSdTg/pagbq3bpnYRTJARNM/form"
+          ]
+        },
+        {
+          "id": "ada-services-tent",
+          "title": "ADA Services Tent",
+          "body": "The ADA Services check-in tent is located by ADA Parking, Gate F.\n\nStaff is available here to support and address the needs of attendees with accessibility needs.\n\nAt this tent you can:\n- Learn about accessibility services and receive answers to your questions\n- Receive an accessibility wristband\n- Receive accessibility item tags",
+          "url": "https://www.hinterlandiowa.com/info/ada-services-tent"
+        },
+        {
+          "id": "ada-parking-shuttles",
+          "title": "ADA Parking & Shuttles",
+          "body": "Accessible Parking\nADA Parking provides convenient access to designated parking spaces in the ADA Parking Lot for attendees with valid accessibility credentials. To use these spaces, a valid government-issued persons with disability parking placard, permit, or license plate is required. Purchase an ADA Parking Pass.\n\nEnter the ADA Parking Lot at Gate F.\n\nRe-entry to the ADA Parking Lot IS allowed. Reserve your ADA Parking Pass to secure accessible parking and enjoy a smooth festival experience.\n\nShuttles\nThe Des Moines Shuttle will have buses in rotation that have ADA accommodations and will drop off at the festival.",
+          "url": "https://www.hinterlandiowa.com/info/ada-parking-shuttles"
+        },
+        {
+          "id": "ada-camping",
+          "title": "ADA Camping",
+          "body": "Accessible Car and Tent Only Camping locations are available for guests with disabilities, as well as preferred spots within the RV campground. Please see our map for the location of the reserved ADA camping area. To camp in this area, you must have a valid government-issued persons with disability parking placard, permit, or license plate, and purchase an ADA Camping pass. There is a fixed amount of ADA camping spots in this area, so please do not purchase this pass if you do not need it on account of a disability. If you have a special medical need, it must be requested in advance by July 10th or it may not be available. You may email access@hinterlandiowa.com.\n\nSee more information on camping here.",
+          "url": "https://www.hinterlandiowa.com/info/ada-camping"
+        }
+      ]
+    },
+    {
+      "id": "insider-tips",
+      "name": "Insider Tips",
+      "topics": [
+        {
+          "id": "a-guide-to-thriving-at-hinterland",
+          "title": "A Guide to Thriving at Hinterland",
+          "body": "Escaping to rural Iowa's scenic landscape for 4 days of music is bound to be unforgettable, but in the anticipation of catching your favorite acts and making new friends, don't forget to make a game plan for your comfort and well-being throughout the weekend. Here's some sage advice from seasoned festival aficionados to help you make the most of your time at Hinterland.\n\n1. Pace Yourself\nIt's tempting to try and do it all, but going full speed all four days is just not humanly possible. No one likes that FOMO feeling, but it's important to prioritize listening to your body if you push too hard you might have to miss a lot more than one set!\n\n2. Recharge with Rest\nWhile sleep might not be the first thing on your mind when you're surrounded by the festival buzz, resting once in a while goes a long way. Find a spot to take a load off for a little bit during the day or retreat to your campsite for a power nap. Earplugs and a cozy sleeping mat come in clutch for uninterrupted rest.\n\n3. Fuel Your Adventure\nJust as your car needs fuel to get you to St. Charles, your body will need nourishment to keep the good vibes flowing. Be sure to check out all the delicious eats from our food vendors. You've gotta recharge your batteries for the next dance session!\n\n4. Dress to Impress AND for Comfort\nSprinkle in some practicality when selecting your festival styles. Think breathable fabrics, comfortable footwear, and versatile layers for adapting to changing temperatures and activities. A collapsible statement hat or funky sunglasses can elevate your look while shielding you from the sun. Stay prepared for unexpected weather changes with waterproof gear the fun doesn't stop, rain or shine!\n\n5. Get Ready to Go the Distance\nThe festival grounds span about 2 miles, so be prepared to walk if you are parking or camping. There are designated hiking trails between campgrounds and parking lots. You may also want to bypass all that by buying a Des Moines shuttle pass.\n\n6. Drink Water and Chill\nHydration is paramount for keeping your energy levels up and your spirits high, so take advantage of our new improved free water refill stations scattered throughout the festival grounds, as well as shade tents and misting stations.\n\n7. Arrive Early, Go With the Flow\nWhether you want to set up shop in the front row or you're hoping to snag a particular spot in the grounds, everyone is excited to get into the festival as soon as possible. Because of this, plan to review the maps before you leave, arrive early and be patient. Go with the flow of the line as we make sure everyone gets in safely.\n\n8. Asking for Help is Cool\nWhether you're feeling under the weather or simply need a helping hand, don't hesitate to reach out to festival staff or fellow attendees for assistance. From first aid stations to friendly faces offering directions, the Hinterland community is here to ensure everyone has a good and safe time. We're always here for you at realperson@hinterlandiowa.com.",
+          "url": "https://www.hinterlandiowa.com/info/thriving-at-hinterland"
+        },
+        {
+          "id": "visiting-st-charles",
+          "title": "Visiting St. Charles",
+          "body": "We want to send a big thank you to all the St. Charles residents and businesses for greeting our crew and attendees with such open arms! As you visit us, please remember to be respectful of the people that call this friendly town home. Only park in designated Hinterland parking lots and not on city streets or business lots.\n\nA few places in St. Charles you may want to visit while you are here include:\n\n- SolFarm - sustainable & beyond organic produce, located on the SW side of I-35 and G50\n\n- Tiger Lily Cafe- serving light bites and beverages on Main Street, open Thursday 4pm-7pm, Friday 6:30am-1:30pm and 5pm-9pm, Saturday 7:30am-1:30pm and 5pm-9pm, Sunday closed\n\n- Talk Shop Lounge - restaurant and bar with food (closest restaurant to festival grounds), open Thursday 11am-12am, Friday-Saturday 11am-2am, Sunday 11am-10pm\n\n- Jo's Dough - a micro sourdough bakery\n\n- Dollar General - if you need supplies, near South Entrance, open 8am-10pm\n\n- Casey's - gas station just west of grounds, open 4am-10pm\n\n- Post Office - if you need to mail something, on Main Street\n\nAnd nearby:\n\nNorthside Bar & Grill - in St. Mary's, casual eatery & barn, open 11:30am-11pm, closed Sunday\n\nHitchin Post Bar and Grill - in Bevington, home style cooking with daily specials, open Thursday 8am-2am, Friday-Sunday 7am-2am",
+          "url": "https://www.hinterlandiowa.com/info/visiting-st-charles",
+          "links": [
+            "https://share.google/Pmy7awZivuRPqbqej",
+            "https://thetalkshoplounge.com/",
+            "https://www.facebook.com/p/Jos-Dough-61574040998707/",
+            "https://www.facebook.com/solfarmiowa/"
+          ]
+        },
+        {
+          "id": "camping-tips-from-experienced-hinterlanders",
+          "title": "Camping Tips from Experienced Hinterlanders",
+          "body": "How to camp like a pro and make the most of your weekend in the beautiful Iowa countryside:\n\n1. Four words: shade and air flow. The August sun in Iowa can be a little steamy, so bringing shade canopies to cover your camping area is a worthwhile consideration. Achieve pro-level status by erecting one over your tent so you can change or nap in the daytime without melting. Clipping cloth tapestries to your canopy is a great way to keep a breeze flowing through your space while blocking the sun.\n\n2. Spare a few minutes here and there for comfort and hygiene. It's not a backpacking trip, so you can bring a few of the creature comforts that help you stay fresh and game for a whole weekend of fun. (Check out our camping pack list for inspiration.)\n\nTake a trip to the shower trailers for a quick refresh, and be sure to take time for tooth-brushing breaks, visits to the hydration stations, and taking care of your basic needs.\n\n3. Stay connected by keeping your devices charged with portable batteries and chargers. It's a much smoother experience than trekking to the car to charge your phone!\n\n4. Rain or shine, be prepared. Inclement weather can happen, so don't leave the waterproof tarps, ponchos, and rain boots at home. In case of a downpour, you'll want to keep your belongings dry by storing them in sealed plastic bags or waterproof containers.\n\n5. Keep in mind that if you're in Tent Camping, your car will not be next to your tent. Bringing a wagon for transporting your stuff to and from the campsite is a great move.\n\nBonus: If you forgot something at home, swing into the Dollar General right on festival grounds.",
+          "url": "https://www.hinterlandiowa.com/info/camping-tips-from-experienced-hinterlanders"
+        },
+        {
+          "id": "packing-list-for-campers",
+          "title": "Packing List for Campers",
+          "body": "A sample packing list to help you set up camp in comfort and style with some suggestions from our friends at Subaru. Don't forget to visit Subaru at Hinterland Basecamp for some extra fun!\n\nCAR & ROAD TRIP ESSENTIALS\n\nJumper cables\n\nRoadside emergency kit\n\nOﬄine maps (download ahead of time for areas where cell service may be limited)\n\nCar trash bag\n\nSunshade for windshield\n\nCAMPSITE SETUP\n\nTent, stakes, and footprint\n\nSleeping bag\n\nSleeping pad\n\nPillow\n\nBlanket\n\nRubber mallet\n\nCanopy or tapestries for shade\n\nCamping chairs\n\nFold-out table\n\nWagon for transporting gear\n\nTent lock\n\nFlags, solar-powered lights, or campsite flare\n\nCamp rug\n\nHammock\n\nKITCHEN & FOOD\n\nCamping stove and fuel\n\nMatches or lighter\n\nCook pots and frying pan\n\nCooking and eating utensils\n\nPlates, bowls, and mugs\n\nCutting board and sharp knife\n\nBottle opener and can opener\n\nCooler (ice available for purchase on-site)\n\nRefillable water bottles or jugs\n\nCoffee setup\n\nReusable food storage containers or bags\n\nBiodegradable soap and pot scrubber\n\nDish towel\n\nGarbage bags\n\nCLOTHING & FOOTWEAR\n\nMultiple pairs of shoes and in-camp sandals\n\nLightweight jacket or fleece hoodie\n\nRain gear just in case\n\nBandanas and hats\n\nHEALTH & HYGIENE\n\nFirst aid kit\n\nPain medicine\n\nBug spray\n\nSunscreen\n\nLip balm with SPF\n\nSunglasses\n\nEarplugs\n\nToothbrush and toothpaste\n\nQuick-dry towel\n\nToilet paper, wipes, and tissues\n\nHand sanitizer\n\nLIGHTING & POWER\n\nHeadlamp or flashlight\n\nLantern\n\nExtra batteries\n\nPortable charger\n\nExtension cord",
+          "url": "https://www.hinterlandiowa.com/info/packing-list-for-campers"
+        },
+        {
+          "id": "packing-list-for-non-campers",
+          "title": "Packing List for Non-Campers",
+          "body": "Not camping, but still want to be prepared? Remembering these essentials will elevate your festival experience.\n\nRefillable water bottle\nBlanket\nBelt bag\nSunscreen\nSPF lip balm\nEarplugs\nBandana\nHat\nSunglasses\nPower bank or portable charger\nHand sanitizer\nPain medicine\nHandheld fan",
+          "url": "https://www.hinterlandiowa.com/info/packing-list-for-non-campers"
+        },
+        {
+          "id": "hinterland-for-kids",
+          "title": "Hinterland for Kids",
+          "body": "Each year music-loving families make their way to St. Charles for a beautiful music experience in the countryside. If you're planning to bring some little ones too, experienced festival-going parents shared a few tips to help you prepare.\n\n1. Spend some time at Miniland\nFrom interactive art installations to children's crafts, the corner of the festival made just for kids is ingeniously devised by Des Moines-based artist and mother of three boys, Ramona Muse-Lambert. Air conditioned and shaded, the Miniland tent is a good place for kiddos to have some quiet moments coloring and cooling off.\n\n2. Pack the essentials\nYou'll want sunscreen, hats, reusable water bottles, and comfy clothing to keep the whole family happy. Make sure to remember ear protection for young children, especially if they'll be near the main stages.\n\n3. Plan your schedule\nTake a look at the festival schedule in advance as you may want to prioritize family-friendly activities and performances. Consider nap times and meal breaks when planning your day.\n\n4. Stay hydrated and energized\nWith so much excitement in the air, it's easy to forget to hydrate and snack. Take regular meal and water breaks to keep everyone feeling their best.\n\n5. Set meeting points\nIn case someone gets separated from your group, establish meeting points throughout the festival grounds where you can easily reunite with the fam.\n\nIf you're bringing the young ones to Hinterland, you're creating cherished memories that will last a lifetime. Grab your festival gear, round up the family, and get ready for an unforgettable experience in St. Charles!\n\np.s. Children 10 and under are free with a ticketed adult and do not require a wristband.",
+          "url": "https://www.hinterlandiowa.com/info/hinterland-for-kids"
+        }
+      ]
+    },
+    {
+      "id": "contacts",
+      "name": "Contacts",
+      "topics": [
+        {
+          "id": "customer-service",
+          "title": "Customer Service",
+          "body": "Please review our FAQs. If you can't find an answer, send us an email at realperson@hinterlandiowa.com.\n\nDuring the festival --- Have questions? Missing an item? Found a lost item? Visit an Information Tent (see map). Guest Services staff members in Pink Vests will be stationed throughout the festival grounds. They are your best resource if you have any questions.",
+          "url": "https://www.hinterlandiowa.com/info/customer-service"
+        },
+        {
+          "id": "vending",
+          "title": "Vending",
+          "body": "Applications for 2026 food and market vendors are now closed.",
+          "url": "https://www.hinterlandiowa.com/info/vending"
+        },
+        {
+          "id": "press-photo",
+          "title": "Press & Photo",
+          "body": "Press Contacts: ginsberg@bighassle.com hinterland@on-pitch.com\n\nPress Pass Applications: Click here to apply for a press pass.\n\nFestival Photo Team: Our 2026 photo team is full. If you'd like to be considered for future years, please fill out this form.",
+          "url": "https://www.hinterlandiowa.com/info/press",
+          "links": [
+            "https://forms.gle/MjbN2Yq3YD5Kpdhy9",
+            "https://forms.gle/dbMx1MSW23F7dg5S9"
+          ]
+        },
+        {
+          "id": "sponsorship",
+          "title": "Sponsorship",
+          "body": "Hinterland partners with brands that add value to the festival experience and connect with its audience, artists and community. Partnership opportunities may include on-site activations, product sampling, hospitality packages, digital promotion and custom experiences throughout the festival and campgrounds.\n\nBrands interested in learning more about available opportunities can contact: Scott Howard at showard@connectpartnershipgroup.com.\n\nHinterland is grateful for the support of the partners who help bring the festival experience to life.",
+          "url": "https://www.hinterlandiowa.com/info/sponsorship"
+        }
+      ]
+    },
+    {
+      "id": "camping",
+      "name": "Camping",
+      "topics": [
+        {
+          "id": "campgrounds-overview",
+          "title": "Campgrounds Overview",
+          "body": "Immerse yourself in the weekend of music by setting up camp in the friendliest corner of the Iowa countryside.\n\nWays to Camp\nThere are four different styles of camping at Hinterland:\n- Tent Camping\n- Car Camping\n- RV\n- Glamping\n\nFind the camping option best suited for your group at hinterlandiowa.com/tickets.\n\nCampfire Stage Access\nEvery festival attendee gets access to the Campfire Stage during the Campfire Stage sets.\n\nCampgrounds Map\nView the maps here.",
+          "url": "https://www.hinterlandiowa.com/info/campgrounds-overview"
+        },
+        {
+          "id": "check-in-times-for-campers",
+          "title": "Check-in Times for Campers",
+          "body": "Wednesday: 12 PM–8 PM\n\nThursday-Saturday: 9 AM–7 PM\n\nSunday: 9 AM–12 PM\n\nYou can NOT check in if you arrive (for the first time) outside of these hours.\n\nWednesday camping is encouraged! Food and drink vendors will be open.",
+          "url": "https://www.hinterlandiowa.com/info/check-in-times-for-campers"
+        },
+        {
+          "id": "restrooms-showers-in-campgrounds",
+          "title": "Restrooms & Showers in Campgrounds",
+          "body": "There will be port-a-potties throughout the camping areas (more added for 2026!). All bathrooms will be serviced daily. If you notice an issue, please visit Guest Services or email us at realperson@hinterlandiowa.com.\n\nShowers will be available for purchase for $10 (credit card only). Showers are located just east of Dollar General along the festival trail.\n\nShower Hours (Thursday-Sunday): 6 AM–12 PM and 3 PM–9 PM",
+          "url": "https://www.hinterlandiowa.com/info/restrooms-showers"
+        },
+        {
+          "id": "allowed-not-allowed-campgrounds",
+          "title": "Allowed/Not Allowed - Campgrounds",
+          "body": "Every person, vehicle and belonging entering the festival or camp grounds is subject to a full airport-style search, which may include a magnetometer screening and/or pat-down.\n\nThese items are NOT allowed in campgrounds:\n\nNO weapons of any kind\nNO pyro stuff (No tiki torches, fireworks or the like, please)\nNO glass\nNO pets (service animals are welcome, see policy)\nNO selling stuff, unlicensed vending, sponsor tents\nNO swimming in the pond\nNO vehicles in Tent Campgrounds\nNO RVs in regular parking lots\nNO motorized bicycles, scooters, etc.\n\nThese items ARE allowed in campgrounds:\n\nYES food\nYES small campfire stoves/grills that run on propane or charcoal\nYES drinks with a limit of three cases of either beer, boxes of wine, or liquor bottles per campsite\nYES firepits\nYES bicycles\nYES wagons for transporting gear\n\nPlease note that other items may be deemed prohibited at event organizers discretion.\n\nGenerators: Non-fuel generators are allowed in all campgrounds. Gas or diesel generators are not allowed in tent camping or car camping, but are allowed in both RV campgrounds.",
+          "url": "https://www.hinterlandiowa.com/info/allowed-not-allowed-campgrounds",
+          "links": [
+            "https://www.hinterlandiowa.com/info/ada-accessibility-accomodations"
+          ]
+        },
+        {
+          "id": "campfire-stage",
+          "title": "Campfire Stage",
+          "body": "The party doesn’t stop after the main stage lights turn off. Meet your Campfire Stage 2026 lineup — live in the campground after hours. All ticket holders, not just campers, are welcome!\n\nThursday\nNourished by Time\nPixel Grip\n\nFriday\nBetween Friends\nNinajirachi\n\nSaturday\nThe Brook & The Bluff\nBuffalo Traffic Jam\n\nSunday\nDie Spitz\nGouge Away",
+          "url": "https://www.hinterlandiowa.com/info/campfire-stage"
+        },
+        {
+          "id": "power-access",
+          "title": "Power Access",
+          "body": "Power is not provided for campers. Please plan accordingly.\n\nThe only exception is that Glamping and Powered RV Campsites. Glamping includes a power strip with 20-amp service. Powered RV Campsites include a 50-amp power hookup. Bring your own adapter if your RV uses a 30-amp connection. They will not be available for sale.",
+          "url": "https://www.hinterlandiowa.com/info/power-access"
+        },
+        {
+          "id": "food-drink-ice-water",
+          "title": "Food, Drink, Ice & Water",
+          "body": "Campground Food & Drink Vendors\nWe'll have delicious food & drink available for purchase in Basecamp.\n\nOutside Food & Drink\nYou're welcome to bring your own food and drink into the campgrounds. We have a limit of three cases of either beer, boxes of wine, or liquor bottles per group. Please keep glass bottles at home. No outside food or drinks are allowed within the festival grounds, only the campgrounds.\n\nWater\nWe'll have water refill stations throughout all the campgrounds and within the festival grounds. We encourage you to bring refillable water bottles or jugs.\n\nIce\nIce will be available for purchase in Basecamp and Car Camping.\n\nCamp Stoves\nSmall campfire stoves/grills that run on propane or charcoal are permitted.",
+          "url": "https://www.hinterlandiowa.com/info/food-drink-ice-water"
+        },
+        {
+          "id": "what-s-considered-an-rv",
+          "title": "What's Considered an RV",
+          "body": "Every RV entering the festival grounds requires an RV Campsite pass and cannot park in any other area. The following vehicles are considered an RV.\n\n- Any size RV (motorhome): Class A, Class B or Class C\n- Any size bus (no tour buses, prevosts, or motorcoaches with low clearance allowed)\n- Any vehicle wider or longer than a normal 15 passenger van (230 x 80 x 80)\n- Any vehicle towing a camper or 5th wheel of any size.\n- If you're hitching anything, it's an RV. (Box trucks and trailers are not allowed into the campgrounds.)",
+          "url": "https://www.hinterlandiowa.com/info/whats-considered-an-rv"
+        },
+        {
+          "id": "leaving-the-campgrounds",
+          "title": "Leaving the Campgrounds",
+          "body": "All campers must exit the campgrounds by Monday at Noon.\n\nRe-entry\nTent Camping Parking, Glamping Parking, RV Camping Companion Vehicles - re-entry ALLOWED during daylight hours\n\nCar Camping, RV Camping - re-entry NOT ALLOWED",
+          "url": "https://www.hinterlandiowa.com/info/leaving-the-campgrounds"
+        },
+        {
+          "id": "rv-services",
+          "title": "RV Services",
+          "body": "New this year! Hinterland now offers one-time fresh water refill or pump out service during daylight hours for Powered and Non-Powered RV pass holders, for a fee. Services will be completed within 24 hours of purchase. Use this link or scan the QR codes onsite to request a service. Please provide your RV lot number and a description of your RV so our service team can locate you. You can also combine the services for a discount!",
+          "url": "https://www.hinterlandiowa.com/info/rv-services",
+          "links": [
+            "https://linktr.ee/hinterland"
+          ]
+        },
+        {
+          "id": "single-day-camping",
+          "title": "Single Day Camping",
+          "body": "Camping passes cover all four days of the festival. If you are attending for less than four days, you are still welcome to camp. Just purchase the camping pass type of your choice!",
+          "url": "https://www.hinterlandiowa.com/info/single-day-camping"
+        }
+      ]
+    }
+  ]
+}

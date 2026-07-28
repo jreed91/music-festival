@@ -1,0 +1,51 @@
+name: Hinterland
+options:
+  bundleIdPrefix: com.jreed91
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    # Set your Apple Developer Team ID here (or pick the team in Xcode's
+    # Signing & Capabilities tab, which writes it back into the project).
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  Hinterland:
+    type: application
+    platform: iOS
+    sources:
+      - path: Hinterland
+      # Added as individual files, not a folder reference, so they land at the bundle
+      # root where Bundle.main.url(forResource:withExtension:) finds them.
+      - path: Data/schedule.json
+        buildPhase: resources
+      - path: Data/info.json
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jreed91.hinterland
+        PRODUCT_NAME: Hinterland
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+        TARGETED_DEVICE_FAMILY: "1"
+    info:
+      path: Hinterland/Info.plist
+      properties:
+        CFBundleDisplayName: Hinterland
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIUserInterfaceStyle: Dark
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # Declares no non-exempt encryption, which skips the export-compliance
+        # prompt on every TestFlight upload.
+        ITSAppUsesNonExemptEncryption: false
