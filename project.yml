@@ -37,6 +37,12 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_USER_SCRIPT_SANDBOXING: YES
         TARGETED_DEVICE_FAMILY: "1"
+    # WeatherKit needs the capability on the App ID in the developer portal as well as
+    # the entitlement here; without both, every forecast request fails to authenticate.
+    entitlements:
+      path: Hinterland/Hinterland.entitlements
+      properties:
+        com.apple.developer.weatherkit: true
     info:
       path: Hinterland/Info.plist
       properties:

@@ -6,7 +6,8 @@ An offline-first iOS app for [Hinterland Music Festival](https://www.hinterlandi
 Cell service at a 15,000-person festival in a rural Iowa valley is unusable, so the app
 assumes there is no network. The full schedule, every artist bio, all 48 pieces of artist
 artwork, and the entire festival guide ship inside the binary and work in airplane mode.
-The network is only ever used to pick up set-time changes.
+The network is only used to pick up set-time changes and the forecast, both of which
+cache what they fetch and fall back to what's already on the phone.
 
 ## Features
 
@@ -24,6 +25,10 @@ The network is only ever used to pick up set-time changes.
 - **Maps** — the festival's four maps (grounds, concourse, driving routes, shuttle
   parking) bundled as artwork and pinch-zoomable, plus a MapKit view that georeferences
   the grounds map so the blue dot shows where you are on it.
+- **Weather** — WeatherKit forecast for the amphitheater itself: current conditions, the
+  next 24 hours, a high/low per festival day, and National Weather Service advisories.
+  Severe and extreme warnings break out onto the top of the schedule; each set on an
+  artist's page shows what it'll be doing while they play.
 
 ## Building
 
@@ -41,6 +46,14 @@ team. `PRODUCT_BUNDLE_IDENTIFIER` is `com.jreed91.hinterland`; change it in `pro
 if that ID is taken on your account, and re-run `xcodegen generate`.
 
 Requires iOS 17 or later (the app uses the `@Observable` macro).
+
+WeatherKit needs one thing that isn't in this repo: the capability has to be enabled on
+the App ID in the [developer portal](https://developer.apple.com/account/resources/identifiers/)
+(Certificates, Identifiers & Profiles → your identifier → check **WeatherKit**), and the
+provisioning profile regenerated afterwards. `project.yml` already declares the
+`com.apple.developer.weatherkit` entitlement, but the entitlement alone doesn't
+authenticate — without the App ID capability every forecast request fails and the app
+falls back to showing no weather. Everything else in the app works regardless.
 
 ### TestFlight
 
@@ -161,14 +174,41 @@ the truth, concourse pins rather closer, and the UI says so on screen. `venue` i
 file is the coordinate the "Open in Maps" button uses; the `festival.latitude`/`longitude`
 pair in `schedule.json` is scraped and sits nearer the town of St. Charles than the site.
 
+## The forecast
+
+`WeatherStore` asks WeatherKit about the venue coordinate from `map.json` — not the
+phone's location, which means no location permission and the right answer for everyone
+still driving up. It fetches current conditions, hourly, daily and alerts in one call at
+launch, on foreground, and on pull-to-refresh, throttled to at most one call every 15
+minutes and skipped entirely while WeatherKit's own expiry hasn't passed.
+
+WeatherKit's types can't be archived, so what comes back is flattened into
+`WeatherSnapshot` — plain `Codable` values, stored metric and converted at display time —
+and written to Application Support. That cache is what the UI reads, so the weather
+screen opens in airplane mode showing the last forecast that got through, with the time
+it was fetched under it. There's nothing bundled to fall back on the way the schedule
+falls back to `Data/schedule.json`; a forecast shipped in a binary would be a year stale.
+Before the first successful fetch the app simply says it has no weather yet.
+
+Alerts are National Weather Service warnings as WeatherKit relays them. Anything
+`severe` or worse gets a banner at the top of the schedule rather than waiting to be
+found — in an Iowa July that's the most useful thing in here.
+
+Apple requires the Weather trademark and a link to its legal page wherever the data
+appears, so `WeatherAttributionView` sits at the bottom of the weather screen. The marks
+are remote images; the cached service name and legal text stand in when there's no signal
+to load them.
+
 ## Layout
 
 ```
 Hinterland/
   App/         HinterlandApp.swift — entry point, appearance
-  Models/      FestivalData, GuideData, MapData — Codable mirrors of the JSON
-  Services/    ScheduleStore (loading + refresh), Favorites, NotificationManager
-  Views/       Schedule, MyLineup, Artists, Info, ArtistDetail, GroundsMap, MapImage, Theme
+  Models/      FestivalData, GuideData, MapData, WeatherData — Codable mirrors of the JSON
+  Services/    ScheduleStore (loading + refresh), WeatherStore, Favorites,
+               NotificationManager
+  Views/       Schedule, MyLineup, Artists, Info, ArtistDetail, GroundsMap, MapImage,
+               Weather, WeatherCard, Theme
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map

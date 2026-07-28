@@ -5,6 +5,7 @@ struct ArtistDetailView: View {
     let artistID: String
 
     @Environment(ScheduleStore.self) private var store
+    @Environment(WeatherStore.self) private var weather
     @Environment(Favorites.self) private var favorites
 
     private var artist: Artist? { store.data.artist(id: artistID) }
@@ -72,7 +73,14 @@ struct ArtistDetailView: View {
                         Text(Format.range(performance.start, performance.end))
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundStyle(.white)
-                        StageBadge(stage: Stage(name: performance.stage))
+                        HStack(spacing: 6) {
+                            StageBadge(stage: Stage(name: performance.stage))
+                            // Absent rather than guessed when the forecast doesn't reach
+                            // this set yet.
+                            if let hour = weather.snapshot?.hour(containing: performance.start) {
+                                SetForecastBadge(hour: hour)
+                            }
+                        }
                     }
                     Spacer(minLength: 0)
                     Button {

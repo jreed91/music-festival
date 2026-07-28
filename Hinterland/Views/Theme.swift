@@ -12,6 +12,8 @@ enum Theme {
     static let tertiaryText = Color.white.opacity(0.38)
     static let hairline = Color.white.opacity(0.10)
     static let warning = Color(red: 0.98, green: 0.45, blue: 0.42)
+    /// Rain chances, kept cool so they read as a separate signal from the amber accent.
+    static let rain = Color(red: 0.48, green: 0.76, blue: 0.98)
 }
 
 extension POICategory {

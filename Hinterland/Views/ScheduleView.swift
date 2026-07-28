@@ -4,6 +4,7 @@ import SwiftUI
 /// The full schedule, one day at a time, with an optional stage filter.
 struct ScheduleView: View {
     @Environment(ScheduleStore.self) private var store
+    @Environment(WeatherStore.self) private var weather
 
     @State private var selectedDay: String?
     @State private var stageFilter: String?
@@ -20,10 +21,19 @@ struct ScheduleView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 10) {
+                    // A tornado warning outranks whatever is about to start on the Main
+                    // Stage, so it goes above the card that says so.
+                    if let alert = weather.snapshot?.urgentAlert {
+                        WeatherAlertBanner(advisory: alert)
+                    }
+
                     if let live = store.liveNow(at: now).first ?? store.upNext(after: now).first {
                         NowCard(performance: live, isLive: live.isLive(at: now))
-                            .padding(.bottom, 2)
                     }
+                    // Under the Now card rather than over it: what's playing is why this
+                    // screen exists, the weather is the context you read it in.
+                    WeatherCard()
+                        .padding(.bottom, 2)
 
                     if let day {
                         ForEach(store.performances(on: day, stage: stageFilter)) { performance in
@@ -44,7 +54,13 @@ struct ScheduleView: View {
             .navigationDestination(for: Performance.self) { performance in
                 ArtistDetailView(artistID: performance.artistId)
             }
-            .refreshable { await store.refresh() }
+            .navigationDestination(for: WeatherRoute.self) { _ in
+                WeatherView()
+            }
+            .refreshable {
+                await store.refresh()
+                await weather.refresh(force: true)
+            }
             .onReceive(ticker) { now = $0 }
             .onAppear { selectedDay = selectedDay ?? store.defaultDay()?.date }
         }
@@ -75,6 +91,18 @@ struct ScheduleView: View {
                         Text(Format.dayLabel(candidate))
                             .font(.system(size: 10, weight: .medium))
                             .opacity(0.75)
+                        if let conditions = forecast(for: candidate) {
+                            HStack(spacing: 3) {
+                                // Multicolour would fight the amber fill on the selected
+                                // day, so the selected one inherits the dark foreground.
+                                Image(systemName: conditions.symbolName)
+                                    .symbolRenderingMode(isSelected ? .monochrome : .multicolor)
+                                    .font(.system(size: 9))
+                                Text(Format.temperature(conditions.high))
+                                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                            }
+                            .padding(.top, 1)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
@@ -107,6 +135,12 @@ struct ScheduleView: View {
             }
             .padding(.horizontal, 16)
         }
+    }
+
+    /// The day's high and symbol under its label in the picker — nil until WeatherKit's
+    /// ten-day horizon reaches that far, which for a festival still weeks out it hasn't.
+    private func forecast(for day: FestivalDay) -> DayConditions? {
+        weather.snapshot?.day(for: day, in: store.data.timeZone)
     }
 
     private func chip(title: String, isSelected: Bool, tint: Color,
