@@ -2,6 +2,9 @@
 *.xcodeproj
 *.xcworkspace
 
+# XcodeGen binary downloaded by ci_scripts/ci_post_clone.sh
+.ci-tools/
+
 # Xcode
 build/
 DerivedData/
