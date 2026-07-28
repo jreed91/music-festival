@@ -119,30 +119,47 @@ means the artwork was renamed — update `MAPS` at the top of the script.
 Both scrapers exit non-zero if they parse nothing, which is the signal that the site's
 markup changed and the selectors need attention.
 
-## The grounds map on MapKit
+## The maps on MapKit
 
-`Data/map.json` is what turns the illustrated grounds map into a real map:
+`Data/map.json` is what turns the illustrations into a real map. It holds two `layers`,
+wide to narrow:
 
-- `georeference` — the four corners the artwork covers. They were traced against three
-  features the illustration and the world share: I-35 down the east edge (lon
-  `-93.7800`), County Road G50 across the bottom (lat `41.29340`) and N Cross St on the
-  west (lon `-93.8055`), all from OpenStreetMap.
-- `pois` — stages, entrances, gates, camping, parking, Basecamp, medical and the box
-  office, each stored as a position on the artwork (`x`/`y`, 0–1 from the top-left)
-  rather than as a coordinate. The app projects them through the georeference, so the
-  pins and the illustration can never drift apart.
+| Layer | Covers | Rotation | Pins |
+| --- | --- | --- | --- |
+| `grounds` | 2375 × 1981 m | north-up | 22 — stages, entrances, gates, camping, parking, Basecamp, medical, box office |
+| `concourse` | 487 × 649 m | 13.12° | 10 — Miniland, Art House, HinterMarket, Shade Lounge, GA+, VIP, guest services, ADA viewing, both medical tents |
 
-`GroundsMapView` draws the artwork as an `MKOverlay` inside that box, with an
-`MKMarkerAnnotationView` per POI, the user's location, and walking distance to whatever
-is selected. Apple's tiles need a network and won't load in the valley, but the artwork
-is bundled and Core Location works without signal, so the map stays useful offline —
-which is why the illustration is drawn over the tiles rather than instead of them.
+Each layer carries a `georeference` (centre, size in metres, rotation clockwise from
+north) and its `pois`, stored as positions on the artwork — `x`/`y`, 0–1 from the
+top-left — rather than as coordinates. The app projects them through the georeference, so
+pins and illustration can never drift apart, and correcting a georeference moves
+everything on that layer at once.
 
-The artwork is an illustration, not a survey, so the pins land within roughly a field's
-width of the truth and the UI says so. To improve it, correct the four corners in
-`map.json` — every pin moves with them. `venue` in the same file is the coordinate the
-"Open in Maps" button uses; the `festival.latitude`/`longitude` pair in `schedule.json`
-is scraped and sits nearer the town of St. Charles than the site.
+Where the numbers come from:
+
+- **Grounds** — traced against three features the illustration and the world share: I-35
+  down the east edge (lon `-93.7800`), County Road G50 across the bottom (lat `41.29340`)
+  and N Cross St on the west (lon `-93.8055`), all from OpenStreetMap.
+- **Concourse** — fitted onto the grounds map by least squares through the three
+  landmarks both illustrations draw (west entrance, south entrance, stage). The fit is a
+  clean similarity transform: consistent scale, 13° of rotation, and all three landmarks
+  land within 30 m of where the grounds map puts them.
+
+`GroundsMapView` draws each layer as a rotated `MKOverlay` with an `MKMarkerAnnotationView`
+per POI, the user's location, and walking distance plus a Directions handoff for the
+selected pin. The concourse layer — artwork and pins together — appears only under
+`visibleBelowMeters` (1200 m): it carries its own legend panel, which from a mile up is
+just a beige box sitting on a field. Zooming in therefore swaps the site map for the
+inside-the-gates map, and the title changes with it.
+
+Apple's tiles need a network and won't load in the valley, but the artwork is bundled and
+Core Location works without signal, so the map stays useful offline — which is why the
+illustrations are drawn over the tiles rather than instead of them.
+
+Both are illustrations, not surveys: grounds pins land within roughly a field's width of
+the truth, concourse pins rather closer, and the UI says so on screen. `venue` in the same
+file is the coordinate the "Open in Maps" button uses; the `festival.latitude`/`longitude`
+pair in `schedule.json` is scraped and sits nearer the town of St. Charles than the site.
 
 ## Layout
 

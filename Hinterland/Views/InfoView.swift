@@ -90,7 +90,8 @@ struct InfoView: View {
                     Label("Grounds map & your location", systemImage: "location.viewfinder")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
-                    Text("Stages, gates, camping and parking pinned on Apple Maps.")
+                    Text("Stages, gates, camping and parking on Apple Maps — zoom in for "
+                       + "the concourse.")
                         .font(.system(size: 12))
                         .foregroundStyle(Theme.secondaryText)
                 }
