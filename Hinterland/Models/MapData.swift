@@ -136,8 +136,14 @@ struct MapPOI: Codable, Equatable, Identifiable, Hashable {
     var note: String?
 }
 
+/// The kinds of pin the two maps carry. Declaration order is filter order on screen, so
+/// it runs roughly from what you look for while walking in to what you only want when
+/// something has gone wrong.
 enum POICategory: String, Codable, CaseIterable, Identifiable {
-    case stage, entrance, gate, camping, parking, services, medical
+    case stage, entrance, gate
+    case food, drink, water, restroom, merch
+    case info, medical, accessibility, shade, services
+    case camping, parking, exit
 
     var id: String { rawValue }
 
@@ -146,10 +152,19 @@ enum POICategory: String, Codable, CaseIterable, Identifiable {
         case .stage: return "Stages"
         case .entrance: return "Entrances"
         case .gate: return "Gates"
+        case .food: return "Food"
+        case .drink: return "Bars"
+        case .water: return "Water"
+        case .restroom: return "Toilets"
+        case .merch: return "Merch"
+        case .info: return "Info & Tickets"
+        case .medical: return "Medical"
+        case .accessibility: return "ADA"
+        case .shade: return "Shade"
+        case .services: return "Services"
         case .camping: return "Camping"
         case .parking: return "Parking"
-        case .services: return "Services"
-        case .medical: return "Medical"
+        case .exit: return "Emergency Exits"
         }
     }
 
@@ -158,10 +173,19 @@ enum POICategory: String, Codable, CaseIterable, Identifiable {
         case .stage: return "music.note"
         case .entrance: return "figure.walk"
         case .gate: return "door.left.hand.open"
+        case .food: return "fork.knife"
+        case .drink: return "wineglass"
+        case .water: return "drop"
+        case .restroom: return "toilet"
+        case .merch: return "tshirt"
+        case .info: return "info.bubble"
+        case .medical: return "cross.case"
+        case .accessibility: return "figure.roll"
+        case .shade: return "umbrella"
+        case .services: return "bag"
         case .camping: return "tent"
         case .parking: return "parkingsign"
-        case .services: return "bag"
-        case .medical: return "cross.case"
+        case .exit: return "figure.run"
         }
     }
 }
@@ -201,9 +225,12 @@ extension MapData {
         }
     }
 
-    /// Categories that have pins anywhere, in the order the enum declares them.
-    var presentCategories: [POICategory] {
-        let present = Set(layers.flatMap(\.pois).map(\.category))
+    /// Categories worth offering as filters at this camera height, in the order the enum
+    /// declares them. Tied to the visible layers so the row tracks what's actually on
+    /// screen: camping and parking from a mile up, toilets and water once you're inside
+    /// the gates, rather than sixteen chips that half do nothing wherever you're looking.
+    func presentCategories(at cameraDistance: Double) -> [POICategory] {
+        let present = Set(visibleLayers(at: cameraDistance).flatMap(\.pois).map(\.category))
         return POICategory.allCases.filter(present.contains)
     }
 }

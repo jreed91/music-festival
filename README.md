@@ -152,7 +152,7 @@ wide to narrow:
 | Layer | Covers | Rotation | Pins |
 | --- | --- | --- | --- |
 | `grounds` | 2375 × 1981 m | north-up | 22 — stages, entrances, gates, camping, parking, Basecamp, medical, box office |
-| `concourse` | 487 × 649 m | 13.12° | 10 — Miniland, Art House, HinterMarket, Shade Lounge, GA+, VIP, guest services, ADA viewing, both medical tents |
+| `concourse` | 487 × 649 m | 13.12° | 62 — every stamp in the artwork's legend: food, bars, water, toilets, merch, guest services, ticketing, concierges, lost & found, lockers, ADA viewing, shade, medical, emergency exits, plus Miniland, Art House, HinterMarket, GA+, VIP and the rest of the named venues |
 
 Each layer carries a `georeference` (centre, size in metres, rotation clockwise from
 north) and its `pois`, stored as positions on the artwork — `x`/`y`, 0–1 from the
@@ -169,6 +169,11 @@ Where the numbers come from:
   landmarks both illustrations draw (west entrance, south entrance, stage). The fit is a
   clean similarity transform: consistent scale, 13° of rotation, and all three landmarks
   land within 30 m of where the grounds map puts them.
+- **Concourse pins** — one per icon stamped on the artwork, at the centre of the stamp.
+  The frames are near-black on colour, so they come out of the image by thresholding for
+  neutral black and keeping the ring-shaped components at badge size; the handful the
+  legend panel contributes are dropped, and the four pins traced by hand before this
+  landed within 5 px of where the sweep put them.
 
 `GroundsMapView` draws each layer as a rotated `MKOverlay` with an `MKMarkerAnnotationView`
 per POI, the user's location, and walking distance plus a Directions handoff for the
@@ -176,6 +181,13 @@ selected pin. The concourse layer — artwork and pins together — appears only
 `visibleBelowMeters` (1200 m): it carries its own legend panel, which from a mile up is
 just a beige box sitting on a field. Zooming in therefore swaps the site map for the
 inside-the-gates map, and the title changes with it.
+
+The filter chips follow the same threshold — they list the categories the visible layers
+actually carry, so the row is camping and parking from a mile up and food, water and
+toilets once you're inside the gates. Where pins crowd each other MapKit drops the lower
+`displayPriority` first, which is how sixty concourse pins stay readable: stages always
+win, then the things you go looking for (medical, food, water, toilets, help desks),
+then the ones you only want when you're standing next to them.
 
 Apple's tiles need a network and won't load in the valley, but the artwork is bundled and
 Core Location works without signal, so the map stays useful offline — which is why the
