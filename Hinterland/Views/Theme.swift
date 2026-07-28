@@ -24,10 +24,19 @@ extension POICategory {
         case .stage: return Theme.accent
         case .entrance: return Color(red: 0.42, green: 0.82, blue: 0.70)
         case .gate: return Color(red: 0.55, green: 0.75, blue: 0.98)
+        case .food: return Color(red: 0.45, green: 0.82, blue: 0.45)
+        case .drink: return Color(red: 0.96, green: 0.55, blue: 0.78)
+        case .water: return Color(red: 0.38, green: 0.84, blue: 0.92)
+        case .restroom: return Color(red: 0.66, green: 0.74, blue: 0.86)
+        case .merch: return Color(red: 0.84, green: 0.58, blue: 0.96)
+        case .info: return Color(red: 0.92, green: 0.93, blue: 0.96)
+        case .medical: return Theme.warning
+        case .accessibility: return Color(red: 0.42, green: 0.66, blue: 0.98)
+        case .shade: return Color(red: 0.88, green: 0.76, blue: 0.56)
+        case .services: return Color(red: 0.95, green: 0.82, blue: 0.42)
         case .camping: return Color(red: 0.72, green: 0.55, blue: 0.96)
         case .parking: return Color(red: 0.62, green: 0.62, blue: 0.98)
-        case .services: return Color(red: 0.95, green: 0.82, blue: 0.42)
-        case .medical: return Theme.warning
+        case .exit: return Color(red: 0.72, green: 0.78, blue: 0.70)
         }
     }
 }

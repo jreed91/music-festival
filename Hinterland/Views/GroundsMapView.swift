@@ -97,7 +97,7 @@ struct GroundsMapView: View {
     private var filters: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(map.presentCategories) { category in
+                ForEach(map.presentCategories(at: cameraDistance)) { category in
                     let isOn = categories.contains(category)
                     Button {
                         if isOn { categories.remove(category) } else { categories.insert(category) }
@@ -495,7 +495,23 @@ private final class POIAnnotationView: MKMarkerAnnotationView {
         glyphImage = UIImage(systemName: poi.category.symbol)
         glyphTintColor = .black.withAlphaComponent(0.85)
         titleVisibility = poi.category == .stage ? .visible : .adaptive
-        displayPriority = poi.category == .stage ? .required : .defaultHigh
+        displayPriority = poi.category.displayPriority
         canShowCallout = false
+    }
+}
+
+private extension POICategory {
+    /// Which pin survives when several land on the same patch of screen. The concourse
+    /// packs sixty-odd of them into a few hundred metres, so the things you go looking
+    /// for outrank the things you only want to see once you're standing next to them.
+    var displayPriority: MKFeatureDisplayPriority {
+        switch self {
+        case .stage:
+            return .required
+        case .entrance, .gate, .medical, .food, .water, .restroom, .info, .accessibility:
+            return .defaultHigh
+        case .drink, .merch, .shade, .services, .camping, .parking, .exit:
+            return .defaultLow
+        }
     }
 }
