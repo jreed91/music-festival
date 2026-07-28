@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Routes into the map screens, pushed from the Info tab's own navigation stack.
+/// Routes into the map screens, pushed from the Maps tab's own navigation stack.
 enum MapRoute: Hashable {
     /// The georeferenced grounds map on MapKit, with the blue dot.
     case grounds

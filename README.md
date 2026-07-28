@@ -5,7 +5,8 @@ An offline-first iOS app for [Hinterland Music Festival](https://www.hinterlandi
 
 Cell service at a 15,000-person festival in a rural Iowa valley is unusable, so the app
 assumes there is no network. The full schedule, every artist bio, all 48 pieces of artist
-artwork, and the entire festival guide ship inside the binary and work in airplane mode.
+artwork, the festival's maps and the vendor directory ship inside the binary and work in
+airplane mode.
 The network is only used to pick up set-time changes and the forecast, both of which
 cache what they fetch and fall back to what's already on the phone.
 
@@ -17,11 +18,8 @@ cache what they fetch and fall back to what's already on the phone.
   sets that overlap so you know what you're choosing between.
 - **Reminders** — local notifications a configurable 5–60 minutes before your starred
   sets. Scheduled on-device, so they fire with no signal.
-- **Artists** — searchable grid of the full bill, with bios and links out to Spotify
-  and Instagram.
-- **Info** — the complete festival guide (67 topics), searchable and fully offline:
-  parking routes, gate times, box office hours, camping rules, what you can and can't
-  bring, accessibility, and more.
+- **Artist pages** — bios and links out to Spotify and Instagram, reached by tapping any
+  set on the schedule or in your lineup.
 - **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
   Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
   they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
@@ -232,7 +230,7 @@ Hinterland/
                mirrors of the JSON
   Services/    ScheduleStore (loading + refresh), WeatherStore, Favorites,
                NotificationManager
-  Views/       Schedule, MyLineup, Artists, Info, FoodDrink, ArtistDetail, GroundsMap,
+  Views/       Schedule, MyLineup, Maps, FoodDrink, ArtistDetail, GroundsMap,
                MapImage, Weather, WeatherCard, Theme
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 Data/          schedule.json, info.json — bundled and remotely refreshable

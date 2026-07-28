@@ -1,10 +1,5 @@
 import SwiftUI
 
-enum VendorRoute: Hashable {
-    /// The full food & drink directory.
-    case directory
-}
-
 /// Every food and drink stand on site, grouped by where it's parked and filterable by
 /// what you can eat. Bundled like the rest of the guide, so it answers "who has something
 /// gluten-free" from a spot in the field with no signal.

@@ -13,10 +13,10 @@ struct RootView: View {
                 .tabItem { Label("Schedule", systemImage: "calendar") }
             MyLineupView()
                 .tabItem { Label("My Lineup", systemImage: "star.fill") }
-            ArtistsView()
-                .tabItem { Label("Artists", systemImage: "music.mic") }
-            InfoView()
-                .tabItem { Label("Info", systemImage: "info.circle") }
+            MapsView()
+                .tabItem { Label("Maps", systemImage: "map") }
+            NavigationStack { FoodDrinkView() }
+                .tabItem { Label("Food & Drink", systemImage: "fork.knife") }
         }
         .tint(Theme.accent)
         .preferredColorScheme(.dark)
