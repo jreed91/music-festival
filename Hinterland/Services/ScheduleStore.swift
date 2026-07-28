@@ -22,6 +22,9 @@ final class ScheduleStore {
 
     private(set) var data: FestivalData
     private(set) var guide: GuideData
+    /// Georeferenced grounds map and its pins. Bundled only — it describes artwork that
+    /// ships in the binary, so there is nothing to refresh.
+    let map: MapData
     private(set) var isRefreshing = false
     private(set) var lastRefreshed: Date?
     private(set) var refreshError: String?
@@ -45,6 +48,7 @@ final class ScheduleStore {
             data = bundled
         }
         guide = Self.loadBundled(GuideData.self, named: "info")
+        map = Self.loadBundled(MapData.self, named: "map")
     }
 
     // MARK: - Refresh
