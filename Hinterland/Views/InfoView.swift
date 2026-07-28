@@ -38,6 +38,7 @@ struct InfoView: View {
                     .listRowBackground(Theme.surface)
                 } else {
                     quickFacts
+                    mapsSection
                     ForEach(store.guide.categories) { category in
                         Section {
                             ForEach(category.topics) { topic in
@@ -64,10 +65,78 @@ struct InfoView: View {
             .searchable(text: $query, prompt: "Search the guide")
             .navigationDestination(for: String.self) { id in
                 if let topic = store.guide.allTopics.first(where: { $0.id == id }) {
-                    GuideTopicView(topic: topic)
+                    GuideTopicView(topic: topic, maps: store.guide.maps(for: topic))
+                }
+            }
+            .navigationDestination(for: MapRoute.self) { route in
+                switch route {
+                case .grounds:
+                    GroundsMapView()
+                case .image(let id):
+                    if let map = store.guide.allMaps.first(where: { $0.id == id }) {
+                        MapImageView(map: map)
+                    }
                 }
             }
         }
+    }
+
+    /// Maps sit above the guide: at the festival they're the thing people open the app
+    /// for, and they're the part that has to work with no signal.
+    private var mapsSection: some View {
+        Section {
+            NavigationLink(value: MapRoute.grounds) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Label("Grounds map & your location", systemImage: "location.viewfinder")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text("Stages, gates, camping and parking pinned on Apple Maps.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(Theme.secondaryText)
+                }
+                .padding(.vertical, 2)
+            }
+
+            ForEach(store.guide.allMaps) { map in
+                NavigationLink(value: MapRoute.image(map.id)) {
+                    HStack(spacing: 12) {
+                        MapThumbnail(asset: map.asset)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(map.title)
+                                .font(.system(size: 15))
+                                .foregroundStyle(.white)
+                            if let caption = map.caption {
+                                Text(caption)
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(Theme.secondaryText)
+                                    .lineLimit(2)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+            }
+        } header: {
+            Label("Maps", systemImage: "map")
+                .foregroundStyle(Theme.accent)
+        } footer: {
+            Text("Every map is bundled with the app and opens offline.")
+                .font(.system(size: 11))
+        }
+        .listRowBackground(Theme.surface)
+    }
+
+    /// Drops a pin on the site itself. The coordinate comes from `map.json`, which is
+    /// anchored to the roads around the grounds — `schedule.json`'s scraped pair lands
+    /// nearer the town of St. Charles, a couple of miles off.
+    private var venueInMaps: URL? {
+        let venue = store.map.venue
+        var components = URLComponents(string: "https://maps.apple.com/")
+        components?.queryItems = [
+            URLQueryItem(name: "ll", value: "\(venue.latitude),\(venue.longitude)"),
+            URLQueryItem(name: "q", value: venue.name),
+        ]
+        return components?.url
     }
 
     private var quickFacts: some View {
@@ -83,9 +152,7 @@ struct InfoView: View {
             LabeledContent("Where") {
                 Text(store.data.festival.city).foregroundStyle(Theme.secondaryText)
             }
-            if let maps = URL(string:
-                "http://maps.apple.com/?q=\(store.data.festival.latitude),"
-                + "\(store.data.festival.longitude)") {
+            if let maps = venueInMaps {
                 Link(destination: maps) {
                     Label("Open in Maps", systemImage: "map").foregroundStyle(Theme.accent)
                 }
@@ -127,6 +194,9 @@ struct InfoView: View {
 /// generous line spacing rather than being re-parsed into rich text.
 struct GuideTopicView: View {
     let topic: GuideTopic
+    /// Maps the festival publishes alongside this entry — the parking routes with the
+    /// driving directions, the grounds map with "Festival Maps".
+    var maps: [FestivalMap] = []
 
     var body: some View {
         ScrollView {
@@ -136,6 +206,22 @@ struct GuideTopicView: View {
                     .foregroundStyle(.white.opacity(0.88))
                     .lineSpacing(5)
                     .fixedSize(horizontal: false, vertical: true)
+
+                ForEach(maps) { map in
+                    NavigationLink(value: MapRoute.image(map.id)) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Image(map.asset)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity)
+                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            Label("\(map.title) — tap to zoom", systemImage: "arrow.up.left.and.arrow.down.right")
+                                .font(.system(size: 11))
+                                .foregroundStyle(Theme.tertiaryText)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
 
                 if let links = topic.links, !links.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {

@@ -4,6 +4,26 @@ import Foundation
 struct GuideData: Codable, Equatable {
     let version: Int
     let categories: [GuideCategory]
+    /// Written by `scripts/maps.py`; optional so an older bundled or cached file still
+    /// decodes.
+    var maps: [FestivalMap]?
+}
+
+/// A map image bundled in the asset catalog, so parking routes are readable in a field
+/// with no signal.
+struct FestivalMap: Codable, Equatable, Identifiable {
+    let id: String
+    let title: String
+    let asset: String
+    var caption: String?
+    /// Guide entry this map belongs to, shown inline while reading it.
+    var topicID: String?
+    var width: Int?
+    var height: Int?
+    var sourceURL: String?
+
+    /// Only the grounds map is georeferenced, and it's the one worth putting on MapKit.
+    var isGrounds: Bool { id == "grounds" }
 }
 
 struct GuideCategory: Codable, Equatable, Identifiable {
@@ -43,6 +63,12 @@ struct GuideTopic: Codable, Equatable, Identifiable {
 
 extension GuideData {
     var allTopics: [GuideTopic] { categories.flatMap(\.topics) }
+
+    var allMaps: [FestivalMap] { maps ?? [] }
+
+    func maps(for topic: GuideTopic) -> [FestivalMap] {
+        allMaps.filter { $0.topicID == topic.id }
+    }
 
     func category(for topic: GuideTopic) -> GuideCategory? {
         categories.first { $0.topics.contains(where: { $0.id == topic.id }) }

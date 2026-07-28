@@ -529,5 +529,47 @@
         }
       ]
     }
+  ],
+  "maps": [
+    {
+      "id": "grounds",
+      "title": "Festival Grounds",
+      "caption": "Stages, camping, parking and the two entrances.",
+      "asset": "map-grounds",
+      "topicID": "festival-maps",
+      "width": 2000,
+      "height": 1667,
+      "sourceURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a626c47a17a3583655d39cf_Grounds_Map_2026.webp"
+    },
+    {
+      "id": "concourse",
+      "title": "Concourse",
+      "caption": "Inside the gates: stage, vendors, water, toilets and medical.",
+      "asset": "map-concourse",
+      "topicID": "festival-maps",
+      "width": 2000,
+      "height": 2666,
+      "sourceURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a626c618cd676f16e367fe8_Concourse_Map_2026.webp"
+    },
+    {
+      "id": "route",
+      "title": "Driving Routes",
+      "caption": "Exit 56 north for camping and 4-day parking, Exit 47 south for single-day. Exit 52 off-ramps are closed.",
+      "asset": "map-route",
+      "topicID": "driving-parking",
+      "width": 1200,
+      "height": 2111,
+      "sourceURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a6692e1a28ca7d3ffe3dd23_Route.webp"
+    },
+    {
+      "id": "shuttle",
+      "title": "Shuttle Parking",
+      "caption": "Des Moines shuttle pickup at DMACC, SE Ankeny.",
+      "asset": "map-shuttle",
+      "topicID": "des-moines-shuttle",
+      "width": 1200,
+      "height": 1500,
+      "sourceURL": "https://cdn.prod.website-files.com/6685887ec50d13a3f2778592/6a66928e4db67bc41e375f20_Shuttle.webp"
+    }
   ]
 }

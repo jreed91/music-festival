@@ -21,6 +21,9 @@ The network is only ever used to pick up set-time changes.
 - **Info** — the complete festival guide (67 topics), searchable and fully offline:
   parking routes, gate times, box office hours, camping rules, what you can and can't
   bring, accessibility, and more.
+- **Maps** — the festival's four maps (grounds, concourse, driving routes, shuttle
+  parking) bundled as artwork and pinch-zoomable, plus a MapKit view that georeferences
+  the grounds map so the blue dot shows where you are on it.
 
 ## Building
 
@@ -47,6 +50,29 @@ Requires iOS 17 or later (the app uses the `@Observable` macro).
 
 `ITSAppUsesNonExemptEncryption` is already set to `false` in `project.yml`, so uploads
 skip the export-compliance prompt.
+
+### Xcode Cloud
+
+Xcode Cloud clones the repo and expects `Hinterland.xcodeproj` at the root, which isn't
+committed here. `ci_scripts/ci_post_clone.sh` bridges that gap: it runs immediately after
+the clone, downloads the XcodeGen release binary (the build image has neither XcodeGen nor
+Homebrew) and generates the project before Xcode Cloud goes looking for it. Without that
+script the build fails with:
+
+```
+Project Hinterland.xcodeproj does not exist at the root of the repository
+```
+
+The script is the standard hook name and location, so there is nothing to configure in the
+workflow. Two things worth knowing:
+
+- Xcode Cloud's **workflow creation** wizard in Xcode reads the project from your working
+  copy, so run `xcodegen generate` locally before creating the workflow.
+- Pin a different XcodeGen with the `XCODEGEN_VERSION` environment variable on the
+  workflow; the script falls back to the latest release if that tag has no build.
+
+If a cloud archive fails signing with "requires a development team", set `DEVELOPMENT_TEAM`
+in `project.yml` — the local project Xcode writes your team into is never uploaded.
 
 ## Updating the schedule mid-festival
 
@@ -75,27 +101,62 @@ Pages are cached under `scripts/.cache`, so pass `--refresh` to re-fetch.
 cd scripts
 python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios, Spotify IDs
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
+python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
 ```
 
 Run `scrape.py` before `images.py` — the latter reads the artist list and writes each
-artist's asset name back into `schedule.json`.
+artist's asset name back into `schedule.json`. Run `guide.py` before `maps.py` for the
+same reason: `guide.py` rewrites `info.json` wholesale and `maps.py` adds the `maps`
+array back onto it.
+
+`maps.py` picks the maps out of the guide's rich text by the file name the festival's
+designer uses (`Grounds_Map`, `Concourse_Map`, `Route`, `Shuttle`), ignoring the
+photography alongside them. It exits non-zero if any of the four has gone missing, which
+means the artwork was renamed — update `MAPS` at the top of the script.
 
 Both scrapers exit non-zero if they parse nothing, which is the signal that the site's
 markup changed and the selectors need attention.
+
+## The grounds map on MapKit
+
+`Data/map.json` is what turns the illustrated grounds map into a real map:
+
+- `georeference` — the four corners the artwork covers. They were traced against three
+  features the illustration and the world share: I-35 down the east edge (lon
+  `-93.7800`), County Road G50 across the bottom (lat `41.29340`) and N Cross St on the
+  west (lon `-93.8055`), all from OpenStreetMap.
+- `pois` — stages, entrances, gates, camping, parking, Basecamp, medical and the box
+  office, each stored as a position on the artwork (`x`/`y`, 0–1 from the top-left)
+  rather than as a coordinate. The app projects them through the georeference, so the
+  pins and the illustration can never drift apart.
+
+`GroundsMapView` draws the artwork as an `MKOverlay` inside that box, with an
+`MKMarkerAnnotationView` per POI, the user's location, and walking distance to whatever
+is selected. Apple's tiles need a network and won't load in the valley, but the artwork
+is bundled and Core Location works without signal, so the map stays useful offline —
+which is why the illustration is drawn over the tiles rather than instead of them.
+
+The artwork is an illustration, not a survey, so the pins land within roughly a field's
+width of the truth and the UI says so. To improve it, correct the four corners in
+`map.json` — every pin moves with them. `venue` in the same file is the coordinate the
+"Open in Maps" button uses; the `festival.latitude`/`longitude` pair in `schedule.json`
+is scraped and sits nearer the town of St. Charles than the site.
 
 ## Layout
 
 ```
 Hinterland/
   App/         HinterlandApp.swift — entry point, appearance
-  Models/      FestivalData, GuideData — Codable mirrors of the JSON
+  Models/      FestivalData, GuideData, MapData — Codable mirrors of the JSON
   Services/    ScheduleStore (loading + refresh), Favorites, NotificationManager
-  Views/       Schedule, MyLineup, Artists, Info, ArtistDetail, Theme
-  Resources/   Assets.xcassets — 48 artist images, app icon
+  Views/       Schedule, MyLineup, Artists, Info, ArtistDetail, GroundsMap, MapImage, Theme
+  Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 Data/          schedule.json, info.json — bundled and remotely refreshable
-scripts/       scrapers and the icon generator
+               map.json — georeference and POIs for the grounds map
+scripts/       scrapers, the map bundler and the icon generator
+ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```
 
 ## Notes

@@ -14,6 +14,22 @@ enum Theme {
     static let warning = Color(red: 0.98, green: 0.45, blue: 0.42)
 }
 
+extension POICategory {
+    /// Pin colours, kept bright enough to read as markers over both the illustration and
+    /// satellite imagery.
+    var tint: Color {
+        switch self {
+        case .stage: return Theme.accent
+        case .entrance: return Color(red: 0.42, green: 0.82, blue: 0.70)
+        case .gate: return Color(red: 0.55, green: 0.75, blue: 0.98)
+        case .camping: return Color(red: 0.72, green: 0.55, blue: 0.96)
+        case .parking: return Color(red: 0.62, green: 0.62, blue: 0.98)
+        case .services: return Color(red: 0.95, green: 0.82, blue: 0.42)
+        case .medical: return Theme.warning
+        }
+    }
+}
+
 extension Stage {
     var color: Color {
         switch self {
