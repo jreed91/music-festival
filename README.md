@@ -54,15 +54,18 @@ skip the export-compliance prompt.
 at launch from:
 
 ```
-https://raw.githubusercontent.com/jreed91/music-festival/main/Data/schedule.json
+https://raw.githubusercontent.com/jreed91/music-festival/claude/music-festival-ios-app-7opdcq/Data/schedule.json
 ```
 
 Editing that file on the default branch pushes new set times to everyone who already has
-the app, without an App Store round trip. The app only accepts a remote copy whose
-`generatedAt` is newer than what it already has, caches it, and falls straight back to
-the bundled copy if the fetch fails — so a bad network or a 404 is harmless.
+the app, without an App Store round trip. Bump `generatedAt` when you do — the app only
+accepts a remote copy that is newer than what it already has. It caches what it fetches
+and falls straight back to the bundled copy on any failure, so a dead network or a 404
+is harmless.
 
-If your default branch isn't `main`, update `ScheduleStore.remoteURL` to match.
+That URL points at the repo's **current default branch**, which is
+`claude/music-festival-ios-app-7opdcq`. If you rename the default branch or merge this
+into a `main`, update `ScheduleStore.remoteURL` to match or the fetch will 404.
 
 ## Regenerating the data
 

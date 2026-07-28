@@ -10,10 +10,15 @@ import Observation
 /// and never blocks the UI.
 @Observable
 final class ScheduleStore {
-    /// Set times shift during the weekend. Editing `Data/schedule.json` on the default
-    /// branch pushes an update to everyone without an App Store round trip.
+    /// Set times shift during the weekend. Editing `Data/schedule.json` on the repo's
+    /// default branch pushes an update to everyone without an App Store round trip.
+    ///
+    /// This points at the repository's *current* default branch. If the default branch
+    /// is ever renamed — say to `main` once this work is merged — update the path here
+    /// to match, or the fetch 404s and the app quietly keeps using its bundled copy.
     static let remoteURL = URL(
-        string: "https://raw.githubusercontent.com/jreed91/music-festival/main/Data/schedule.json"
+        string: "https://raw.githubusercontent.com/jreed91/music-festival/"
+              + "claude/music-festival-ios-app-7opdcq/Data/schedule.json"
     )!
 
     private(set) var data: FestivalData
