@@ -14,6 +14,9 @@ enum Theme {
     static let warning = Color(red: 0.98, green: 0.45, blue: 0.42)
     /// Rain chances, kept cool so they read as a separate signal from the amber accent.
     static let rain = Color(red: 0.48, green: 0.76, blue: 0.98)
+    /// Dietary tags on the food vendors, kept off the accent so a wall of them doesn't
+    /// read as a wall of buttons.
+    static let dietary = Color(red: 0.52, green: 0.84, blue: 0.62)
 }
 
 extension POICategory {

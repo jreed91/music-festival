@@ -1,0 +1,461 @@
+{
+  "version": 1,
+  "source": "https://www.hinterlandiowa.com/food-drink",
+  "dietaryLegend": {
+    "GF": "Gluten-free",
+    "DF": "Dairy-free",
+    "VG": "Vegan",
+    "V": "Vegetarian",
+    "NF": "Nut-free",
+    "SF": "Sugar-free"
+  },
+  "areas": [
+    {
+      "id": "east-concourse",
+      "name": "East Concourse",
+      "vendors": [
+        {
+          "id": "bussin-burgers",
+          "name": "Bussin' Burgers",
+          "offerings": "Smash burger combos, double burgers, and a vegan burger option.",
+          "city": "Tyrone",
+          "state": "GA",
+          "dietary": [
+            "V",
+            "VG",
+            "DF",
+            "NF"
+          ],
+          "url": "https://www.chaoticconcessions.com"
+        },
+        {
+          "id": "chaotic-coffee",
+          "name": "Chaotic Coffee",
+          "offerings": "Specialty coffee & caffeine boosts to keep festival-goers energized all day, featuring Vanilla Ice, Mocha Magic, Cara Mellow, Rocke Man; plus churros!",
+          "city": "Tyrone",
+          "state": "GA",
+          "dietaryNote": "Various Offerings",
+          "url": "https://www.chaoticconcessions.com"
+        },
+        {
+          "id": "coast-2-coast-events",
+          "name": "Coast 2 Coast Events",
+          "offerings": "Mac & cheese variations, lobster mac, pork mac, buffalo chicken mac, and corn dogs.",
+          "city": "Glendale",
+          "state": "AZ",
+          "dietary": [
+            "V"
+          ],
+          "url": "https://c2cevents.net"
+        },
+        {
+          "id": "fistful-of-tacos",
+          "name": "Fistful of Tacos",
+          "offerings": "Tacos, taco flights, loaded nachos, chips, and queso.",
+          "city": "New Albany",
+          "state": "IN",
+          "dietary": [
+            "GF",
+            "DF",
+            "VG",
+            "V",
+            "NF"
+          ],
+          "url": "https://fistfulotacos.com"
+        },
+        {
+          "id": "flaming-wok",
+          "name": "Flaming Wok",
+          "offerings": "Asian rice bowls, bulgogi, dumplings, spring rolls, and drunken noodles.",
+          "city": "Tucker",
+          "state": "GA",
+          "dietary": [
+            "V"
+          ],
+          "url": "https://www.facebook.com/flamingconcession/"
+        },
+        {
+          "id": "get-baked-stuffed-pretzel-rolls",
+          "name": "Get BAKED Stuffed Pretzel Rolls",
+          "offerings": "Stuffed pretzel rolls with crab, cheesesteak, mac & cheese, spinach dip, Nutella, and pretzel bites.",
+          "city": "Ocean Pines",
+          "state": "MD",
+          "dietary": [
+            "VG",
+            "V",
+            "NF"
+          ],
+          "url": "https://www.stuffedpretzelrolls.com/"
+        },
+        {
+          "id": "hebros-gyros-and-more",
+          "name": "Hebros Gyros and More",
+          "offerings": "Gyros, falafel pitas, loaded fries, fried Oreos, and fries.",
+          "city": "Wilmington",
+          "state": "DE",
+          "dietary": [
+            "VG",
+            "V"
+          ]
+        },
+        {
+          "id": "melona-ice-cream",
+          "name": "Melona Ice Cream",
+          "offerings": "Refreshing ice cream bars in fruit flavors, including melon, mango, strawberry, coconut, banana, ube, and many more",
+          "city": "Redwood City",
+          "state": "CA",
+          "dietary": [
+            "GF",
+            "V"
+          ],
+          "url": "https://enjoymelona.com/"
+        },
+        {
+          "id": "prince-st-pizza",
+          "name": "Prince St. Pizza",
+          "offerings": "Square pizzas with pepperoni, cheese, vegan cheese, and specialty drizzles.",
+          "city": "West Hollywood",
+          "state": "CA",
+          "dietary": [
+            "VG",
+            "V"
+          ],
+          "url": "https://www.princestreetpizza.com"
+        },
+        {
+          "id": "the-empanadas-boys",
+          "name": "The Empanadas Boys",
+          "offerings": "Empanadas, hot dogs, arepas, fresh juices, and iced coffee.",
+          "city": "North Miami",
+          "state": "FL",
+          "dietary": [
+            "GF",
+            "VG",
+            "V"
+          ],
+          "url": "https://www.instagram.com/margusempanadas/"
+        },
+        {
+          "id": "tropical-sno",
+          "name": "Tropical Sno",
+          "offerings": "Shaved ice with flavored syrups and customizable options.",
+          "city": "Newton",
+          "state": "IA",
+          "dietary": [
+            "GF",
+            "SF"
+          ],
+          "dietaryOptions": [
+            "DF"
+          ],
+          "url": "https://tropicalsno.com"
+        }
+      ]
+    },
+    {
+      "id": "west-concourse",
+      "name": "West Concourse",
+      "vendors": [
+        {
+          "id": "c-est-la-crepe",
+          "name": "C'est la Crepe",
+          "offerings": "Sweet and savory crepes including Nutella, s'mores, ham & cheese, and chicken pesto.",
+          "city": "Treynor",
+          "state": "IA",
+          "dietary": [
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF"
+          ],
+          "url": "https://www.cestlacrepe.com"
+        },
+        {
+          "id": "hopper-s-mini-donuts",
+          "name": "Hopper's Mini Donuts",
+          "offerings": "Mini donuts and fresh lemonade.",
+          "city": "White Bear Lake",
+          "state": "MN",
+          "dietary": [
+            "NF"
+          ],
+          "url": "https://www.hoppersminidonuts.com"
+        },
+        {
+          "id": "main-street-cafe-bakery",
+          "name": "Main Street Cafe & Bakery",
+          "offerings": "Wraps, melts, acai bowls, lemonade drinks, cookies, bars, and cinnamon rolls.",
+          "city": "Ankeny",
+          "state": "IA",
+          "dietary": [
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF"
+          ],
+          "url": "https://www.mainstreetcafeandbakery.com"
+        },
+        {
+          "id": "mo-goodness-foods",
+          "name": "Mo' Goodness Foods",
+          "offerings": "Sweet corn, street corn, fresh lemonades, mojitos, and lemon water.",
+          "city": "Des Moines",
+          "state": "IA",
+          "dietary": [
+            "GF",
+            "V"
+          ],
+          "url": "https://morub.com"
+        },
+        {
+          "id": "off-the-griddle",
+          "name": "Off the Griddle",
+          "offerings": "Burgers, melts, loaded fries, harvest bowls, and specialty burgers.",
+          "city": "Saint Charles",
+          "state": "IA",
+          "dietary": [
+            "VG",
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF",
+            "DF"
+          ],
+          "url": "https://www.otgiowa.org"
+        },
+        {
+          "id": "smokin-rs-bbq",
+          "name": "Smokin Rs BBQ",
+          "offerings": "BBQ sandwiches, dinner plates, nachos, ribs, and mac-based specialties.",
+          "city": "Guthrie Center",
+          "state": "IA",
+          "url": "https://www.smokinrsbbq.com"
+        },
+        {
+          "id": "super-heady-grilled-cheese",
+          "name": "Super Heady Grilled Cheese",
+          "offerings": "Gourmet grilled cheese sandwiches with tomato soup, meats, and specialty toppings.",
+          "city": "Des Moines",
+          "state": "IA"
+        },
+        {
+          "id": "the-outside-scoop",
+          "name": "The Outside Scoop",
+          "offerings": "Ice cream scoops and homemade ice cream sandwiches.",
+          "city": "Ankeny",
+          "state": "IA",
+          "dietaryNote": "Various options"
+        },
+        {
+          "id": "winn-sara-s-kitchen",
+          "name": "Winn & Sara's Kitchen",
+          "offerings": "Bacon chicken ranch eggrolls, chicken tenders, and crab rangoons.",
+          "city": "Indianola",
+          "state": "IA",
+          "url": "https://winnspizzaandsteakhouse.com"
+        }
+      ]
+    },
+    {
+      "id": "south-concourse",
+      "name": "South Concourse",
+      "vendors": [
+        {
+          "id": "big-acai-bowl",
+          "name": "Big Acai Bowl",
+          "offerings": "Acai bowls and chia pudding parfaits with fruit, granola, toppings, and peanut butter options.",
+          "city": "Pella",
+          "state": "IA",
+          "dietary": [
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF"
+          ],
+          "url": "https://bigacaibowl.com"
+        },
+        {
+          "id": "corndog-inc",
+          "name": "Corndog Inc",
+          "offerings": "Corndogs, tots, chicken baskets, funnel cakes, and limeade.",
+          "city": "Chattanooga",
+          "state": "TN",
+          "dietary": [
+            "VG",
+            "V"
+          ],
+          "url": "https://www.corndoginc.com"
+        },
+        {
+          "id": "mac-n-me",
+          "name": "Mac n' Me",
+          "offerings": "Gourmet mac & cheese bowls, loaded fries, chicken dishes, and limeade.",
+          "city": "Exeter",
+          "state": "NH",
+          "dietary": [
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF",
+            "VG"
+          ],
+          "url": "https://www.macnmebooth.com"
+        },
+        {
+          "id": "pizza-nova",
+          "name": "Pizza Nova",
+          "offerings": "Giant pizza slices, gluten-free personal pizzas, lemonade, and iced tea.",
+          "city": "Smyrna",
+          "state": "GA",
+          "dietary": [
+            "GF",
+            "VG",
+            "V"
+          ],
+          "url": "https://www.facebook.com/pizzanovalicious"
+        }
+      ]
+    },
+    {
+      "id": "vip",
+      "name": "VIP",
+      "vendors": [
+        {
+          "id": "get-baked-stuffed-pretzel-rolls",
+          "name": "Get BAKED Stuffed Pretzel Rolls",
+          "offerings": "Stuffed pretzel rolls with crab, cheesesteak, mac & cheese, spinach dip, Nutella, and pretzel bites.",
+          "city": "Ocean Pines",
+          "state": "MD",
+          "dietary": [
+            "VG",
+            "V",
+            "NF"
+          ],
+          "url": "https://www.stuffedpretzelrolls.com/"
+        }
+      ]
+    },
+    {
+      "id": "ga",
+      "name": "GA+",
+      "vendors": [
+        {
+          "id": "bulldog-burgery",
+          "name": "Bulldog Burgery",
+          "offerings": "Smash burgers, chicken finger baskets, fries, and cheese fries.",
+          "city": "Woodside",
+          "state": "NY",
+          "dietary": [
+            "V",
+            "GF"
+          ],
+          "url": "https://www.bulldogburgery.com"
+        },
+        {
+          "id": "muddy-puddles-ice-cream",
+          "name": "Muddy Puddles Ice Cream",
+          "offerings": "Homemade ice cream, sorbet, and dairy-free scoops.",
+          "city": "Indianola",
+          "state": "IA",
+          "dietary": [
+            "DF",
+            "V"
+          ],
+          "dietaryOptions": [
+            "GF",
+            "VG"
+          ],
+          "url": "https://www.muddy-puddles.com"
+        }
+      ]
+    },
+    {
+      "id": "campground-basecamp",
+      "name": "Campground / Basecamp",
+      "vendors": [
+        {
+          "id": "iowah-noodz",
+          "name": "Iowah Noodz",
+          "offerings": "Noodle bowls, fried rice, pot stickers, egg rolls, smoothies, and frozen lemonade.",
+          "city": "Saint Charles",
+          "state": "IA",
+          "dietary": [
+            "VG",
+            "V"
+          ],
+          "url": "https://www.facebook.com/iowahnoodz"
+        },
+        {
+          "id": "pizza-nova",
+          "name": "Pizza Nova",
+          "offerings": "Giant pizza slices, gluten-free personal pizzas, lemonade, and iced tea.",
+          "city": "Smyrna",
+          "state": "GA",
+          "dietary": [
+            "GF",
+            "VG",
+            "V"
+          ],
+          "url": "https://www.facebook.com/pizzanovalicious"
+        },
+        {
+          "id": "space-fruit",
+          "name": "Space Fruit",
+          "offerings": "Smoothies and quesadillas with vegetarian, mushroom, chicken, and bacon options.",
+          "city": "Anderson",
+          "state": "IN",
+          "dietary": [
+            "VG",
+            "GF",
+            "V"
+          ],
+          "url": "https://www.spacefruittruck.com/"
+        }
+      ]
+    },
+    {
+      "id": "mobile-cart",
+      "name": "Mobile Cart",
+      "vendors": [
+        {
+          "id": "cookie-cruiser",
+          "name": "Cookie Cruiser",
+          "offerings": "Ice cream sandwiches, cookies, and fruit popsicles.",
+          "city": "Lakeville",
+          "state": "MN",
+          "dietary": [
+            "VG",
+            "V",
+            "GF",
+            "NF"
+          ],
+          "url": "https://www.cookie-cruiser.com"
+        },
+        {
+          "id": "lost-pelican-lemonade",
+          "name": "Lost Pelican Lemonade",
+          "offerings": "Specialty lemonades with mango, strawberry, lavender, watermelon, and classic flavors.",
+          "city": "Lake Odessa",
+          "state": "MI",
+          "dietary": [
+            "VG",
+            "GF"
+          ],
+          "url": "https://greatlakeslemonade.com"
+        },
+        {
+          "id": "pete-s-pops",
+          "name": "Pete's Pops",
+          "offerings": "Fruit and dairy-based ice pops in seasonal flavors.",
+          "city": "MIlwaukee",
+          "state": "WI",
+          "dietary": [
+            "VG",
+            "GF"
+          ],
+          "url": "https://petespops.net"
+        }
+      ]
+    }
+  ]
+}

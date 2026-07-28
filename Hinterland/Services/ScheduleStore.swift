@@ -25,6 +25,9 @@ final class ScheduleStore {
     /// Georeferenced grounds map and its pins. Bundled only — it describes artwork that
     /// ships in the binary, so there is nothing to refresh.
     let map: MapData
+    /// Food & drink stands by area. Bundled only; the lineup of vendors is settled well
+    /// before gates and doesn't move during the weekend the way set times do.
+    let vendors: VendorData
     private(set) var isRefreshing = false
     private(set) var lastRefreshed: Date?
     private(set) var refreshError: String?
@@ -49,6 +52,7 @@ final class ScheduleStore {
         }
         guide = Self.loadBundled(GuideData.self, named: "info")
         map = Self.loadBundled(MapData.self, named: "map")
+        vendors = Self.loadBundled(VendorData.self, named: "vendors")
     }
 
     // MARK: - Refresh

@@ -30,6 +30,8 @@ targets:
         buildPhase: resources
       - path: Data/map.json
         buildPhase: resources
+      - path: Data/vendors.json
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jreed91.hinterland
