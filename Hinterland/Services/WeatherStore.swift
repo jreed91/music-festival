@@ -68,8 +68,13 @@ final class WeatherStore {
             // Attribution is a second round trip for marks and legal text that never
             // change, so it's fetched once and then carried forward. A failure there is
             // not worth losing a good forecast over: the text fallback covers it.
-            let attribution = snapshot?.attribution
-                ?? (try? await service.attribution).map { WeatherAttributionInfo($0) }
+            //
+            // Written out rather than folded into a `??`, whose right-hand side is a
+            // non-async autoclosure and can't hold the await.
+            var attribution = snapshot?.attribution
+            if attribution == nil {
+                attribution = (try? await service.attribution).map { WeatherAttributionInfo($0) }
+            }
 
             snapshot = Self.makeSnapshot(
                 current: current,
