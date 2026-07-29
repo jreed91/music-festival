@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import WidgetKit
 
 /// Owns the festival schedule and guide.
 ///
@@ -32,19 +33,14 @@ final class ScheduleStore {
     private(set) var lastRefreshed: Date?
     private(set) var refreshError: String?
 
-    /// Static so `init` can read it before the observed stored properties are set.
-    private static var cacheURL: URL {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appendingPathComponent("schedule.json")
-    }
-
     init() {
+        // Pre-widget builds cached outside the app group, where the extension can't see it.
+        ScheduleFile.migrateLegacyCacheIfNeeded()
+
         let bundled = Self.loadBundled(FestivalData.self, named: "schedule")
         // A cached refresh is only preferred when it is actually newer than the bundle,
         // so shipping a corrected build always wins over a stale download.
-        if let cached = Self.decode(FestivalData.self, from: try? Data(contentsOf: Self.cacheURL)),
-           cached.generatedAt > bundled.generatedAt {
+        if let cached = ScheduleFile.cached(), cached.generatedAt > bundled.generatedAt {
             data = cached
             lastRefreshed = cached.generatedAt
         } else {
@@ -80,7 +76,9 @@ final class ScheduleStore {
             // Ignore a remote copy that is older than what we already show.
             if fresh.generatedAt > data.generatedAt {
                 data = fresh
-                try? payload.write(to: Self.cacheURL, options: .atomic)
+                try? payload.write(to: ScheduleFile.cacheURL, options: .atomic)
+                // New set times are exactly the case where a stale widget misleads.
+                WidgetCenter.shared.reloadAllTimelines()
             }
             lastRefreshed = Date()
         } catch {
@@ -102,17 +100,6 @@ final class ScheduleStore {
 
     // MARK: - Loading
 
-    private static func decoder() -> JSONDecoder {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return decoder
-    }
-
-    private static func decode<T: Decodable>(_ type: T.Type, from data: Data?) -> T? {
-        guard let data else { return nil }
-        return try? decoder().decode(type, from: data)
-    }
-
     /// The bundled files are build inputs we control, so failure here is a packaging
     /// bug worth surfacing loudly rather than limping along with empty state.
     private static func loadBundled<T: Decodable>(_ type: T.Type, named name: String) -> T {
@@ -121,7 +108,7 @@ final class ScheduleStore {
             fatalError("Missing bundled \(name).json — check the Resources build phase.")
         }
         do {
-            return try decoder().decode(type, from: data)
+            return try ScheduleFile.decoder().decode(type, from: data)
         } catch {
             fatalError("Bundled \(name).json failed to decode: \(error)")
         }

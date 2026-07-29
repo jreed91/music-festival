@@ -7,6 +7,7 @@ struct HinterlandApp: App {
     @State private var weather: WeatherStore
     @State private var favorites = Favorites()
     @State private var notifications = NotificationManager()
+    @State private var liveActivity = LiveActivityController()
 
     init() {
         // The forecast is for the amphitheater rather than wherever the phone is, so it
@@ -40,6 +41,7 @@ struct HinterlandApp: App {
                 .environment(weather)
                 .environment(favorites)
                 .environment(notifications)
+                .environment(liveActivity)
         }
     }
 }

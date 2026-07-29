@@ -39,12 +39,19 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_USER_SCRIPT_SANDBOXING: YES
         TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      # Embeds the widget extension in the app bundle.
+      - target: HinterlandWidgets
     # WeatherKit needs the capability on the App ID in the developer portal as well as
     # the entitlement here; without both, every forecast request fails to authenticate.
+    # The app group is the same story, and it's what lets the widget — a separate process
+    # with its own sandbox — read the starred sets and the cached schedule.
     entitlements:
       path: Hinterland/Hinterland.entitlements
       properties:
         com.apple.developer.weatherkit: true
+        com.apple.security.application-groups:
+          - group.com.jreed91.hinterland
     info:
       path: Hinterland/Info.plist
       properties:
@@ -54,6 +61,13 @@ targets:
         UILaunchScreen:
           UIColorName: LaunchBackground
         UIUserInterfaceStyle: Dark
+        # Without this the Live Activity request fails at runtime with no other clue.
+        NSSupportsLiveActivities: true
+        # The widget and the Live Activity open the app on My Lineup through this scheme.
+        CFBundleURLTypes:
+          - CFBundleURLName: com.jreed91.hinterland
+            CFBundleURLSchemes:
+              - hinterland
         # Only used to draw the blue dot on the grounds map. Nothing is stored or sent.
         NSLocationWhenInUseUsageDescription: Shows where you are on the festival grounds
           map. Your location stays on your phone.
@@ -62,3 +76,37 @@ targets:
         # Declares no non-exempt encryption, which skips the export-compliance
         # prompt on every TestFlight upload.
         ITSAppUsesNonExemptEncryption: false
+
+  # The Home/Lock Screen widget and the Live Activity presentation. A widget runs in its
+  # own process, so anything it draws has to come from the app group or from its own
+  # bundle — hence the shared sources and its own copy of schedule.json.
+  HinterlandWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: HinterlandWidgets
+      # Compiled into both targets: the models, the starred sets, the palette, and the
+      # rule for which set to feature. One copy, so the widget can't disagree with the app.
+      - path: Hinterland/Shared
+      # The offline fallback, for a phone that has never had signal since installing.
+      - path: Data/schedule.json
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jreed91.hinterland.widgets
+        PRODUCT_NAME: HinterlandWidgets
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+        TARGETED_DEVICE_FAMILY: "1"
+    entitlements:
+      path: HinterlandWidgets/HinterlandWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.jreed91.hinterland
+    info:
+      path: HinterlandWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Hinterland
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

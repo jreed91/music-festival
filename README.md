@@ -18,6 +18,11 @@ cache what they fetch and fall back to what's already on the phone.
   sets that overlap so you know what you're choosing between.
 - **Reminders** — local notifications a configurable 5–60 minutes before your starred
   sets. Scheduled on-device, so they fire with no signal.
+- **Widget** — "Up Next" on the Home Screen (small and medium) and the Lock Screen
+  (inline, rectangular and circular), showing the starred set that's on and what follows
+  it. Falls back to the festival at large before anything is starred.
+- **Live Activity** — the set you're watching on the Lock Screen and in the Dynamic
+  Island from 90 minutes before it starts, with a countdown that runs on its own.
 - **Artist pages** — bios and links out to Spotify and Instagram, reached by tapping any
   set on the schedule or in your lineup.
 - **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
@@ -49,13 +54,27 @@ if that ID is taken on your account, and re-run `xcodegen generate`.
 
 Requires iOS 17 or later (the app uses the `@Observable` macro).
 
-WeatherKit needs one thing that isn't in this repo: the capability has to be enabled on
-the App ID in the [developer portal](https://developer.apple.com/account/resources/identifiers/)
-(Certificates, Identifiers & Profiles → your identifier → check **WeatherKit**), and the
-provisioning profile regenerated afterwards. `project.yml` already declares the
-`com.apple.developer.weatherkit` entitlement, but the entitlement alone doesn't
-authenticate — without the App ID capability every forecast request fails and the app
-falls back to showing no weather. Everything else in the app works regardless.
+Two capabilities need setting up on the App ID in the
+[developer portal](https://developer.apple.com/account/resources/identifiers/) before a
+build does everything it should. Both are declared in `project.yml`, but the entitlement
+alone isn't enough — the App ID has to carry the capability and the provisioning profile
+has to be regenerated afterwards.
+
+The **app group** `group.com.jreed91.hinterland` is the first (App Groups → register the
+group, then check it on both the `com.jreed91.hinterland` and
+`com.jreed91.hinterland.widgets` identifiers). Without it the app itself is unaffected —
+stars, reminders, maps, everything works — but the widget reads an empty container and
+sits there blank, and the Alerts sheet says so.
+
+**WeatherKit** is the second (Certificates, Identifiers & Profiles → your identifier →
+check **WeatherKit**), and it only applies to the app identifier. Without it every
+forecast request fails to authenticate and the app falls back to showing no weather.
+Everything else works regardless.
+
+The widget extension ships as its own bundle, `com.jreed91.hinterland.widgets`, so that
+identifier has to exist alongside the app's. Change either in `project.yml` and re-run
+`xcodegen generate`; the widget's ID has to stay prefixed by the app's or iOS refuses to
+install the container.
 
 ### TestFlight
 
@@ -221,18 +240,61 @@ appears, so `WeatherAttributionView` sits at the bottom of the weather screen. T
 are remote images; the cached service name and legal text stand in when there's no signal
 to load them.
 
+## The widget and the Live Activity
+
+Both answer the same question — what am I watching, and what's after it — so the rule for
+picking those two sets lives once, in `Lineup.focus`: starred sets that haven't finished,
+or the whole schedule when nothing is starred and there'd otherwise be nothing to show.
+The Live Activity ignores that fallback, because a Lock Screen card about a band you
+never starred is a card you turn off.
+
+A widget runs in its own process, so everything it draws has to reach it through the
+**app group** — `Favorites` writes the starred IDs there instead of `.standard`, and
+`ScheduleStore` caches a refreshed `schedule.json` there instead of Application Support.
+Both migrate what an older build left behind on first launch, so updating doesn't cost
+anyone their lineup. `Hinterland/Shared/` is the code compiled into both targets; keeping
+it to one copy is what stops the widget from disagreeing with the app about set times.
+
+Neither one can be updated in the valley, which is the whole design constraint:
+
+- The **widget timeline** is built ahead of time, with one entry at each remaining set
+  boundary (`Lineup.transitions`). Nothing about it changes except when a set starts or
+  ends, so WidgetKit has every entry it will need hours before it needs them and never
+  has to wake the extension. The app reloads timelines when stars change, when a refresh
+  brings new set times, and on foreground.
+- The **Live Activity** can only be *started* while the app is in the foreground, so
+  `LiveActivityController.sync` runs on launch, on every foreground, and on any change to
+  the lineup — starting, updating or ending the card to match. Everything that moves on
+  the card is a date the system animates by itself (`Text(timerInterval:)`,
+  `ProgressView(timerInterval:)`), so it counts down correctly in airplane mode with the
+  app long since killed. `staleDate` is the end of the set: past it, iOS dims the card
+  rather than showing a confident wrong answer.
+
+The widget deliberately carries no artist artwork. The catalog is 4.5 MB and a widget
+extension has to bundle its own copy of anything it draws; stage colour and an SF Symbol
+say the same thing for none of it. It does bundle `schedule.json`, so a phone that has
+never had signal since installing still has the times.
+
+Tapping either opens `hinterland://lineup`, which `RootView` turns into a jump to the
+My Lineup tab rather than wherever the app was last left.
+
 ## Layout
 
 ```
 Hinterland/
   App/         HinterlandApp.swift — entry point, appearance
-  Models/      FestivalData, GuideData, MapData, VendorData, WeatherData — Codable
-               mirrors of the JSON
-  Services/    ScheduleStore (loading + refresh), WeatherStore, Favorites,
-               NotificationManager
+  Shared/      compiled into the app AND the widget extension — FestivalData, Favorites,
+               Theme (palette + formatting), AppGroup, ScheduleFile, Lineup,
+               NowPlayingActivity (the ActivityKit attributes)
+  Models/      GuideData, MapData, VendorData, WeatherData — Codable mirrors of the JSON
+  Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
+               LiveActivityController
   Views/       Schedule, MyLineup, Maps, FoodDrink, ArtistDetail, GroundsMap,
-               MapImage, Weather, WeatherCard, Theme
+               MapImage, Weather, WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
+HinterlandWidgets/
+               the widget extension — UpNextWidget (Home and Lock Screen),
+               NowPlayingLiveActivity (Lock Screen and Dynamic Island)
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area
