@@ -1,22 +1,35 @@
 import SwiftUI
+import WidgetKit
+
+/// Tabs, named so the widget can ask for one by deep link.
+enum RootTab: Hashable {
+    case schedule, lineup, maps, food
+}
 
 struct RootView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(WeatherStore.self) private var weather
     @Environment(Favorites.self) private var favorites
     @Environment(NotificationManager.self) private var notifications
+    @Environment(LiveActivityController.self) private var liveActivity
     @Environment(\.scenePhase) private var scenePhase
 
+    @State private var tab: RootTab = .schedule
+
     var body: some View {
-        TabView {
+        TabView(selection: $tab) {
             ScheduleView()
                 .tabItem { Label("Schedule", systemImage: "calendar") }
+                .tag(RootTab.schedule)
             MyLineupView()
                 .tabItem { Label("My Lineup", systemImage: "star.fill") }
+                .tag(RootTab.lineup)
             MapsView()
                 .tabItem { Label("Maps", systemImage: "map") }
+                .tag(RootTab.maps)
             NavigationStack { FoodDrinkView() }
                 .tabItem { Label("Food & Drink", systemImage: "fork.knife") }
+                .tag(RootTab.food)
         }
         .tint(Theme.accent)
         .preferredColorScheme(.dark)
@@ -27,16 +40,37 @@ struct RootView: View {
             // Same deal for the forecast, except there is no bundled copy to fall back to
             // — the cache from the last time there was signal is all there is.
             await weather.refresh()
+            await syncLiveActivity()
         }
         // Starring a set should arm its reminder immediately, without a settings trip.
-        .onChange(of: favorites.ids) { _, _ in syncReminders() }
-        .onChange(of: store.data) { _, _ in syncReminders() }
+        .onChange(of: favorites.ids) { _, _ in
+            syncReminders()
+            Task { await syncLiveActivity() }
+        }
+        .onChange(of: store.data) { _, _ in
+            syncReminders()
+            Task { await syncLiveActivity() }
+        }
+        .onChange(of: liveActivity.isEnabled) { _, _ in
+            Task { await syncLiveActivity() }
+        }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
             syncReminders()
             // Throttled inside the store, so coming back to the app repeatedly doesn't
             // turn into repeated WeatherKit calls.
             Task { await weather.refresh() }
+            // ActivityKit only lets the app start a card while it's in the foreground, so
+            // this is the moment to catch the Live Activity up on the whole day.
+            Task { await syncLiveActivity() }
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+        // Tapping the widget or the Live Activity lands on the lineup rather than
+        // wherever the app happened to be left.
+        .onOpenURL { url in
+            if url.host == "lineup" || url.pathComponents.contains("lineup") {
+                tab = .lineup
+            }
         }
     }
 
@@ -44,5 +78,9 @@ struct RootView: View {
         guard notifications.isEnabled else { return }
         notifications.reschedule(for: favorites.performances(in: store.data),
                                  festivalTimeZone: store.data.timeZone)
+    }
+
+    private func syncLiveActivity() async {
+        await liveActivity.sync(data: store.data, starred: favorites.ids)
     }
 }

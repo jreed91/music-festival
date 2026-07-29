@@ -46,7 +46,7 @@ struct MyLineupView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                ReminderSettingsView()
+                AlertSettingsView()
             }
             .navigationDestination(for: Performance.self) { performance in
                 ArtistDetailView(artistID: performance.artistId)
@@ -108,9 +108,11 @@ struct MyLineupView: View {
     }
 }
 
-/// Reminder on/off and how much warning you get.
-struct ReminderSettingsView: View {
+/// What the app is allowed to put in front of you: reminders before your sets, and the
+/// Live Activity that sits on the Lock Screen while one is on.
+struct AlertSettingsView: View {
     @Environment(NotificationManager.self) private var notifications
+    @Environment(LiveActivityController.self) private var liveActivity
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
     @Environment(\.dismiss) private var dismiss
@@ -121,6 +123,7 @@ struct ReminderSettingsView: View {
         // Bound separately rather than shadowing, so the closures below unambiguously
         // refer to the environment object.
         @Bindable var bindable = notifications
+        @Bindable var activity = liveActivity
 
         NavigationStack {
             Form {
@@ -151,8 +154,42 @@ struct ReminderSettingsView: View {
                             .foregroundStyle(Theme.warning)
                     }
                 }
+
+                Section {
+                    Toggle("Live Activity", isOn: $activity.isEnabled)
+                        .tint(Theme.accent)
+
+                    if !liveActivity.isPermittedBySystem {
+                        Label("Live Activities are turned off for Hinterland in iOS Settings.",
+                              systemImage: "exclamationmark.circle")
+                            .foregroundStyle(Theme.warning)
+                    } else if let reason = liveActivity.failureReason {
+                        // Otherwise a card that never appears looks like a bug in the
+                        // schedule rather than something iOS declined.
+                        Label(reason, systemImage: "exclamationmark.circle")
+                            .foregroundStyle(Theme.warning)
+                    }
+                } header: {
+                    Text("On the Lock Screen")
+                } footer: {
+                    Text("Puts the starred set you're watching on the Lock Screen and in the "
+                       + "Dynamic Island, from 90 minutes before it starts until it ends. It "
+                       + "counts down on its own, so it keeps working with no signal.")
+                }
+
+                // Only ever true on a build whose App ID is missing the app group, which
+                // is a signing problem rather than anything the user did — but it's worth
+                // saying, because the symptom is a widget that sits there empty.
+                if !AppGroup.isAvailable {
+                    Section {
+                        Label("The Home Screen widget can't read your lineup on this build "
+                            + "— its app group isn't set up.",
+                              systemImage: "square.grid.2x2")
+                            .foregroundStyle(Theme.warning)
+                    }
+                }
             }
-            .navigationTitle("Reminders")
+            .navigationTitle("Alerts")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
