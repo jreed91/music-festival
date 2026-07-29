@@ -69,7 +69,7 @@ final class ScheduleStore {
             guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
                 throw RefreshError.badStatus((response as? HTTPURLResponse)?.statusCode ?? -1)
             }
-            guard let fresh = Self.decode(FestivalData.self, from: payload) else {
+            guard let fresh = ScheduleFile.decode(payload) else {
                 throw RefreshError.malformed
             }
 
