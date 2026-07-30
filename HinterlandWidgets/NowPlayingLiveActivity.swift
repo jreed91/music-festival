@@ -21,17 +21,17 @@ struct NowPlayingLiveActivity: Widget {
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     Label(stage.displayName, systemImage: stage.symbol)
-                        .font(.system(size: 12, weight: .semibold))
+                        .appFont(12, weight: .semibold)
                         .foregroundStyle(stage.color)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Countdown(state: state)
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
+                        .appFont(13, weight: .semibold, design: .rounded)
                         .foregroundStyle(Theme.accent)
                 }
                 DynamicIslandExpandedRegion(.center) {
                     Text(state.artist)
-                        .font(.system(size: 17, weight: .bold))
+                        .appFont(17, weight: .bold)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
@@ -40,7 +40,7 @@ struct NowPlayingLiveActivity: Widget {
                         SetProgress(state: state)
                         if let following = state.nextArtist, let start = state.nextStart {
                             Text("Then \(following) · \(Format.time(start))")
-                                .font(.system(size: 11))
+                                .appFont(11)
                                 .foregroundStyle(Theme.secondaryText)
                                 .lineLimit(1)
                         }
@@ -51,7 +51,7 @@ struct NowPlayingLiveActivity: Widget {
                     .foregroundStyle(stage.color)
             } compactTrailing: {
                 Countdown(state: state)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .appFont(12, weight: .semibold, design: .rounded)
                     .foregroundStyle(Theme.accent)
                     .frame(maxWidth: 58)
             } minimal: {
@@ -74,35 +74,35 @@ private struct LockScreenCard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(festival.uppercased())
-                    .font(.system(size: 10, weight: .heavy))
+                    .appFont(10, weight: .heavy)
                     .foregroundStyle(Theme.tertiaryText)
                 Spacer(minLength: 8)
                 Text(state.isStarred ? "YOUR LINEUP" : "ON NOW")
-                    .font(.system(size: 10, weight: .heavy))
+                    .appFont(10, weight: .heavy)
                     .foregroundStyle(Theme.accent)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(state.artist)
-                    .font(.system(size: 22, weight: .bold))
+                    .appFont(22, weight: .bold)
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
                 Spacer(minLength: 4)
                 Countdown(state: state)
-                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .appFont(15, weight: .semibold, design: .rounded)
                     .foregroundStyle(Theme.accent)
             }
 
             HStack(spacing: 6) {
                 Image(systemName: state.stage.symbol)
-                    .font(.system(size: 10, weight: .semibold))
+                    .appFont(10, weight: .semibold)
                 Text(state.stage.displayName)
-                    .font(.system(size: 12, weight: .semibold))
+                    .appFont(12, weight: .semibold)
                 Text("·")
                     .foregroundStyle(Theme.tertiaryText)
                 Text(Format.range(state.start, state.end))
-                    .font(.system(size: 12))
+                    .appFont(12)
                     .foregroundStyle(Theme.secondaryText)
             }
             .foregroundStyle(state.stage.color)
@@ -113,7 +113,7 @@ private struct LockScreenCard: View {
                 Text("Then \(following)"
                      + (state.nextStage.map { " · \($0.displayName)" } ?? "")
                      + " · \(Format.time(start))")
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.secondaryText)
                     .lineLimit(1)
             }

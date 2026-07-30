@@ -6,8 +6,18 @@ import SwiftUI
 /// the first fetch needs someone to be somewhere with a signal.
 struct WeatherCard: View {
     @Environment(WeatherStore.self) private var weather
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var current: CurrentConditions? { weather.snapshot?.current }
+
+    /// Symbol, temperature and conditions fit on one line at ordinary sizes and nowhere
+    /// near it at accessibility ones, where the row used to run off the card and print
+    /// "Feels like" over the temperature. Stack them instead of overflowing.
+    private var layout: AnyLayout {
+        typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(spacing: 12))
+    }
 
     /// The soonest hour in the next twelve with a real chance of rain — the one thing
     /// worth surfacing before someone decides what to carry.
@@ -17,42 +27,42 @@ struct WeatherCard: View {
 
     var body: some View {
         NavigationLink(value: WeatherRoute.forecast) {
-            HStack(spacing: 12) {
+            layout {
                 Image(systemName: current?.symbolName ?? "cloud.sun")
                     .symbolRenderingMode(current == nil ? .monochrome : .multicolor)
-                    .font(.system(size: 24))
+                    .appFont(24)
                     .foregroundStyle(Theme.tertiaryText)
-                    .frame(width: 30)
+                    .frame(minWidth: 30)
 
                 if let current {
                     Text(Format.temperature(current.temperature))
-                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .appFont(22, weight: .semibold, design: .rounded)
                         .foregroundStyle(.white)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(current.condition)
-                            .font(.system(size: 13, weight: .medium))
+                            .appFont(13, weight: .medium)
                             .foregroundStyle(Theme.secondaryText)
                             .lineLimit(1)
                         if let wetHour {
                             Label("\(Format.percent(wetHour.precipitationChance)) rain by "
                                 + Format.hour(wetHour.date),
                                   systemImage: "umbrella")
-                                .font(.system(size: 11, weight: .semibold))
+                                .appFont(11, weight: .semibold)
                                 .foregroundStyle(Theme.rain)
                         } else if current.showsApparentTemperature {
                             Text("Feels like \(Format.temperature(current.apparentTemperature))")
-                                .font(.system(size: 11))
+                                .appFont(11)
                                 .foregroundStyle(Theme.tertiaryText)
                         }
                     }
                 } else {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Forecast")
-                            .font(.system(size: 15, weight: .semibold))
+                            .appFont(15, weight: .semibold)
                             .foregroundStyle(.white)
                         Text(weather.isRefreshing ? "Loading…" : "Tap to load — needs a signal once")
-                            .font(.system(size: 11))
+                            .appFont(11)
                             .foregroundStyle(Theme.tertiaryText)
                     }
                 }
@@ -60,9 +70,12 @@ struct WeatherCard: View {
                 Spacer(minLength: 0)
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .appFont(12, weight: .semibold)
                     .foregroundStyle(Theme.tertiaryText)
             }
+            // Stacked, nothing is left pushing the card open, so it would shrink to its
+            // widest line and stop matching the cards above and below it.
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(Theme.surface,
@@ -84,18 +97,18 @@ struct WeatherAlertBanner: View {
         NavigationLink(value: WeatherRoute.forecast) {
             HStack(spacing: 10) {
                 Image(systemName: advisory.severity.symbol)
-                    .font(.system(size: 18, weight: .semibold))
+                    .appFont(18, weight: .semibold)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(advisory.summary)
-                        .font(.system(size: 14, weight: .bold))
+                        .appFont(14, weight: .bold)
                         .multilineTextAlignment(.leading)
                     Text("\(advisory.severity.label) · \(advisory.source)")
-                        .font(.system(size: 11, weight: .medium))
+                        .appFont(11, weight: .medium)
                         .opacity(0.85)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .appFont(12, weight: .semibold)
                     .opacity(0.7)
             }
             .foregroundStyle(Theme.background)
@@ -118,24 +131,24 @@ struct WeatherAlertCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     Image(systemName: advisory.severity.symbol)
-                        .font(.system(size: 15, weight: .semibold))
+                        .appFont(15, weight: .semibold)
                     Text(advisory.severity.label.uppercased())
-                        .font(.system(size: 11, weight: .heavy))
+                        .appFont(11, weight: .heavy)
                     Spacer(minLength: 0)
                     Image(systemName: "arrow.up.right")
-                        .font(.system(size: 11, weight: .semibold))
+                        .appFont(11, weight: .semibold)
                         .opacity(0.7)
                 }
                 .foregroundStyle(advisory.severity.tint)
 
                 Text(advisory.summary)
-                    .font(.system(size: 15, weight: .semibold))
+                    .appFont(15, weight: .semibold)
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text([advisory.region, advisory.source].compactMap { $0 }.joined(separator: " · "))
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.secondaryText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -160,13 +173,13 @@ struct SetForecastBadge: View {
         HStack(spacing: 5) {
             Image(systemName: hour.symbolName)
                 .symbolRenderingMode(.multicolor)
-                .font(.system(size: 11))
+                .appFont(11)
             Text(Format.temperature(hour.temperature))
-                .font(.system(size: 11, weight: .semibold))
+                .appFont(11, weight: .semibold)
                 .foregroundStyle(.white)
             if hour.precipitationChance >= 0.2 {
                 Text(Format.percent(hour.precipitationChance))
-                    .font(.system(size: 11, weight: .semibold))
+                    .appFont(11, weight: .semibold)
                     .foregroundStyle(Theme.rain)
             }
         }
@@ -194,7 +207,7 @@ struct WeatherAttributionView: View {
                             textMark(attribution.serviceName)
                         }
                         Text(attribution.legalText)
-                            .font(.system(size: 9))
+                            .appFont(9)
                             .foregroundStyle(Theme.tertiaryText)
                             .multilineTextAlignment(.center)
                     }
@@ -212,7 +225,7 @@ struct WeatherAttributionView: View {
             Image(systemName: "apple.logo")
             Text(name)
         }
-        .font(.system(size: 11, weight: .medium))
+        .appFont(11, weight: .medium)
         .foregroundStyle(Theme.secondaryText)
     }
 }

@@ -59,38 +59,43 @@ struct FoodDrinkView: View {
     /// both, which is the question someone with two restrictions is actually asking.
     private var filters: some View {
         Section {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(store.vendors.presentTags) { tag in
-                        let isOn = tags.contains(tag)
-                        Button {
-                            if isOn { tags.remove(tag) } else { tags.insert(tag) }
-                        } label: {
-                            Text(tag.label)
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(isOn ? Theme.background : Theme.dietary)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(isOn ? Theme.dietary : Theme.dietary.opacity(0.16),
-                                            in: Capsule())
-                        }
-                        .buttonStyle(.plain)
+            // Wrapped rather than scrolled sideways: every restriction has to be visible
+            // to be pickable, and someone avoiding nuts shouldn't have to discover the
+            // filter by dragging a row that looks like it ends.
+            FlowLayout(spacing: 8, lineSpacing: 8) {
+                ForEach(store.vendors.presentTags) { tag in
+                    let isOn = tags.contains(tag)
+                    Button {
+                        if isOn { tags.remove(tag) } else { tags.insert(tag) }
+                    } label: {
+                        Text(tag.label)
+                            .appFont(12, weight: .semibold)
+                            .foregroundStyle(isOn ? Theme.background : Theme.dietary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(isOn ? Theme.dietary : Theme.dietary.opacity(0.16),
+                                        in: Capsule())
                     }
-                    if !tags.isEmpty {
-                        Button("Clear") { tags.removeAll() }
-                            .font(.system(size: 12))
-                            .foregroundStyle(Theme.secondaryText)
-                            .buttonStyle(.plain)
-                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(tag.label)
+                    .accessibilityAddTraits(isOn ? [.isSelected] : [])
                 }
-                .padding(.vertical, 2)
+                if !tags.isEmpty {
+                    Button("Clear") { tags.removeAll() }
+                        .appFont(12, weight: .semibold)
+                        .foregroundStyle(Theme.secondaryText)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .buttonStyle(.plain)
+                }
             }
+            .padding(.vertical, 2)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         } footer: {
             Text("\(matchCount) stand\(matchCount == 1 ? "" : "s") shown"
                + (tags.isEmpty ? "" : " serving \(tags.map(\.label).sorted().joined(separator: " + "))")
                + ".")
-                .font(.system(size: 11))
+                .appFont(11)
         }
         .listRowBackground(Theme.surface)
     }
@@ -101,12 +106,12 @@ struct FoodDrinkView: View {
                + "stand has an option that fits, not a whole menu — ask when you order. "
                + "Special dietary accommodation can be arranged in advance through "
                + "access@hinterlandiowa.com.")
-                .font(.system(size: 12))
+                .appFont(12)
                 .foregroundStyle(Theme.secondaryText)
             if let source = store.vendors.source, let url = URL(string: source) {
                 Link(destination: url) {
                     Label("Vendor list on hinterlandiowa.com", systemImage: "arrow.up.right")
-                        .font(.system(size: 13))
+                        .appFont(13)
                         .foregroundStyle(Theme.accent)
                 }
             }
@@ -127,12 +132,12 @@ struct VendorCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(vendor.name)
-                    .font(.system(size: 15, weight: .semibold))
+                    .appFont(15, weight: .semibold)
                     .foregroundStyle(.white)
                 Spacer(minLength: 8)
                 if let hometown = vendor.hometown {
                     Text(hometown)
-                        .font(.system(size: 11))
+                        .appFont(11)
                         .foregroundStyle(Theme.tertiaryText)
                         .multilineTextAlignment(.trailing)
                 }
@@ -140,7 +145,7 @@ struct VendorCard: View {
 
             if !vendor.offerings.isEmpty {
                 Text(vendor.offerings)
-                    .font(.system(size: 13))
+                    .appFont(13)
                     .foregroundStyle(Theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -152,21 +157,21 @@ struct VendorCard: View {
                 }
             } else if let note = vendor.dietaryNote {
                 Text(note)
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
             }
 
             if !alsoIn.isEmpty {
                 Label("Also in \(alsoIn.map(\.name).joined(separator: ", "))",
                       systemImage: "mappin.and.ellipse")
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
             }
 
             if let link = vendor.url, let url = URL(string: link) {
                 Link(destination: url) {
                     Text(url.host()?.replacingOccurrences(of: "www.", with: "") ?? link)
-                        .font(.system(size: 11))
+                        .appFont(11)
                         .foregroundStyle(Theme.accent)
                 }
             }
@@ -181,7 +186,7 @@ struct DietaryBadge: View {
 
     var body: some View {
         Text(isOption ? "\(tag.label) option" : tag.label)
-            .font(.system(size: 10, weight: .semibold))
+            .appFont(10, weight: .semibold)
             .foregroundStyle(Theme.dietary.opacity(isOption ? 0.62 : 1))
             .padding(.horizontal, 7)
             .padding(.vertical, 3)

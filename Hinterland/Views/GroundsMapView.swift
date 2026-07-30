@@ -41,7 +41,13 @@ struct GroundsMapView: View {
                 userLocation: $userLocation,
                 cameraDistance: $cameraDistance
             )
-            .ignoresSafeArea(edges: .bottom)
+            // Deliberately *not* ignoring the bottom safe area. The illustrations are
+            // bright daylight artwork, and running them under the floating tab bar left
+            // "Schedule" and "Food & Drink" sitting on lime green — the bar's material
+            // takes its contrast from whatever is behind it, and neither
+            // `UITabBarAppearance` nor `.toolbarBackground` reaches it on current iOS.
+            // Ending the map at the safe area puts the app's own dark background back
+            // behind the bar, which is the one thing that reliably works.
 
             VStack(spacing: 0) {
                 filters
@@ -106,7 +112,7 @@ struct GroundsMapView: View {
                         }
                     } label: {
                         Label(category.label, systemImage: category.symbol)
-                            .font(.system(size: 12, weight: .semibold))
+                            .appFont(12, weight: .semibold)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 7)
                             .background(isOn ? category.tint.opacity(0.9) : Theme.surface.opacity(0.9),
@@ -118,7 +124,9 @@ struct GroundsMapView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
         }
-        .background(.ultraThinMaterial)
+        // A system material would brighten to match the artwork underneath and take the
+        // chip labels with it. This strip has to stay dark whatever it is sitting on.
+        .background(Theme.background.opacity(0.88))
     }
 
     private var caveat: some View {
@@ -127,13 +135,13 @@ struct GroundsMapView: View {
              + "roughly the width of a beer tent. Zoom out for camping and parking."
              : "Pins are traced off the festival's illustrated maps, so they're accurate "
              + "to roughly a field's width. Zoom in for what's inside the gates.")
-            .font(.system(size: 11))
+            .appFont(11)
             .foregroundStyle(Theme.secondaryText)
             .multilineTextAlignment(.center)
             .padding(.horizontal, 18)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .background(.ultraThinMaterial)
+            .background(Theme.background.opacity(0.88))
     }
 }
 
@@ -161,19 +169,19 @@ private struct POICard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 Label(poi.name, systemImage: poi.category.symbol)
-                    .font(.system(size: 16, weight: .semibold))
+                    .appFont(16, weight: .semibold)
                     .foregroundStyle(.white)
                 Spacer()
                 Button(action: dismiss) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 18))
+                        .appFont(18)
                         .foregroundStyle(Theme.tertiaryText)
                 }
             }
 
             if let note = poi.note {
                 Text(note)
-                    .font(.system(size: 13))
+                    .appFont(13)
                     .foregroundStyle(Theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -181,7 +189,7 @@ private struct POICard: View {
             HStack(spacing: 12) {
                 if let distance {
                     Label(distance, systemImage: "figure.walk")
-                        .font(.system(size: 12, weight: .medium))
+                        .appFont(12, weight: .medium)
                         .foregroundStyle(Theme.accent)
                 }
                 Spacer()
@@ -192,7 +200,7 @@ private struct POICard: View {
                         [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
                 } label: {
                     Label("Directions", systemImage: "arrow.triangle.turn.up.right.circle")
-                        .font(.system(size: 12, weight: .semibold))
+                        .appFont(12, weight: .semibold)
                 }
             }
         }

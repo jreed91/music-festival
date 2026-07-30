@@ -22,6 +22,57 @@ enum Theme {
     static let dietary = Color(red: 0.52, green: 0.84, blue: 0.62)
 }
 
+// MARK: - Type
+
+extension View {
+    /// A system font at `size` that scales with the reader's text-size setting.
+    ///
+    /// `Font.system(size:)` is fixed: it ignores Dynamic Type completely, which for an app
+    /// read at arm's length in a field, in the sun, by a crowd of every age is the wrong
+    /// default. This keeps each hand-tuned size exactly as it is at the default setting and
+    /// scales from there.
+    func appFont(_ size: CGFloat,
+                 weight: Font.Weight = .regular,
+                 design: Font.Design = .default) -> some View {
+        modifier(ScaledFont(size: size, weight: weight, design: design))
+    }
+}
+
+private struct ScaledFont: ViewModifier {
+    @ScaledMetric private var scaledSize: CGFloat
+    private let weight: Font.Weight
+    private let design: Font.Design
+
+    init(size: CGFloat, weight: Font.Weight, design: Font.Design) {
+        _scaledSize = ScaledMetric(wrappedValue: size, relativeTo: Self.anchor(for: size))
+        self.weight = weight
+        self.design = design
+    }
+
+    func body(content: Content) -> some View {
+        content.font(.system(size: scaledSize, weight: weight, design: design))
+    }
+
+    /// The built-in style whose default size sits nearest, so each size grows at the rate
+    /// iOS grows type of that size — a 10pt badge climbs steeply, a 32pt title barely
+    /// moves. Anchoring everything to one style instead would either leave the small text
+    /// unreadable or blow the large text off the screen.
+    private static func anchor(for size: CGFloat) -> Font.TextStyle {
+        switch size {
+        case ..<11.5: return .caption2      // 11
+        case ..<12.5: return .caption       // 12
+        case ..<13.5: return .footnote      // 13
+        case ..<15.5: return .subheadline   // 15
+        case ..<16.5: return .callout       // 16
+        case ..<18.5: return .body          // 17
+        case ..<21:   return .title3        // 20
+        case ..<25:   return .title2        // 22
+        case ..<31:   return .title         // 28
+        default:      return .largeTitle    // 34
+        }
+    }
+}
+
 extension Stage {
     var color: Color {
         switch self {

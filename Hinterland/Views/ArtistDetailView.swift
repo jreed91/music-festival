@@ -20,10 +20,10 @@ struct ArtistDetailView: View {
                     if let bio = artist?.bio, !bio.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("About")
-                                .font(.system(size: 13, weight: .bold))
+                                .appFont(13, weight: .bold)
                                 .foregroundStyle(Theme.tertiaryText)
                             Text(bio)
-                                .font(.system(size: 15))
+                                .appFont(15)
                                 .foregroundStyle(.white.opacity(0.86))
                                 .lineSpacing(4)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -53,7 +53,7 @@ struct ArtistDetailView: View {
                 .frame(height: 320)
 
             Text(artist?.name ?? "")
-                .font(.system(size: 32, weight: .heavy))
+                .appFont(32, weight: .heavy)
                 .foregroundStyle(.white)
                 .shadow(radius: 12)
                 .padding(20)
@@ -68,10 +68,10 @@ struct ArtistDetailView: View {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(day.map { "\($0.weekday) · \(Format.dayLabel($0))" } ?? "")
-                            .font(.system(size: 11, weight: .bold))
+                            .appFont(11, weight: .bold)
                             .foregroundStyle(Theme.tertiaryText)
                         Text(Format.range(performance.start, performance.end))
-                            .font(.system(size: 17, weight: .semibold))
+                            .appFont(17, weight: .semibold)
                             .foregroundStyle(.white)
                         HStack(spacing: 6) {
                             StageBadge(stage: Stage(name: performance.stage))
@@ -89,7 +89,7 @@ struct ArtistDetailView: View {
                         let starred = favorites.contains(performance)
                         Label(starred ? "Starred" : "Star",
                               systemImage: starred ? "star.fill" : "star")
-                            .font(.system(size: 13, weight: .semibold))
+                            .appFont(13, weight: .semibold)
                             .foregroundStyle(starred ? Theme.background : Theme.accent)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 9)
@@ -113,7 +113,7 @@ struct ArtistDetailView: View {
         if spotify != nil || instagram != nil {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Listen & follow")
-                    .font(.system(size: 13, weight: .bold))
+                    .appFont(13, weight: .bold)
                     .foregroundStyle(Theme.tertiaryText)
 
                 HStack(spacing: 10) {
@@ -141,7 +141,7 @@ private struct LinkButton: View {
         if let url {
             Link(destination: url) {
                 Label(title, systemImage: symbol)
-                    .font(.system(size: 14, weight: .semibold))
+                    .appFont(14, weight: .semibold)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 11)

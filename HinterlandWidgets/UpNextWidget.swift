@@ -106,13 +106,13 @@ struct UpNextWidgetView: View {
             if let headline = entry.focus.headline {
                 SetLabel(focus: entry.focus, performance: headline, at: entry.date)
                 Text(headline.artist)
-                    .font(.system(size: 18, weight: .bold))
+                    .appFont(18, weight: .bold)
                     .foregroundStyle(.white)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
                     .padding(.top, 4)
                 Text(Stage(name: headline.stage).displayName)
-                    .font(.system(size: 12, weight: .semibold))
+                    .appFont(12, weight: .semibold)
                     .foregroundStyle(Stage(name: headline.stage).color)
                     .padding(.top, 2)
                 Spacer(minLength: 4)
@@ -131,17 +131,17 @@ struct UpNextWidgetView: View {
                 Divider().overlay(Theme.hairline)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("THEN")
-                        .font(.system(size: 10, weight: .heavy))
+                        .appFont(10, weight: .heavy)
                         .foregroundStyle(Theme.tertiaryText)
                     Text(following.artist)
-                        .font(.system(size: 15, weight: .semibold))
+                        .appFont(15, weight: .semibold)
                         .foregroundStyle(.white.opacity(0.9))
                         .lineLimit(2)
                     Text(Stage(name: following.stage).displayName)
-                        .font(.system(size: 11, weight: .medium))
+                        .appFont(11, weight: .medium)
                         .foregroundStyle(Stage(name: following.stage).color)
                     Text(Format.time(following.start))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .appFont(12, weight: .medium, design: .rounded)
                         .foregroundStyle(Theme.secondaryText)
                     Spacer(minLength: 0)
                 }
@@ -171,21 +171,21 @@ struct UpNextWidgetView: View {
         VStack(alignment: .leading, spacing: 1) {
             if let headline = entry.focus.headline {
                 Text(headline.isLive(at: entry.date) ? "ON NOW" : "UP NEXT")
-                    .font(.system(size: 11, weight: .bold))
+                    .appFont(11, weight: .bold)
                     .widgetAccentable()
                 Text(headline.artist)
-                    .font(.system(size: 15, weight: .semibold))
+                    .appFont(15, weight: .semibold)
                     .lineLimit(1)
                 Text("\(Stage(name: headline.stage).displayName) · \(Format.time(headline.start))")
-                    .font(.system(size: 12))
+                    .appFont(12)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             } else {
                 Text("Hinterland")
-                    .font(.system(size: 12, weight: .semibold))
+                    .appFont(12, weight: .semibold)
                     .widgetAccentable()
                 Text("Star a set to see it here")
-                    .font(.system(size: 12))
+                    .appFont(12)
                     .foregroundStyle(.secondary)
             }
         }
@@ -201,21 +201,21 @@ struct UpNextWidgetView: View {
                 Image(systemName: Stage(name: headline.stage).symbol)
             } currentValueLabel: {
                 Image(systemName: Stage(name: headline.stage).symbol)
-                    .font(.system(size: 14))
+                    .appFont(14)
             }
             .progressViewStyle(.circular)
             .widgetAccentable()
         } else if let headline = entry.focus.headline {
             VStack(spacing: 0) {
                 Image(systemName: Stage(name: headline.stage).symbol)
-                    .font(.system(size: 12))
+                    .appFont(12)
                 Text(headline.start, style: .time)
-                    .font(.system(size: 11, weight: .medium))
+                    .appFont(11, weight: .medium)
             }
             .widgetAccentable()
         } else {
             Image(systemName: "star")
-                .font(.system(size: 16))
+                .appFont(16)
                 .widgetAccentable()
         }
     }
@@ -237,7 +237,7 @@ private struct SetLabel: View {
                 .frame(width: 5, height: 5)
                 .opacity(performance.isLive(at: at) ? 1 : 0)
             Text(label)
-                .font(.system(size: 10, weight: .heavy))
+                .appFont(10, weight: .heavy)
                 .foregroundStyle(Theme.accent)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
@@ -270,7 +270,7 @@ private struct CountdownLine: View {
                 Text(performance.start, style: .relative)
             }
         }
-        .font(.system(size: 12, weight: .medium, design: .rounded))
+        .appFont(12, weight: .medium, design: .rounded)
         .foregroundStyle(Theme.secondaryText)
         .lineLimit(1)
         .minimumScaleFactor(0.8)
@@ -281,13 +281,13 @@ private struct EmptyLineup: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Image(systemName: "star")
-                .font(.system(size: 18))
+                .appFont(18)
                 .foregroundStyle(Theme.accent)
             Text("Nothing starred")
-                .font(.system(size: 14, weight: .semibold))
+                .appFont(14, weight: .semibold)
                 .foregroundStyle(.white)
             Text("Star sets in the app and they show up here.")
-                .font(.system(size: 11))
+                .appFont(11)
                 .foregroundStyle(Theme.secondaryText)
         }
     }
