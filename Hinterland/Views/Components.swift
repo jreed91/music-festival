@@ -37,9 +37,9 @@ struct StageBadge: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: stage.symbol)
-                .font(.system(size: compact ? 9 : 10, weight: .semibold))
+                .appFont(compact ? 9 : 10, weight: .semibold)
             Text(stage.displayName)
-                .font(.system(size: compact ? 10 : 11, weight: .semibold))
+                .appFont(compact ? 10 : 11, weight: .semibold)
         }
         .foregroundStyle(stage.color)
         .padding(.horizontal, compact ? 6 : 8)
@@ -76,6 +76,9 @@ struct ArtistImage: View {
         ZStack {
             Theme.surfaceRaised
             Text(initials)
+                // Deliberately not scaled: this is lettering inside a fixed-size piece of
+                // artwork, sized as a fraction of that box rather than as text to read.
+                // Growing it with Dynamic Type would just overflow the thumbnail.
                 .font(.system(size: (size ?? 44) * 0.34, weight: .bold, design: .rounded))
                 .foregroundStyle(Theme.tertiaryText)
         }
@@ -95,7 +98,7 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: symbol)
-                .font(.system(size: 40, weight: .light))
+                .appFont(40, weight: .light)
                 .foregroundStyle(Theme.tertiaryText)
             Text(title)
                 .font(.headline)
@@ -107,5 +110,67 @@ struct EmptyStateView: View {
         }
         .frame(maxWidth: 300)
         .padding(32)
+    }
+}
+
+/// Lays subviews out left to right, wrapping onto a new line when the next one won't fit.
+///
+/// The dietary filters used to sit in a horizontal `ScrollView`, which put Nut-free and
+/// Sugar-free past the right edge with nothing on screen to suggest they were there —
+/// while the vendor cards below went on showing "Nut-free" tags. Wrapping shows the whole
+/// set at once, and it holds up as the chips grow with Dynamic Type, where no fixed number
+/// of them per line would.
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+    var lineSpacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.replacingUnspecifiedDimensions().width
+        let rows = rows(for: subviews, in: width)
+        let height = rows.reduce(0) { $0 + $1.height }
+            + lineSpacing * CGFloat(max(0, rows.count - 1))
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize,
+                       subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in rows(for: subviews, in: bounds.width) {
+            var x = bounds.minX
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(
+                    at: CGPoint(x: x, y: y + (row.height - size.height) / 2),
+                    proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += row.height + lineSpacing
+        }
+    }
+
+    private struct Row {
+        var indices: [Int] = []
+        var height: CGFloat = 0
+    }
+
+    private func rows(for subviews: Subviews, in width: CGFloat) -> [Row] {
+        var rows: [Row] = []
+        var current = Row()
+        var x: CGFloat = 0
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            // Always keep at least one per line, or a chip wider than the container
+            // would loop forever pushing itself onto a fresh line.
+            if !current.indices.isEmpty, x + size.width > width {
+                rows.append(current)
+                current = Row()
+                x = 0
+            }
+            current.indices.append(index)
+            current.height = max(current.height, size.height)
+            x += size.width + spacing
+        }
+        if !current.indices.isEmpty { rows.append(current) }
+        return rows
     }
 }

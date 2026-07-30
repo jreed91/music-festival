@@ -81,7 +81,7 @@ struct ScheduleView: View {
                + ". Pull down to check for updates.")
                 .foregroundStyle(Theme.tertiaryText)
         }
-        .font(.system(size: 11))
+        .appFont(11)
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
         .padding(.top, 10)
@@ -108,9 +108,9 @@ struct ScheduleView: View {
                 } label: {
                     VStack(spacing: 2) {
                         Text(candidate.shortWeekday.uppercased())
-                            .font(.system(size: 12, weight: .bold))
+                            .appFont(12, weight: .bold)
                         Text(Format.dayLabel(candidate))
-                            .font(.system(size: 10, weight: .medium))
+                            .appFont(10, weight: .medium)
                             .opacity(0.75)
                         if let conditions = forecast(for: candidate) {
                             HStack(spacing: 3) {
@@ -118,13 +118,18 @@ struct ScheduleView: View {
                                 // day, so the selected one inherits the dark foreground.
                                 Image(systemName: conditions.symbolName)
                                     .symbolRenderingMode(isSelected ? .monochrome : .multicolor)
-                                    .font(.system(size: 9))
+                                    .appFont(9)
                                 Text(Format.temperature(conditions.high))
-                                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                    .appFont(10, weight: .semibold, design: .rounded)
                             }
                             .padding(.top, 1)
                         }
                     }
+                    // A quarter of the screen is a quarter of the screen however big the
+                    // type is, and "86°" breaking after the 8 reads as a different number
+                    // entirely. Shrink to fit rather than wrap.
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
                     .foregroundStyle(isSelected ? Theme.background : .white)
@@ -137,6 +142,10 @@ struct ScheduleView: View {
             }
         }
         .padding(.horizontal, 16)
+        // Four days always have to be four columns — there's nowhere for a fifth line to
+        // go. Capped like iOS caps its own segmented controls; everything below this
+        // header, which is the part you actually read, scales the whole way.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
     private var stagePicker: some View {
@@ -168,7 +177,7 @@ struct ScheduleView: View {
                       action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 12, weight: .semibold))
+                .appFont(12, weight: .semibold)
                 .foregroundStyle(isSelected ? Theme.background : tint)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
@@ -193,10 +202,10 @@ private struct NowCard: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text(isLive ? "ON NOW" : "UP NEXT")
-                        .font(.system(size: 10, weight: .heavy))
+                        .appFont(10, weight: .heavy)
                         .foregroundStyle(Theme.accent)
                     Text(performance.artist)
-                        .font(.system(size: 20, weight: .bold))
+                        .appFont(20, weight: .bold)
                         .foregroundStyle(.white)
                         .lineLimit(1)
                     HStack(spacing: 6) {
@@ -204,7 +213,7 @@ private struct NowCard: View {
                         Text(isLive
                              ? "until \(Format.time(performance.end))"
                              : Format.relative(performance.start))
-                            .font(.system(size: 11, weight: .medium))
+                            .appFont(11, weight: .medium)
                             .foregroundStyle(Theme.secondaryText)
                     }
                 }

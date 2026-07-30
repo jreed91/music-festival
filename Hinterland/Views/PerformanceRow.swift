@@ -24,11 +24,11 @@ struct PerformanceRow: View {
             VStack(alignment: .leading, spacing: 5) {
                 HStack(spacing: 6) {
                     Text(Format.range(performance.start, performance.end))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .appFont(12, weight: .medium, design: .rounded)
                         .foregroundStyle(Theme.secondaryText)
                     if isLive {
                         Text("NOW")
-                            .font(.system(size: 9, weight: .heavy))
+                            .appFont(9, weight: .heavy)
                             .foregroundStyle(Theme.background)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
@@ -37,7 +37,7 @@ struct PerformanceRow: View {
                 }
 
                 Text(performance.artist)
-                    .font(.system(size: 17, weight: .semibold))
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(.white)
                     .lineLimit(1)
 
@@ -45,7 +45,7 @@ struct PerformanceRow: View {
                     StageBadge(stage: Stage(name: performance.stage), compact: true)
                     if showsConflictWarning {
                         Label("Overlaps", systemImage: "exclamationmark.triangle.fill")
-                            .font(.system(size: 10, weight: .semibold))
+                            .appFont(10, weight: .semibold)
                             .foregroundStyle(Theme.warning)
                     }
                 }
@@ -57,7 +57,7 @@ struct PerformanceRow: View {
                 favorites.toggle(performance)
             } label: {
                 Image(systemName: isStarred ? "star.fill" : "star")
-                    .font(.system(size: 18))
+                    .appFont(18)
                     .foregroundStyle(isStarred ? Theme.accent : Theme.tertiaryText)
                     .frame(width: 44, height: 44)   // keep a comfortable tap target
                     .contentShape(Rectangle())

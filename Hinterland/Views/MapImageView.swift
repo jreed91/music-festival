@@ -21,7 +21,7 @@ struct MapThumbnail: View {
                 ZStack {
                     Theme.surfaceRaised
                     Image(systemName: "map")
-                        .font(.system(size: 18))
+                        .appFont(18)
                         .foregroundStyle(Theme.tertiaryText)
                 }
             }

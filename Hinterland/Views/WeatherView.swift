@@ -49,21 +49,21 @@ struct WeatherView: View {
             HStack(alignment: .top, spacing: 16) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Format.temperature(current.temperature))
-                        .font(.system(size: 56, weight: .semibold, design: .rounded))
+                        .appFont(56, weight: .semibold, design: .rounded)
                         .foregroundStyle(.white)
                     Text(current.condition)
-                        .font(.system(size: 15, weight: .medium))
+                        .appFont(15, weight: .medium)
                         .foregroundStyle(Theme.secondaryText)
                     if current.showsApparentTemperature {
                         Text("Feels like \(Format.temperature(current.apparentTemperature))")
-                            .font(.system(size: 13))
+                            .appFont(13)
                             .foregroundStyle(Theme.tertiaryText)
                     }
                 }
                 Spacer(minLength: 0)
                 Image(systemName: current.symbolName)
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 46))
+                    .appFont(46)
                     .padding(.top, 6)
             }
 
@@ -106,21 +106,21 @@ struct WeatherView: View {
                         ForEach(hours) { hour in
                             VStack(spacing: 6) {
                                 Text(Format.hour(hour.date))
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .appFont(11, weight: .semibold)
                                     .foregroundStyle(Theme.secondaryText)
                                 Image(systemName: hour.symbolName)
                                     .symbolRenderingMode(.multicolor)
-                                    .font(.system(size: 18))
+                                    .appFont(18)
                                     .frame(height: 22)
                                 Text(Format.temperature(hour.temperature))
-                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                    .appFont(14, weight: .semibold, design: .rounded)
                                     .foregroundStyle(.white)
                                 // Only worth the ink once rain is actually plausible, but
                                 // the row still reserves its height so the strip doesn't
                                 // jog up and down between hours.
                                 Text(hour.precipitationChance >= 0.1
                                      ? Format.percent(hour.precipitationChance) : "")
-                                    .font(.system(size: 10, weight: .semibold))
+                                    .appFont(10, weight: .semibold)
                                     .foregroundStyle(Theme.rain)
                                     .frame(height: 12)
                             }
@@ -153,10 +153,10 @@ struct WeatherView: View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(day.weekday)
-                    .font(.system(size: 15, weight: .semibold))
+                    .appFont(15, weight: .semibold)
                     .foregroundStyle(.white)
                 Text(Format.dayLabel(day))
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
             }
             .frame(width: 78, alignment: .leading)
@@ -164,24 +164,24 @@ struct WeatherView: View {
             if let conditions {
                 Image(systemName: conditions.symbolName)
                     .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 20))
+                    .appFont(20)
                     .frame(width: 28)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(conditions.condition)
-                        .font(.system(size: 12))
+                        .appFont(12)
                         .foregroundStyle(Theme.secondaryText)
                         .lineLimit(1)
                     HStack(spacing: 8) {
                         if conditions.precipitationChance >= 0.1 {
                             Label(Format.percent(conditions.precipitationChance),
                                   systemImage: "umbrella")
-                                .font(.system(size: 10, weight: .semibold))
+                                .appFont(10, weight: .semibold)
                                 .foregroundStyle(Theme.rain)
                         }
                         if let sunset = conditions.sunset {
                             Label(Format.time(sunset), systemImage: "sunset")
-                                .font(.system(size: 10, weight: .semibold))
+                                .appFont(10, weight: .semibold)
                                 .foregroundStyle(Theme.tertiaryText)
                         }
                     }
@@ -190,16 +190,16 @@ struct WeatherView: View {
                 Spacer(minLength: 0)
 
                 Text(Format.temperature(conditions.high))
-                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .appFont(17, weight: .semibold, design: .rounded)
                     .foregroundStyle(.white)
                 Text(Format.temperature(conditions.low))
-                    .font(.system(size: 17, weight: .regular, design: .rounded))
+                    .appFont(17, weight: .regular, design: .rounded)
                     .foregroundStyle(Theme.tertiaryText)
             } else {
                 // WeatherKit reaches about ten days out. Before that the honest answer
                 // is that nobody knows yet.
                 Text("Too far out to forecast")
-                    .font(.system(size: 12))
+                    .appFont(12)
                     .foregroundStyle(Theme.tertiaryText)
                 Spacer(minLength: 0)
             }
@@ -232,7 +232,7 @@ struct WeatherView: View {
                     }
                     Text("Refresh")
                 }
-                .font(.system(size: 13, weight: .semibold))
+                .appFont(13, weight: .semibold)
                 .foregroundStyle(Theme.accent)
             }
             .buttonStyle(.plain)
@@ -240,7 +240,7 @@ struct WeatherView: View {
 
             if let error = weather.lastError {
                 Text(error)
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.warning)
                     .multilineTextAlignment(.center)
             }
@@ -248,7 +248,7 @@ struct WeatherView: View {
             if let snapshot = weather.snapshot {
                 Text("Updated \(snapshot.fetchedAt.formatted(date: .abbreviated, time: .shortened))"
                    + " · \(store.map.venue.name)")
-                    .font(.system(size: 11))
+                    .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
                     .multilineTextAlignment(.center)
             }
@@ -272,7 +272,7 @@ private struct WeatherSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Label(title, systemImage: symbol)
-                .font(.system(size: 12, weight: .bold))
+                .appFont(12, weight: .bold)
                 .foregroundStyle(Theme.tertiaryText)
                 .padding(.horizontal, 2)
             content
@@ -292,15 +292,15 @@ private struct WeatherStat: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: symbol)
-                .font(.system(size: 13))
+                .appFont(13)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 18)
             VStack(alignment: .leading, spacing: 1) {
                 Text(label)
-                    .font(.system(size: 10, weight: .semibold))
+                    .appFont(10, weight: .semibold)
                     .foregroundStyle(Theme.tertiaryText)
                 Text(value)
-                    .font(.system(size: 13, weight: .medium))
+                    .appFont(13, weight: .medium)
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)

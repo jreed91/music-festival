@@ -63,7 +63,7 @@ struct MyLineupView: View {
 
                 ForEach(byDay, id: \.day.id) { group in
                     Text("\(group.day.weekday.uppercased()) · \(Format.dayLabel(group.day))")
-                        .font(.system(size: 12, weight: .bold))
+                        .appFont(12, weight: .bold)
                         .foregroundStyle(Theme.tertiaryText)
                         .padding(.top, 8)
 
@@ -88,14 +88,14 @@ struct MyLineupView: View {
         VStack(alignment: .leading, spacing: 8) {
             Label("\(conflicts.count) overlapping \(conflicts.count == 1 ? "set" : "sets")",
                   systemImage: "exclamationmark.triangle.fill")
-                .font(.system(size: 13, weight: .semibold))
+                .appFont(13, weight: .semibold)
                 .foregroundStyle(Theme.warning)
 
             ForEach(Array(conflicts.enumerated()), id: \.offset) { _, pair in
                 Text("\(pair.0.artist) and \(pair.1.artist) overlap "
                      + "\(Format.time(max(pair.0.start, pair.1.start)))–"
                      + "\(Format.time(min(pair.0.end, pair.1.end))).")
-                    .font(.system(size: 12))
+                    .appFont(12)
                     .foregroundStyle(Theme.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }

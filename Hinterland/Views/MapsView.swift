@@ -13,11 +13,11 @@ struct MapsView: View {
                     NavigationLink(value: MapRoute.grounds) {
                         VStack(alignment: .leading, spacing: 3) {
                             Label("Grounds map & your location", systemImage: "location.viewfinder")
-                                .font(.system(size: 15, weight: .semibold))
+                                .appFont(15, weight: .semibold)
                                 .foregroundStyle(.white)
                             Text("Stages, gates, camping and parking on Apple Maps — zoom in for "
                                + "the concourse.")
-                                .font(.system(size: 12))
+                                .appFont(12)
                                 .foregroundStyle(Theme.secondaryText)
                         }
                         .padding(.vertical, 2)
@@ -29,11 +29,11 @@ struct MapsView: View {
                                 MapThumbnail(asset: map.asset)
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(map.title)
-                                        .font(.system(size: 15))
+                                        .appFont(15)
                                         .foregroundStyle(.white)
                                     if let caption = map.caption {
                                         Text(caption)
-                                            .font(.system(size: 12))
+                                            .appFont(12)
                                             .foregroundStyle(Theme.secondaryText)
                                             .lineLimit(2)
                                     }
@@ -44,7 +44,7 @@ struct MapsView: View {
                     }
                 } footer: {
                     Text("Every map is bundled with the app and opens offline.")
-                        .font(.system(size: 11))
+                        .appFont(11)
                 }
                 .listRowBackground(Theme.surface)
 
@@ -52,7 +52,7 @@ struct MapsView: View {
                     if let venue = venueInMaps {
                         Link(destination: venue) {
                             Label("Open the venue in Apple Maps", systemImage: "map")
-                                .font(.system(size: 15))
+                                .appFont(15)
                                 .foregroundStyle(Theme.accent)
                         }
                     }
