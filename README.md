@@ -328,11 +328,34 @@ Setting the schema up, once, in the [CloudKit console](https://icloud.developer.
 
 1. Run the app once against the **development** environment and rate a set. CloudKit
    creates the `SetRating` record type from the first write.
-2. Mark `performanceID`, `stars` and `festivalYear` **queryable** (the sweep filters on
-   `festivalYear`, and a record type with no queryable field can't be queried at all).
+2. Under the record type's **Indexes**, add a **Queryable** index on `festivalYear`. That
+   is the only field the sweep filters on, so it's the only one that needs an index —
+   `performanceID` and `stars` come back through `desiredKeys`, which doesn't. Without it
+   every query fails with "Field 'festivalYear' is not marked queryable".
 3. **Deploy schema to production** before any TestFlight or App Store build. Development
    and production are separate databases; a build that skips this finds an empty container
    and shows no averages.
+
+Step 1 only works from a **development** build — one run from Xcode onto a device or
+simulator. Auto-schema is a development-environment convenience and doesn't exist in
+production, so a TestFlight build can't create the record type; it writes to the
+production database, every save bounces, and the development schema you're watching in the
+console stays empty. Rate a set from Xcode, or create the type by hand: **Schema → Record
+Types → +**, name it `SetRating`, add `performanceID` (String), `stars` (Int64) and
+`festivalYear` (Int64).
+
+### When nothing uploads
+
+`push()` is deliberately quiet — it holds ratings rather than losing them — so the recap
+screen's footer is where the reason shows up. In rough order of likelihood:
+
+| What the footer says | What it means |
+| --- | --- |
+| Sign in to iCloud… | No iCloud account on the device. Writes need one; reads don't, which is why the averages can still appear. Simulators in particular start signed out. |
+| iCloud rejected these ratings… | The record type doesn't exist in the environment being written to — usually a TestFlight build against a schema that was never deployed to production. |
+| This build isn't set up… | `.badContainer`/`.missingEntitlement`: the entitlement, `CommunityRatings.containerIdentifier` and the container on the App ID don't all agree. |
+| Saved on your phone… | Nothing is wrong. There's no signal, the outbox is holding, and it drains on the next foreground with a network. |
+| Your ratings uploaded *(time)* | The outbox emptied. If the console still shows nothing, you're looking at the other environment. |
 
 Shared scores are user data leaving the device, so an App Store release needs them
 declared in the privacy nutrition label and in a `PrivacyInfo.xcprivacy` the project
