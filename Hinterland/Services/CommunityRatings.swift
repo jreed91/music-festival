@@ -37,6 +37,15 @@ struct CrowdRatings: Codable, Equatable {
 /// Only the score is shared. Notes never leave the phone.
 @Observable
 final class CommunityRatings {
+    /// Must match `com.apple.developer.icloud-container-identifiers` in `project.yml`, and
+    /// the container has to exist on the App ID in the developer portal.
+    ///
+    /// Named explicitly rather than taken from `CKContainer.default()`, which resolves to
+    /// `iCloud.` plus the bundle ID — `iCloud.com.jreed91.hinterland`, a container nobody
+    /// registered. That mismatch costs a build: the archive carries an entitlement no
+    /// distribution profile matches and `xcodebuild -exportArchive` fails.
+    static let containerIdentifier = "iCloud.jreed91.hinterland"
+
     static let recordType = "SetRating"
     private static let performanceKey = "performanceID"
     private static let starsKey = "stars"
@@ -93,7 +102,8 @@ final class CommunityRatings {
         return dir.appendingPathComponent("crowd-ratings.json")
     }
 
-    init(festivalYear: Int, container: CKContainer = .default()) {
+    init(festivalYear: Int,
+         container: CKContainer = CKContainer(identifier: CommunityRatings.containerIdentifier)) {
         self.festivalYear = festivalYear
         self.container = container
         let defaults = UserDefaults.standard
