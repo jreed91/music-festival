@@ -340,9 +340,19 @@ Step 1 only works from a **development** build — one run from Xcode onto a dev
 simulator. Auto-schema is a development-environment convenience and doesn't exist in
 production, so a TestFlight build can't create the record type; it writes to the
 production database, every save bounces, and the development schema you're watching in the
-console stays empty. Rate a set from Xcode, or create the type by hand: **Schema → Record
-Types → +**, name it `SetRating`, add `performanceID` (String), `stars` (Int64) and
-`festivalYear` (Int64).
+console stays empty.
+
+Creating the type by hand avoids the whole question, and is the reliable route: **Schema →
+Record Types → +**, name it `SetRating`, then add three fields. The names are what the app
+looks for and are case-sensitive — `SetRating`, `performanceID`, `stars`, `festivalYear`
+have to match `CommunityRatings` exactly, or saves come back rejected as if the type
+weren't there at all.
+
+| Field | Type |
+| --- | --- |
+| `performanceID` | String |
+| `stars` | Int(64) |
+| `festivalYear` | Int(64) |
 
 ### When nothing uploads
 

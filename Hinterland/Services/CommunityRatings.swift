@@ -1,6 +1,7 @@
 import CloudKit
 import Foundation
 import Observation
+import OSLog
 
 /// What everyone else made of one set: the stars added up, and how many people gave them.
 struct CrowdRating: Codable, Equatable {
@@ -50,6 +51,13 @@ final class CommunityRatings {
     private static let performanceKey = "performanceID"
     private static let starsKey = "stars"
     private static let yearKey = "festivalYear"
+
+    /// The line on screen has to be short and has to mean something to a festivalgoer,
+    /// which leaves no room for the part a developer needs: CloudKit's own description of
+    /// what it refused and why. That goes here, where Xcode's console and Console.app can
+    /// see it and nobody else has to.
+    private static let log = Logger(subsystem: Bundle.main.bundleIdentifier ?? "hinterland",
+                                    category: "ratings-sync")
 
     /// Sentinel in the outbox for "take my rating back down", which is a delete rather
     /// than a score. Stars are 1–5, so zero can't collide with one.
@@ -191,6 +199,7 @@ final class CommunityRatings {
             lastError = nil
             persistCache()
         } catch {
+            Self.log.error("Crowd rating sweep failed: \(error.localizedDescription, privacy: .public)")
             lastError = Self.message(for: error)
         }
     }
@@ -291,6 +300,10 @@ final class CommunityRatings {
                 case .success:
                     outbox.removeValue(forKey: performanceID)
                 case .failure(let error):
+                    Self.log.error("""
+                        Rating upload refused for \(performanceID, privacy: .public): \
+                        \(error.localizedDescription, privacy: .public)
+                        """)
                     if firstFailure == nil { firstFailure = error }
                 }
             }
@@ -317,6 +330,7 @@ final class CommunityRatings {
             lastError = firstFailure.map(Self.message(for:))
                 ?? (outbox.isEmpty ? nil : Self.holdingMessage(count: outbox.count))
         } catch {
+            Self.log.error("Rating upload failed: \(error.localizedDescription, privacy: .public)")
             lastError = Self.message(for: error)
         }
     }
@@ -365,11 +379,15 @@ final class CommunityRatings {
             return "iCloud is out of space for this, so ratings aren't uploading."
         case .badContainer, .missingEntitlement:
             return "This build isn't set up for shared ratings, so only yours are shown."
-        case .invalidArguments, .serverRejectedRequest, .permissionFailure:
+        case .invalidArguments, .serverRejectedRequest, .unknownItem:
             // What an undeployed schema looks like from here: production can't create a
             // record type on the fly the way development can, so every save bounces.
             return "iCloud rejected these ratings — the ratings schema may not be deployed "
                  + "to this environment yet."
+        case .permissionFailure:
+            // A different thing entirely, and worth its own line: the schema is there and
+            // this account isn't allowed to write to it.
+            return "This iCloud account isn't allowed to add ratings."
         default:
             return ckError.localizedDescription
         }
