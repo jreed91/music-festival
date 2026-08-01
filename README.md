@@ -328,8 +328,10 @@ Setting the schema up, once, in the [CloudKit console](https://icloud.developer.
 
 1. Run the app once against the **development** environment and rate a set. CloudKit
    creates the `SetRating` record type from the first write.
-2. Mark `performanceID`, `stars` and `festivalYear` **queryable** (the sweep filters on
-   `festivalYear`, and a record type with no queryable field can't be queried at all).
+2. Under the record type's **Indexes**, add a **Queryable** index on `festivalYear`. That
+   is the only field the sweep filters on, so it's the only one that needs an index —
+   `performanceID` and `stars` come back through `desiredKeys`, which doesn't. Without it
+   every query fails with "Field 'festivalYear' is not marked queryable".
 3. **Deploy schema to production** before any TestFlight or App Store build. Development
    and production are separate databases; a build that skips this finds an empty container
    and shows no averages.
