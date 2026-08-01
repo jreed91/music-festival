@@ -87,6 +87,8 @@ final class CommunityRatings {
     private(set) var lastError: String?
     /// Whether this phone can write at all. Reads don't need an account; writes do.
     private(set) var accountStatus: CKAccountStatus = .couldNotDetermine
+    /// When the outbox last emptied — the one unambiguous sign that uploading works.
+    private(set) var lastUploadedAt: Date?
 
     /// Ratings made locally that CloudKit hasn't taken yet, keyed by performance —
     /// persisted, because the whole point is surviving a weekend with no signal.
@@ -125,11 +127,9 @@ final class CommunityRatings {
     var fetchedAt: Date? { crowd?.fetchedAt }
     var hasPendingUploads: Bool { !outbox.isEmpty }
 
-    /// The one thing worth saying out loud: writes need an iCloud account and this phone
-    /// doesn't have one, so these ratings are staying put.
-    var needsAccount: Bool {
-        isSharing && !outbox.isEmpty && accountStatus == .noAccount
-    }
+    /// Whether anything is stopping the outbox from draining, which is worth a line on
+    /// screen whenever there's something in it.
+    var isBlocked: Bool { !outbox.isEmpty && accountStatus != .available }
 
     // MARK: - Refresh
 
@@ -236,8 +236,10 @@ final class CommunityRatings {
 
         accountStatus = (try? await container.accountStatus()) ?? .couldNotDetermine
         guard accountStatus == .available else {
-            // Not an error worth showing: without an account there is nothing to do but
-            // hold on to the ratings, which is exactly what the outbox is for.
+            // Nothing to do but hold on to the ratings, which is what the outbox is for —
+            // but say so. Failing silently here is indistinguishable from a feature that
+            // doesn't work, which is exactly how it looked the first time.
+            lastError = Self.message(for: accountStatus)
             return
         }
 
@@ -275,11 +277,22 @@ final class CommunityRatings {
             let results = try await container.publicCloudDatabase.modifyRecords(
                 saving: saves, deleting: deletes, savePolicy: .allKeys, atomically: false)
 
+            // Per-record rejections come back in here rather than being thrown, so a batch
+            // where every row bounced still "succeeds". Keeping the first one is the
+            // difference between "the schema isn't deployed" and a row that sits in the
+            // outbox forever with nothing said about why.
+            var firstFailure: Error?
+
             for (recordID, result) in results.saveResults {
-                guard case .success = result,
-                      let performanceID = performanceIDsByRecordName[recordID.recordName]
-                else { continue }
-                outbox.removeValue(forKey: performanceID)
+                guard let performanceID = performanceIDsByRecordName[recordID.recordName] else {
+                    continue
+                }
+                switch result {
+                case .success:
+                    outbox.removeValue(forKey: performanceID)
+                case .failure(let error):
+                    if firstFailure == nil { firstFailure = error }
+                }
             }
 
             for (recordID, result) in results.deleteResults {
@@ -293,12 +306,16 @@ final class CommunityRatings {
                     // Already gone is the outcome we wanted, not a failure to retry.
                     if (error as? CKError)?.code == .unknownItem {
                         outbox.removeValue(forKey: performanceID)
+                    } else if firstFailure == nil {
+                        firstFailure = error
                     }
                 }
             }
 
             persistOutbox()
-            lastError = outbox.isEmpty ? nil : Self.holdingMessage(count: outbox.count)
+            if outbox.isEmpty { lastUploadedAt = Date() }
+            lastError = firstFailure.map(Self.message(for:))
+                ?? (outbox.isEmpty ? nil : Self.holdingMessage(count: outbox.count))
         } catch {
             lastError = Self.message(for: error)
         }
@@ -315,6 +332,25 @@ final class CommunityRatings {
         "\(count) \(count == 1 ? "rating is" : "ratings are") waiting to upload."
     }
 
+    /// Why a phone can't write. Every one of these leaves the rating on the device, so
+    /// they're statements of fact rather than failures.
+    private static func message(for status: CKAccountStatus) -> String {
+        switch status {
+        case .available:
+            return ""
+        case .noAccount:
+            return "Sign in to iCloud to add your ratings to the average."
+        case .restricted:
+            return "iCloud is restricted on this phone, so ratings stay on it."
+        case .temporarilyUnavailable:
+            return "iCloud is unavailable right now — ratings upload when it's back."
+        case .couldNotDetermine:
+            return "Can't reach iCloud — your ratings are saved and upload later."
+        @unknown default:
+            return "Can't reach iCloud — your ratings are saved and upload later."
+        }
+    }
+
     /// CloudKit's errors mostly mean one of three things down here: no signal, no iCloud
     /// account, or a build whose container isn't set up. None of them is worth more than
     /// a line, and none of them costs you the rating — it's already on the phone.
@@ -329,6 +365,11 @@ final class CommunityRatings {
             return "iCloud is out of space for this, so ratings aren't uploading."
         case .badContainer, .missingEntitlement:
             return "This build isn't set up for shared ratings, so only yours are shown."
+        case .invalidArguments, .serverRejectedRequest, .permissionFailure:
+            // What an undeployed schema looks like from here: production can't create a
+            // record type on the fly the way development can, so every save bounces.
+            return "iCloud rejected these ratings — the ratings schema may not be deployed "
+                 + "to this environment yet."
         default:
             return ckError.localizedDescription
         }

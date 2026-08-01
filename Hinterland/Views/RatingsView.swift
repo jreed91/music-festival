@@ -146,16 +146,21 @@ struct RatingsView: View {
                 .foregroundStyle(Theme.tertiaryText)
                 .fixedSize(horizontal: false, vertical: true)
 
-            if community.needsAccount {
-                statusLine("Sign in to iCloud to add your ratings to the average.",
-                           symbol: "icloud.slash", tint: Theme.warning)
+            // Whatever the service last had to say comes first, because "nothing is
+            // uploading and the app won't say why" is worse than any of the reasons.
+            if let error = community.lastError {
+                statusLine(error,
+                           symbol: community.isBlocked ? "icloud.slash" : "exclamationmark.circle",
+                           tint: Theme.warning)
             } else if community.hasPendingUploads {
                 // Not an error: the ratings are on the phone, and this is a festival in a
                 // valley with no signal. They go up when there's something to go up over.
                 statusLine("Saved on your phone — uploading when there's signal.",
                            symbol: "arrow.up.circle", tint: Theme.secondaryText)
-            } else if let error = community.lastError {
-                statusLine(error, symbol: "exclamationmark.circle", tint: Theme.warning)
+            } else if let uploadedAt = community.lastUploadedAt {
+                statusLine("Your ratings uploaded "
+                         + uploadedAt.formatted(date: .omitted, time: .shortened) + ".",
+                           symbol: "checkmark.icloud", tint: Theme.secondaryText)
             }
 
             // Rare enough to be worth saying plainly rather than quietly rounding: the
