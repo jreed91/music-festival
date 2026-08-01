@@ -56,8 +56,11 @@ targets:
           - group.com.jreed91.hinterland
         com.apple.developer.icloud-services:
           - CloudKit
+        # Note the shape: this is NOT `iCloud.` + the bundle ID, so `CKContainer.default()`
+        # would resolve to a container that doesn't exist. `CommunityRatings` names it
+        # explicitly, and the two have to be changed together.
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.jreed91.hinterland
+          - iCloud.jreed91.hinterland
     info:
       path: Hinterland/Info.plist
       properties:

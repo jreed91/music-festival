@@ -76,11 +76,17 @@ forecast request fails to authenticate and the app falls back to showing no weat
 Everything else works regardless.
 
 **CloudKit** is the third, and it's what pools the set ratings (iCloud → register the
-container `iCloud.com.jreed91.hinterland`, then check **iCloud** on the app identifier
-and tick that container). Without it the ratings feature still works — you rate sets, the
+container `iCloud.jreed91.hinterland`, then check **iCloud** on the app identifier and
+tick that container). Without it the ratings feature still works — you rate sets, the
 recap screen ranks them — but nothing uploads and no crowd average appears, and the
 recap says as much rather than sitting there empty. There's a schema to create too; see
 [Shared ratings](#shared-ratings).
+
+That container is **not** `iCloud.` plus the bundle ID, which is what `CKContainer`'s
+default would look for, so `CommunityRatings.containerIdentifier` names it in full and
+has to be changed alongside `project.yml`. A build whose entitlement points at a
+container that doesn't exist compiles and archives happily and then fails at
+`xcodebuild -exportArchive` with exit 70, no profile matching its entitlements.
 
 The widget extension ships as its own bundle, `com.jreed91.hinterland.widgets`, so that
 identifier has to exist alongside the app's. Change either in `project.yml` and re-run
@@ -290,6 +296,7 @@ stopping — anything else would be a lie about what the switch does.
 
 | | |
 | --- | --- |
+| Container | `iCloud.jreed91.hinterland`, named in `CommunityRatings.containerIdentifier` |
 | Record type | `SetRating` in the public database, default zone |
 | Fields | `performanceID` (string), `stars` (int 1–5), `festivalYear` (int) |
 | Record name | `<performanceID>_<userRecordName>` |
