@@ -13,8 +13,11 @@ struct ScheduleView: View {
     /// Keeps the NOW badge and the Now-playing card honest without a per-second timer.
     private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
+    /// `selectedDay` only ever holds a tap. Until there is one, the day tracks the clock,
+    /// so the screen is already on today when it opens and rolls over with the date if it
+    /// is left running.
     private var day: FestivalDay? {
-        store.days.first { $0.date == selectedDay } ?? store.defaultDay()
+        store.days.first { $0.date == selectedDay } ?? store.defaultDay(now: now)
     }
 
     var body: some View {
@@ -64,7 +67,9 @@ struct ScheduleView: View {
                 await weather.refresh(force: true)
             }
             .onReceive(ticker) { now = $0 }
-            .onAppear { selectedDay = selectedDay ?? store.defaultDay()?.date }
+            // The ticker doesn't run while the app is backgrounded, so catch up on the
+            // way back in rather than showing yesterday for up to half a minute.
+            .onAppear { now = Date() }
         }
     }
 
