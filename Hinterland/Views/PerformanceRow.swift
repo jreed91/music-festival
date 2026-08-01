@@ -7,6 +7,7 @@ struct PerformanceRow: View {
 
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
+    @Environment(Ratings.self) private var ratings
 
     private var artist: Artist? { store.data.artist(id: performance.artistId) }
     private var isStarred: Bool { favorites.contains(performance) }
@@ -43,6 +44,9 @@ struct PerformanceRow: View {
 
                 HStack(spacing: 6) {
                     StageBadge(stage: Stage(name: performance.stage), compact: true)
+                    if let rating = ratings.rating(for: performance) {
+                        RatingBadge(stars: rating.stars, compact: true)
+                    }
                     if showsConflictWarning {
                         Label("Overlaps", systemImage: "exclamationmark.triangle.fill")
                             .appFont(10, weight: .semibold)

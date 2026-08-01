@@ -112,6 +112,11 @@ enum Format {
         return formatter.string(from: date)
     }
 
+    /// An average rating to one decimal — "4.3" — in the reader's own number format.
+    static func rating(_ average: Double) -> String {
+        average.formatted(.number.precision(.fractionLength(1)))
+    }
+
     /// "in 25 min" / "started 10 min ago", used on the Now card.
     static func relative(_ date: Date, from now: Date = Date()) -> String {
         let formatter = RelativeDateTimeFormatter()

@@ -25,6 +25,9 @@ cache what they fetch and fall back to what's already on the phone.
   Island from 90 minutes before it starts, with a countdown that runs on its own.
 - **Artist pages** — bios and links out to Spotify and Instagram, reached by tapping any
   set on the schedule or in your lineup.
+- **Rate a set** — one to five stars on any set once it's under way, with an optional line
+  about it, and a ranked recap of everything you rated. Stored on the phone, so rating a
+  set works in the valley like everything else.
 - **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
   Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
   they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
@@ -240,6 +243,29 @@ appears, so `WeatherAttributionView` sits at the bottom of the weather screen. T
 are remote images; the cached service name and legal text stand in when there's no signal
 to load them.
 
+## Rating sets
+
+`Ratings` is the same shape as `Favorites` — a small `@Observable` store over
+`UserDefaults` in the app group, holding one `SetRating` per set: one to five stars, an
+optional note, and when it was rated. Nothing is uploaded and nothing is aggregated across
+users; this is a notebook, not a review site, which is also the only design that works at
+all in a field with no signal.
+
+Ratings key off the **performance**, not the artist — an artist can play twice over the
+weekend, and the 1am Campfire set isn't the main-stage set.
+
+The stars appear on the artist page under a set once it has started (`Ratings.canRate`),
+because there is nothing to say about a band that hasn't gone on yet; a 30-second ticker
+on that screen means the control turns up while you're standing there rather than the next
+time the page is opened. Tapping the star you already gave clears the rating, unless the
+rating carries a note — the note sheet's **Remove rating** is the deliberate way to drop
+one of those.
+
+**My Ratings**, from the toolbar of My Lineup, ranks what you rated best-first and lists
+the starred sets that finished without a rating underneath. Only starred sets: every set
+that has finished by Sunday night is most of the festival, and you weren't at most of it.
+The share sheet hands off the ranking alone — the notes stay on the phone.
+
 ## The widget and the Live Activity
 
 Both answer the same question — what am I watching, and what's after it — so the rule for
@@ -288,8 +314,8 @@ Hinterland/
                NowPlayingActivity (the ActivityKit attributes)
   Models/      GuideData, MapData, VendorData, WeatherData — Codable mirrors of the JSON
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
-               LiveActivityController
-  Views/       Schedule, MyLineup, Maps, FoodDrink, ArtistDetail, GroundsMap,
+               LiveActivityController, Ratings
+  Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, GroundsMap,
                MapImage, Weather, WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/

@@ -48,6 +48,60 @@ struct StageBadge: View {
     }
 }
 
+/// The one-to-five stars you tap to rate a set you watched.
+///
+/// Deliberately not a `Binding`: `Ratings` decides what a tap means — including that
+/// tapping the star you already gave clears the rating — and a binding would put half of
+/// that rule in the view.
+struct StarRating: View {
+    let stars: Int
+    var size: CGFloat = 22
+    let onSelect: (Int) -> Void
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(Array(SetRating.scale), id: \.self) { value in
+                let filled = value <= stars
+                Button {
+                    onSelect(value)
+                } label: {
+                    Image(systemName: filled ? "star.fill" : "star")
+                        .appFont(size, weight: .medium)
+                        .foregroundStyle(filled ? Theme.accent : Theme.tertiaryText)
+                        // Comfortable to hit with a drink in the other hand, in the dark.
+                        .frame(minWidth: 40, minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(value == stars
+                                    ? "Clear rating"
+                                    : "Rate \(value) star\(value == 1 ? "" : "s")")
+            }
+        }
+    }
+}
+
+/// A rating at a glance, for rows that list a set rather than ask about one.
+struct RatingBadge: View {
+    let stars: Int
+    var compact = false
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "star.fill")
+                .appFont(compact ? 9 : 10, weight: .semibold)
+            Text("\(stars)")
+                .appFont(compact ? 10 : 11, weight: .semibold, design: .rounded)
+        }
+        .foregroundStyle(Theme.accent)
+        .padding(.horizontal, compact ? 6 : 8)
+        .padding(.vertical, compact ? 3 : 4)
+        .background(Theme.accent.opacity(0.14), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("You rated this \(stars) out of 5")
+    }
+}
+
 /// Bundled artist art, falling back to the remote URL for artists added by a schedule
 /// refresh, and to initials when there is no art at all.
 struct ArtistImage: View {
