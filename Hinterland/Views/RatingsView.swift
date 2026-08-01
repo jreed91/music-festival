@@ -5,12 +5,13 @@ enum RatingsRoute: Hashable {
     case recap
 }
 
-/// Every set you rated, best first, plus the ones you starred and never got round to
-/// rating. The festival's own scoreboard for your weekend.
+/// Every set you rated, best first, with what everyone else made of the same set, plus
+/// the ones you starred and never got round to rating. The scoreboard for your weekend.
 struct RatingsView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(Ratings.self) private var ratings
     @Environment(Favorites.self) private var favorites
+    @Environment(CommunityRatings.self) private var community
 
     /// Read once per visit — nothing on this screen changes mid-second, and "has it
     /// finished yet" only needs to be right when the screen opens.
@@ -33,7 +34,8 @@ struct RatingsView: View {
                     symbol: "star.leadinghalf.filled",
                     title: "Nothing rated yet",
                     message: "Once a set is under way, open the artist and give it one to five "
-                           + "stars. They show up here, ranked, with anything you wrote down.")
+                           + "stars. They show up here, ranked, next to what everyone else "
+                           + "thought of the same set.")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Theme.background)
             } else {
@@ -53,6 +55,13 @@ struct RatingsView: View {
             }
         }
         .onAppear { now = Date() }
+        // Throttled inside the service, so opening this screen repeatedly doesn't turn
+        // into repeated sweeps of the database.
+        .task { await community.refresh() }
+        .onChange(of: community.isSharing) { _, _ in
+            community.applySharingChange(localRatings: ratings.byPerformanceID)
+            Task { await community.push() }
+        }
     }
 
     private var list: some View {
@@ -68,6 +77,20 @@ struct RatingsView: View {
                             PerformanceRow(performance: entry.performance)
                         }
                         .buttonStyle(.plain)
+
+                        // The row itself shows your stars, so what's worth adding here is
+                        // the other number: whether the rest of the field agreed with you.
+                        if let crowd = community.rating(for: entry.performance) {
+                            HStack(spacing: 6) {
+                                CrowdBadge(rating: crowd, compact: true)
+                                Text("everyone · \(crowd.count) "
+                                   + "\(crowd.count == 1 ? "rating" : "ratings")")
+                                    .appFont(11)
+                                    .foregroundStyle(Theme.tertiaryText)
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.top, 8)
+                        }
 
                         if !entry.rating.note.isEmpty {
                             Text(entry.rating.note)
@@ -93,11 +116,77 @@ struct RatingsView: View {
                         .buttonStyle(.plain)
                     }
                 }
+
+                sharing
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
         }
         .background(Theme.background)
+        .refreshable { await community.refresh(force: true) }
+    }
+
+    /// What's shared, what state the sharing is in, and the switch that stops it.
+    ///
+    /// At the bottom of this screen rather than in the Alerts sheet: this is the screen
+    /// where the crowd average is on show, so it's where the question of who else can see
+    /// yours actually comes up.
+    private var sharing: some View {
+        @Bindable var bindable = community
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Toggle("Share my ratings", isOn: $bindable.isSharing)
+                .appFont(13, weight: .semibold)
+                .foregroundStyle(.white)
+                .tint(Theme.accent)
+
+            Text("Your stars go into the average everyone sees, anonymously. Notes stay on "
+               + "this phone.")
+                .appFont(11)
+                .foregroundStyle(Theme.tertiaryText)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if community.needsAccount {
+                statusLine("Sign in to iCloud to add your ratings to the average.",
+                           symbol: "icloud.slash", tint: Theme.warning)
+            } else if community.hasPendingUploads {
+                // Not an error: the ratings are on the phone, and this is a festival in a
+                // valley with no signal. They go up when there's something to go up over.
+                statusLine("Saved on your phone — uploading when there's signal.",
+                           symbol: "arrow.up.circle", tint: Theme.secondaryText)
+            } else if let error = community.lastError {
+                statusLine(error, symbol: "exclamationmark.circle", tint: Theme.warning)
+            }
+
+            // Rare enough to be worth saying plainly rather than quietly rounding: the
+            // sweep hit its cap, so these averages are counted off a sample.
+            if community.crowd?.isPartial == true {
+                statusLine("More ratings than this app counts in one pass — the averages "
+                         + "below are from a sample of them.",
+                           symbol: "square.stack.3d.up", tint: Theme.secondaryText)
+            }
+
+            if let fetchedAt = community.fetchedAt {
+                Text("Everyone's ratings as of "
+                   + fetchedAt.formatted(date: .abbreviated, time: .shortened)
+                   + ". Pull down to check for more.")
+                    .appFont(11)
+                    .foregroundStyle(Theme.tertiaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Theme.surface,
+                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .padding(.top, 18)
+    }
+
+    private func statusLine(_ message: String, symbol: String, tint: Color) -> some View {
+        Label(message, systemImage: symbol)
+            .appFont(11, weight: .medium)
+            .foregroundStyle(tint)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var summary: some View {
@@ -154,7 +243,8 @@ struct RatingsView: View {
     }
 }
 
-/// A line about a set you rated, written after the fact and kept on the phone.
+/// A line about a set you rated, written after the fact and kept on the phone — unlike
+/// the stars, a note is never uploaded.
 struct SetNoteView: View {
     let performance: Performance
 
@@ -182,7 +272,8 @@ struct SetNoteView: View {
                 } header: {
                     Text(performance.artist)
                 } footer: {
-                    Text("Kept on your phone with the rating. Nothing is uploaded.")
+                    Text("Notes stay on your phone — only the stars are shared, and only "
+                       + "as a number in everyone's average.")
                 }
 
                 Section {

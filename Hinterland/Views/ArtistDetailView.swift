@@ -10,6 +10,7 @@ struct ArtistDetailView: View {
     @Environment(WeatherStore.self) private var weather
     @Environment(Favorites.self) private var favorites
     @Environment(Ratings.self) private var ratings
+    @Environment(CommunityRatings.self) private var community
 
     @State private var now = Date()
     /// The set whose note is being written, which is what the sheet is presenting.
@@ -133,14 +134,29 @@ struct ArtistDetailView: View {
         }
     }
 
-    /// Rate the set and, once rated, write a line about it. Both are yours alone — nothing
-    /// leaves the phone.
+    /// Rate the set, see what everyone else made of it, and once rated write a line about
+    /// it. The stars are shared; the note is not, and never leaves the phone.
     private func ratingSection(_ performance: Performance) -> some View {
         let rating = ratings.rating(for: performance)
+        let crowd = community.rating(for: performance)
         return VStack(alignment: .leading, spacing: 6) {
-            Text(rating == nil ? "How was it?" : "Your rating")
-                .appFont(11, weight: .bold)
-                .foregroundStyle(Theme.tertiaryText)
+            HStack(spacing: 8) {
+                Text(rating == nil ? "How was it?" : "Your rating")
+                    .appFont(11, weight: .bold)
+                    .foregroundStyle(Theme.tertiaryText)
+                Spacer(minLength: 0)
+                if let crowd {
+                    // The count is the part that says how much the average is worth —
+                    // 4.6 from three people and 4.6 from three hundred are different
+                    // claims, and only one of them is worth planning a night around.
+                    HStack(spacing: 5) {
+                        CrowdBadge(rating: crowd)
+                        Text("\(crowd.count) \(crowd.count == 1 ? "rating" : "ratings")")
+                            .appFont(11)
+                            .foregroundStyle(Theme.tertiaryText)
+                    }
+                }
+            }
 
             HStack(spacing: 8) {
                 StarRating(stars: rating?.stars ?? 0) { value in

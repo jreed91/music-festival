@@ -102,6 +102,30 @@ struct RatingBadge: View {
     }
 }
 
+/// What everyone else gave a set. Deliberately not amber and not a filled star: the
+/// accent colour on this screen means *your* rating, and a row that showed both in the
+/// same colour would read as one number.
+struct CrowdBadge: View {
+    let rating: CrowdRating
+    var compact = false
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "person.2.fill")
+                .appFont(compact ? 9 : 10, weight: .semibold)
+            Text(Format.rating(rating.average))
+                .appFont(compact ? 10 : 11, weight: .semibold, design: .rounded)
+        }
+        .foregroundStyle(Theme.crowd)
+        .padding(.horizontal, compact ? 6 : 8)
+        .padding(.vertical, compact ? 3 : 4)
+        .background(Theme.crowd.opacity(0.14), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Everyone rated this \(Format.rating(rating.average)) out of 5, "
+                          + "from \(rating.count) \(rating.count == 1 ? "person" : "people")")
+    }
+}
+
 /// Bundled artist art, falling back to the remote URL for artists added by a schedule
 /// refresh, and to initials when there is no art at all.
 struct ArtistImage: View {

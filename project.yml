@@ -45,13 +45,19 @@ targets:
     # WeatherKit needs the capability on the App ID in the developer portal as well as
     # the entitlement here; without both, every forecast request fails to authenticate.
     # The app group is the same story, and it's what lets the widget — a separate process
-    # with its own sandbox — read the starred sets and the cached schedule.
+    # with its own sandbox — read the starred sets and the cached schedule. CloudKit is
+    # the third: it's where the shared set ratings are pooled, and the container has to
+    # exist on the App ID before a build can read or write one.
     entitlements:
       path: Hinterland/Hinterland.entitlements
       properties:
         com.apple.developer.weatherkit: true
         com.apple.security.application-groups:
           - group.com.jreed91.hinterland
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.jreed91.hinterland
     info:
       path: Hinterland/Info.plist
       properties:

@@ -8,6 +8,7 @@ struct PerformanceRow: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
     @Environment(Ratings.self) private var ratings
+    @Environment(CommunityRatings.self) private var community
 
     private var artist: Artist? { store.data.artist(id: performance.artistId) }
     private var isStarred: Bool { favorites.contains(performance) }
@@ -44,8 +45,12 @@ struct PerformanceRow: View {
 
                 HStack(spacing: 6) {
                     StageBadge(stage: Stage(name: performance.stage), compact: true)
+                    // One number per row: yours if you gave one, the crowd's if you
+                    // didn't. Both at this size is a row nobody can read at a glance.
                     if let rating = ratings.rating(for: performance) {
                         RatingBadge(stars: rating.stars, compact: true)
+                    } else if let crowd = community.rating(for: performance) {
+                        CrowdBadge(rating: crowd, compact: true)
                     }
                     if showsConflictWarning {
                         Label("Overlaps", systemImage: "exclamationmark.triangle.fill")

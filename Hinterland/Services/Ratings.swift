@@ -18,9 +18,12 @@ struct SetRating: Codable, Equatable, Identifiable {
 /// Your ratings, persisted in `UserDefaults` alongside the stars.
 ///
 /// Same reasoning as `Favorites`: a few dozen small values that have to survive a relaunch
-/// in a field with no signal, which is neither a database nor a sync problem. Nothing is
-/// ever sent anywhere — these are notes to yourself, and the app assumes there is no
-/// network to send them over anyway.
+/// in a field with no signal, which is neither a database nor a sync problem. This stays
+/// the source of truth even though the scores are shared — `CommunityRatings` uploads from
+/// here and reads the crowd average back, and it can be offline, switched off or missing
+/// its container without any of it costing you a rating.
+///
+/// The note never goes anywhere near that. Only the score is shared.
 ///
 /// Unlike `Favorites` this isn't in `Shared`, because the widget answers "what am I
 /// watching next" and has no use for what you made of last night.
