@@ -120,9 +120,13 @@ final class ScheduleStore {
 extension ScheduleStore {
     var days: [FestivalDay] { data.days }
 
-    /// The day to open on: today if the festival is running, otherwise the first day.
+    /// The day to open on: whatever is running right now, else today's date if the
+    /// festival is on today, else the first day.
+    ///
+    /// The running day is checked first so that a 1am walk back to the car still opens
+    /// on the night you're leaving rather than the one starting in a few hours.
     func defaultDay(now: Date = Date()) -> FestivalDay? {
-        currentDay(now: now) ?? data.days.first
+        currentDay(now: now) ?? day(on: now) ?? data.days.first
     }
 
     /// The day whose programming is running right now, late-night sets included.
@@ -132,6 +136,17 @@ extension ScheduleStore {
                   let last = day.sets.map(\.end).max() else { return false }
             return now >= first && now <= last
         }
+    }
+
+    /// The festival day falling on the same calendar date as `date`, judged in the
+    /// festival's own time zone so a phone still set to Pacific opens on the right day.
+    func day(on date: Date) -> FestivalDay? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = data.timeZone
+        formatter.dateFormat = "yyyy-MM-dd"
+        let today = formatter.string(from: date)
+        return data.days.first { $0.date == today }
     }
 
     func performances(on day: FestivalDay, stage: String? = nil) -> [Performance] {
