@@ -6,6 +6,8 @@ struct HinterlandApp: App {
     @State private var store: ScheduleStore
     @State private var weather: WeatherStore
     @State private var favorites = Favorites()
+    @State private var ratings = Ratings()
+    @State private var community: CommunityRatings
     @State private var notifications = NotificationManager()
     @State private var liveActivity = LiveActivityController()
 
@@ -16,6 +18,9 @@ struct HinterlandApp: App {
         let store = ScheduleStore()
         _store = State(initialValue: store)
         _weather = State(initialValue: WeatherStore(venue: store.map.venue))
+        // Shared ratings are scoped to this year's festival, so the same records aren't
+        // still averaging in next summer.
+        _community = State(initialValue: CommunityRatings(festivalYear: store.data.festival.year))
 
         // The tab bar sits over dark content on every screen; make it opaque so rows
         // don't ghost through it.
@@ -40,6 +45,8 @@ struct HinterlandApp: App {
                 .environment(store)
                 .environment(weather)
                 .environment(favorites)
+                .environment(ratings)
+                .environment(community)
                 .environment(notifications)
                 .environment(liveActivity)
         }

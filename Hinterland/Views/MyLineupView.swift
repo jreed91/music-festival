@@ -38,11 +38,21 @@ struct MyLineupView: View {
             .navigationTitle("My Lineup")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // Ratings before alerts: after the weekend the scoreboard is the reason
+                // to open this tab at all, and the reminders have long since fired.
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(value: RatingsRoute.recap) {
+                        Image(systemName: "star.leadinghalf.filled")
+                    }
+                    .tint(Theme.accent)
+                    .accessibilityLabel("My Ratings")
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showingSettings = true } label: {
                         Image(systemName: notifications.isEnabled ? "bell.fill" : "bell.slash")
                     }
                     .tint(Theme.accent)
+                    .accessibilityLabel("Alerts")
                 }
             }
             .sheet(isPresented: $showingSettings) {
@@ -50,6 +60,9 @@ struct MyLineupView: View {
             }
             .navigationDestination(for: Performance.self) { performance in
                 ArtistDetailView(artistID: performance.artistId)
+            }
+            .navigationDestination(for: RatingsRoute.self) { _ in
+                RatingsView()
             }
         }
     }

@@ -25,6 +25,10 @@ cache what they fetch and fall back to what's already on the phone.
   Island from 90 minutes before it starts, with a countdown that runs on its own.
 - **Artist pages** — bios and links out to Spotify and Instagram, reached by tapping any
   set on the schedule or in your lineup.
+- **Rate a set** — one to five stars on any set once it's under way, with an optional line
+  about it, and a ranked recap of everything you rated. Rating works with no signal and
+  uploads later; scores are pooled through CloudKit so every set also carries the average
+  everyone else gave it. Notes stay on your phone.
 - **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
   Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
   they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
@@ -54,11 +58,11 @@ if that ID is taken on your account, and re-run `xcodegen generate`.
 
 Requires iOS 17 or later (the app uses the `@Observable` macro).
 
-Two capabilities need setting up on the App ID in the
+Three capabilities need setting up on the App ID in the
 [developer portal](https://developer.apple.com/account/resources/identifiers/) before a
-build does everything it should. Both are declared in `project.yml`, but the entitlement
-alone isn't enough — the App ID has to carry the capability and the provisioning profile
-has to be regenerated afterwards.
+build does everything it should. All three are declared in `project.yml`, but the
+entitlement alone isn't enough — the App ID has to carry the capability and the
+provisioning profile has to be regenerated afterwards.
 
 The **app group** `group.com.jreed91.hinterland` is the first (App Groups → register the
 group, then check it on both the `com.jreed91.hinterland` and
@@ -70,6 +74,13 @@ sits there blank, and the Alerts sheet says so.
 check **WeatherKit**), and it only applies to the app identifier. Without it every
 forecast request fails to authenticate and the app falls back to showing no weather.
 Everything else works regardless.
+
+**CloudKit** is the third, and it's what pools the set ratings (iCloud → register the
+container `iCloud.com.jreed91.hinterland`, then check **iCloud** on the app identifier
+and tick that container). Without it the ratings feature still works — you rate sets, the
+recap screen ranks them — but nothing uploads and no crowd average appears, and the
+recap says as much rather than sitting there empty. There's a schema to create too; see
+[Shared ratings](#shared-ratings).
 
 The widget extension ships as its own bundle, `com.jreed91.hinterland.widgets`, so that
 identifier has to exist alongside the app's. Change either in `project.yml` and re-run
@@ -240,6 +251,86 @@ appears, so `WeatherAttributionView` sits at the bottom of the weather screen. T
 are remote images; the cached service name and legal text stand in when there's no signal
 to load them.
 
+## Rating sets
+
+`Ratings` is the same shape as `Favorites` — a small `@Observable` store over
+`UserDefaults` in the app group, holding one `SetRating` per set: one to five stars, an
+optional note, and when it was rated. It is the source of truth for what *you* thought,
+it reads and writes with no network at all, and everything shared is built on top of it
+rather than in place of it.
+
+Ratings key off the **performance**, not the artist — an artist can play twice over the
+weekend, and the 1am Campfire set isn't the main-stage set.
+
+The stars appear on the artist page under a set once it has started (`Ratings.canRate`),
+because there is nothing to say about a band that hasn't gone on yet; a 30-second ticker
+on that screen means the control turns up while you're standing there rather than the next
+time the page is opened. Tapping the star you already gave clears the rating, unless the
+rating carries a note — the note sheet's **Remove rating** is the deliberate way to drop
+one of those.
+
+**My Ratings**, from the toolbar of My Lineup, ranks what you rated best-first, puts the
+crowd average beside each one, and lists the starred sets that finished without a rating
+underneath. Only starred sets: every set that has finished by Sunday night is most of the
+festival, and you weren't at most of it. The share sheet hands off the ranking alone — the
+notes stay on the phone.
+
+## Shared ratings
+
+`CommunityRatings` pools everyone's scores through the **CloudKit public database**.
+CloudKit rather than a server of our own: no hosting, no keys in the binary, no accounts
+to build, and the public database's default role already enforces the rule that matters —
+anyone may read, but you may only write records you created.
+
+Only the score is shared. Notes are never uploaded, which is deliberate: public free text
+is a moderation problem, a report-abuse flow and a content policy, and none of that is
+what this app is. The **Share my ratings** switch at the bottom of My Ratings turns
+uploading off, and turning it off withdraws what's already up there rather than merely
+stopping — anything else would be a lie about what the switch does.
+
+| | |
+| --- | --- |
+| Record type | `SetRating` in the public database, default zone |
+| Fields | `performanceID` (string), `stars` (int 1–5), `festivalYear` (int) |
+| Record name | `<performanceID>_<userRecordName>` |
+| Written by | the creating user only; readable by everyone |
+
+The record name is the whole anti-ballot-stuffing story: one record per person per set, so
+re-rating a set overwrites your own row instead of adding a second one, and the save uses
+`.allKeys` because a row only you can write has no merge to do. Nothing identifying is
+stored on it — the creator is CloudKit's own per-container opaque user ID, which is what
+makes "you may only write your own" enforceable without the app knowing who anyone is.
+
+Offline is the normal case, so a rating made in the valley goes into an **outbox** in
+`UserDefaults` keyed by performance, with `0` meaning "take mine back down". It drains on
+launch, on foreground and on any change to the ratings, one batch at a time, and it
+survives relaunches — most ratings made at the festival upload in the car on the way home.
+Writing needs an iCloud account; reading doesn't, so a phone with no account still sees
+the averages and is told, once, why its own aren't going anywhere.
+
+Reading is a sweep: the public database has no server-side aggregation, so `refresh()`
+pages through this year's records asking only for `performanceID` and `stars`, counts the
+averages locally, and caches the table to Application Support so it's still on screen with
+no signal. Throttled to once every 15 minutes like the forecast, forced by pull-to-refresh
+on My Ratings. That's the part that doesn't scale forever: past `recordCap` (20,000 rows)
+the sweep stops and marks itself partial, and the fix at that point is to aggregate
+somewhere else and publish the totals the way `schedule.json` is published, rather than to
+raise the cap.
+
+Setting the schema up, once, in the [CloudKit console](https://icloud.developer.apple.com):
+
+1. Run the app once against the **development** environment and rate a set. CloudKit
+   creates the `SetRating` record type from the first write.
+2. Mark `performanceID`, `stars` and `festivalYear` **queryable** (the sweep filters on
+   `festivalYear`, and a record type with no queryable field can't be queried at all).
+3. **Deploy schema to production** before any TestFlight or App Store build. Development
+   and production are separate databases; a build that skips this finds an empty container
+   and shows no averages.
+
+Shared scores are user data leaving the device, so an App Store release needs them
+declared in the privacy nutrition label and in a `PrivacyInfo.xcprivacy` the project
+doesn't yet carry.
+
 ## The widget and the Live Activity
 
 Both answer the same question — what am I watching, and what's after it — so the rule for
@@ -288,8 +379,8 @@ Hinterland/
                NowPlayingActivity (the ActivityKit attributes)
   Models/      GuideData, MapData, VendorData, WeatherData — Codable mirrors of the JSON
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
-               LiveActivityController
-  Views/       Schedule, MyLineup, Maps, FoodDrink, ArtistDetail, GroundsMap,
+               LiveActivityController, Ratings (yours), CommunityRatings (everyone's)
+  Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, GroundsMap,
                MapImage, Weather, WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/
