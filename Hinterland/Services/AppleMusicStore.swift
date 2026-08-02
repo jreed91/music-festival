@@ -56,11 +56,13 @@ final class AppleMusicStore {
     func isLoading(_ artist: Artist) -> Bool { loading.contains(artist.id) }
     func failure(for artist: Artist) -> String? { failures[artist.id] }
 
-    /// Their Apple Music page once we've found them, a search for their name until then.
-    /// Never nil in practice, which is what keeps the link button honest before the user
-    /// has granted anything.
+    /// Their Apple Music page once we've found them, a search for their name until then —
+    /// which is what keeps the link button honest before the user has granted anything.
+    /// Nil only for the artists the schedule says aren't on Apple Music at all, where a
+    /// search would land on somebody else with their name.
     func artistURL(for artist: Artist) -> URL? {
-        catalog[artist.id]?.artistURL ?? artist.appleMusicSearchURL
+        guard artist.isOnAppleMusic else { return nil }
+        return catalog[artist.id]?.artistURL ?? artist.appleMusicSearchURL
     }
 
     // MARK: - Authorization
@@ -103,6 +105,7 @@ final class AppleMusicStore {
     /// Cheap to call on every appearance of an artist page: it returns without touching
     /// the network while the cached entry is fresh.
     func load(_ artist: Artist, force: Bool = false) async {
+        guard artist.isOnAppleMusic else { return }
         guard authorization == .authorized else { return }
         guard !loading.contains(artist.id) else { return }
         if !force, let cached = catalog[artist.id], !cached.isStale() { return }
@@ -134,15 +137,16 @@ final class AppleMusicStore {
         }
     }
 
-    /// Finds the artist in the catalog, by id when the schedule carries one and by name
-    /// otherwise.
+    /// Finds the artist in the catalog, by the id the schedule pins them to and by name
+    /// for anyone it doesn't.
     ///
-    /// The name search only accepts an exact match once both names are normalised. Apple
-    /// always returns *something* for a search, and this lineup is full of names — Geese,
-    /// Wisp, Amble — that other acts also use; showing a stranger's songs under a band's
-    /// photo is worse than showing none, and it isn't a mistake anyone would catch from
-    /// the outside. `appleMusicArtistID` in `schedule.json` is the override for the cases
-    /// where the search genuinely can't get there.
+    /// Every artist in the bundled lineup carries an id, checked one at a time by
+    /// `scripts/applemusic.py` — 18 of the 48 share their name with another act on Apple
+    /// Music, and 2 of them aren't on it at all. The search is the path for an artist a
+    /// schedule refresh added after the build, and it accepts an exact match and nothing
+    /// else, once both names are normalised. Apple always returns *something*; showing a
+    /// stranger's songs under a band's photo is worse than showing none, and it isn't a
+    /// mistake anyone would catch from the outside.
     private func resolve(_ artist: Artist) async throws -> MusicKit.Artist? {
         if let catalogID = artist.appleMusicArtistID, !catalogID.isEmpty {
             let request = MusicCatalogResourceRequest<MusicKit.Artist>(

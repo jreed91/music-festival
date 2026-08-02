@@ -167,10 +167,15 @@ python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by a
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
+python3 applemusic.py --write  # Apple Music catalog id per artist -> schedule.json
 ```
 
 Run `scrape.py` before `images.py` — the latter reads the artist list and writes each
-artist's asset name back into `schedule.json`. Run `guide.py` before `maps.py` for the
+artist's asset name back into `schedule.json`. `applemusic.py` wants the artist list too,
+and is the one script here that doesn't touch the festival site; see
+[Top songs](#top-songs-from-apple-music) for what it does and why every artist needs a
+pin. Run it with no arguments to check the pins already in the file without writing
+anything. Run `guide.py` before `maps.py` for the
 same reason: `guide.py` rewrites `info.json` wholesale and `maps.py` adds the `maps`
 array back onto it.
 
@@ -186,8 +191,9 @@ legend of their own, so a new one means both `DIETARY` in the script and `Dietar
 the app need it added, or it would quietly disappear from the filters.
 
 `python3 validate.py` checks all three files against what the Swift models require —
-missing fields, unparseable dates, duplicate ids, dietary codes the app would drop —
-before a bad file reaches a build.
+missing fields, unparseable dates, duplicate ids, dietary codes the app would drop,
+Apple Music ids that aren't ids — before a bad file reaches a build. It stays offline;
+checking that a catalog id still resolves is `applemusic.py`'s job.
 
 ## The maps on MapKit
 
@@ -273,13 +279,30 @@ to load them.
 `AppleMusicStore` matches each artist in the lineup to their entry in the Apple Music
 catalog and keeps their five top songs; `PreviewPlayer` plays the previews.
 
-The match is by name, and it only accepts an **exact** one once both names are
-normalised for case, accents, punctuation and `&`/`and`. A catalog search always returns
-something, and this lineup has Geese, Wisp and Amble on it — names other acts also use.
-Showing a stranger's songs under a band's photograph is worse than showing none, and it
-is not a mistake anyone would catch from the outside. When the search genuinely can't get
-there, `appleMusicArtistID` on the artist in `schedule.json` pins them to a catalog id
-and skips the search entirely.
+**Every artist is pinned to a catalog id**, in `appleMusicArtistID` in `schedule.json`,
+because matching by name doesn't survive contact with this lineup. A catalog search
+always returns *something*, and 18 of the 48 names are shared by more than one act on
+Apple Music: five Ambles, five Geese, eight Wisps, seven Samias, eight MUNAs. Showing a
+stranger's songs under a band's photograph is worse than showing none, and it is not a
+mistake anyone would catch from the outside.
+
+`scripts/applemusic.py` does the pinning and re-checks it. Names only one catalog artist
+answers to are resolved automatically; the rest are settled by playing the candidates and
+checking them against the artist's own bio, and each one is written down in the script's
+`RESOLVED` table with the evidence — *"Cobra" and "Taxes", off Getting Killed* for the
+Brooklyn Geese, *Children's Music; "Pop See Ko"* for the Koo Koo on the Miniland stage.
+Run with no arguments, it looks every pinned id up again and fails on one that's dead or
+now points at a differently named artist.
+
+Two acts are pinned to `"none"`, the sentinel for *we looked, and they aren't there*:
+Duo Beats and Sarah Tonin, both Miniland locals whose names several strangers record
+under. That is not the same as having no id — no id means "search their name" — and the
+artist page drops the Top songs block entirely for them rather than explaining itself
+under a heading.
+
+The name search is still there, and it is what an artist added by a mid-festival schedule
+refresh gets: an exact match once both names are normalised for case, accents,
+punctuation and `&`/`and`, and nothing otherwise.
 
 Previews, not the songs themselves. `ApplicationMusicPlayer` would play the full track,
 but only for someone with an Apple Music subscription, and it does it by taking over the
@@ -469,7 +492,7 @@ HinterlandWidgets/
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area
-scripts/       scrapers, the map bundler and the icon generator
+scripts/       scrapers, the map bundler, the icon generator, the Apple Music pinner
 ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```
 

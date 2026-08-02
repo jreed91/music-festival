@@ -47,6 +47,15 @@ for artist in schedule.get("artists", []):
         errors.append(f'duplicate artist id: {artist["id"]}')
     artist_ids.add(artist["id"])
 
+    # An Apple Music id is a catalog number or the "none" sentinel. Anything else — a
+    # URL pasted whole, a slug, a typo — looks up nothing and silently costs the artist
+    # their top songs. `scripts/applemusic.py` checks that the ids resolve; this only
+    # checks their shape, so it stays offline like the rest of this file.
+    catalog_id = artist.get("appleMusicArtistID")
+    if catalog_id is not None and catalog_id != "none" and not catalog_id.isdigit():
+        errors.append(f'artist {artist["id"]}: appleMusicArtistID "{catalog_id}" is '
+                      'neither a catalog id nor "none"')
+
 performance_ids, total = set(), 0
 for day in schedule.get("days", []):
     require(day, ["date", "weekday", "sets"], "day")

@@ -48,6 +48,16 @@ struct CatalogTrack: Codable, Equatable, Identifiable, Hashable {
 }
 
 extension Artist {
+    /// What `appleMusicArtistID` says for an artist who was checked against the catalog
+    /// and isn't in it — a local act on the Miniland stage whose name several strangers
+    /// also record under. It isn't the same as having no id at all: no id means "find
+    /// them by name", and this means "don't, we already looked".
+    ///
+    /// `scripts/applemusic.py` writes it, and carries the reason next to each one.
+    static let appleMusicUnavailable = "none"
+
+    var isOnAppleMusic: Bool { appleMusicArtistID != Self.appleMusicUnavailable }
+
     /// The Apple Music search page for this artist, which is the fallback for the link
     /// button before — or without — a catalog lookup. It works with no authorization at
     /// all, so the button is never dead.

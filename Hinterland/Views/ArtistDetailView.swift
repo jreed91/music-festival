@@ -43,7 +43,9 @@ struct ArtistDetailView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    if let artist {
+                    // Nothing at all for the handful the schedule says aren't on Apple
+                    // Music: a heading explaining why is worse than the space it takes.
+                    if let artist, artist.isOnAppleMusic {
                         AppleMusicSection(artist: artist)
                     }
                     links
