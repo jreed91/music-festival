@@ -1,8 +1,8 @@
 import Combine
 import SwiftUI
 
-/// Artist artwork, bio, set times, the rating for each of them, and links out to Spotify
-/// and Instagram.
+/// Artist artwork, bio, set times, the rating for each of them, their top songs on Apple
+/// Music, and links out to Apple Music, Spotify and Instagram.
 struct ArtistDetailView: View {
     let artistID: String
 
@@ -11,6 +11,8 @@ struct ArtistDetailView: View {
     @Environment(Favorites.self) private var favorites
     @Environment(Ratings.self) private var ratings
     @Environment(CommunityRatings.self) private var community
+    @Environment(AppleMusicStore.self) private var music
+    @Environment(PreviewPlayer.self) private var preview
 
     @State private var now = Date()
     /// The set whose note is being written, which is what the sheet is presenting.
@@ -41,6 +43,9 @@ struct ArtistDetailView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
+                    if let artist {
+                        AppleMusicSection(artist: artist)
+                    }
                     links
                 }
                 .padding(20)
@@ -51,6 +56,9 @@ struct ArtistDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .ignoresSafeArea(edges: .top)
         .onReceive(ticker) { now = $0 }
+        // A preview belongs to the page that started it: walking back to the schedule
+        // should leave the field quiet, not trailing 30 seconds of someone's single.
+        .onDisappear { preview.stop() }
         .sheet(item: $noteTarget) { performance in
             SetNoteView(performance: performance,
                         note: ratings.rating(for: performance)?.note ?? "")
@@ -191,22 +199,25 @@ struct ArtistDetailView: View {
 
     @ViewBuilder
     private var links: some View {
-        let spotify = artist?.spotifyArtistID
-        let instagram = artist?.instagram
-
-        if spotify != nil || instagram != nil {
+        if let artist {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Listen & follow")
                     .appFont(13, weight: .bold)
                     .foregroundStyle(Theme.tertiaryText)
 
-                HStack(spacing: 10) {
-                    if let spotify {
+                // Three buttons now, and they grow with Dynamic Type — a row that wraps
+                // beats one whose third button is off the right edge.
+                FlowLayout(spacing: 10) {
+                    // Their page in Apple Music once we've found them there, a search for
+                    // their name until then, so this is never a dead button.
+                    LinkButton(title: "Apple Music", symbol: "music.note",
+                               url: music.artistURL(for: artist))
+                    if let spotify = artist.spotifyArtistID {
                         // Opens the Spotify app when installed, the web player otherwise.
-                        LinkButton(title: "Spotify", symbol: "music.note",
+                        LinkButton(title: "Spotify", symbol: "waveform",
                                    url: URL(string: "https://open.spotify.com/artist/\(spotify)"))
                     }
-                    if let instagram {
+                    if let instagram = artist.instagram {
                         LinkButton(title: "Instagram", symbol: "camera",
                                    url: URL(string: "https://www.instagram.com/\(instagram)/"))
                     }

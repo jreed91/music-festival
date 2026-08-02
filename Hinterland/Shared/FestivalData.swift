@@ -30,6 +30,10 @@ struct Artist: Codable, Equatable, Identifiable, Hashable {
     var sourceSlug: String?
     var bio: String?
     var spotifyArtistID: String?
+    /// Apple's catalog id, and an override rather than a requirement: `AppleMusicStore`
+    /// finds nearly everyone by searching their name, and this is how an artist whose
+    /// name collides with another act's gets pinned to the right one from the schedule.
+    var appleMusicArtistID: String?
     var instagram: String?
 }
 
