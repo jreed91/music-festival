@@ -10,6 +10,8 @@ struct HinterlandApp: App {
     @State private var community: CommunityRatings
     @State private var notifications = NotificationManager()
     @State private var liveActivity = LiveActivityController()
+    @State private var appleMusic = AppleMusicStore()
+    @State private var preview = PreviewPlayer()
 
     init() {
         // The forecast is for the amphitheater rather than wherever the phone is, so it
@@ -49,6 +51,8 @@ struct HinterlandApp: App {
                 .environment(community)
                 .environment(notifications)
                 .environment(liveActivity)
+                .environment(appleMusic)
+                .environment(preview)
         }
     }
 }

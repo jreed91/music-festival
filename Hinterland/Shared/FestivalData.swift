@@ -30,6 +30,11 @@ struct Artist: Codable, Equatable, Identifiable, Hashable {
     var sourceSlug: String?
     var bio: String?
     var spotifyArtistID: String?
+    /// Apple's catalog id, or `Artist.appleMusicUnavailable` for an artist who isn't in
+    /// the catalog. Every artist in the bundled schedule carries one, checked by
+    /// `scripts/applemusic.py`; `AppleMusicStore` falls back to searching the name only
+    /// for an artist a schedule refresh added after the build.
+    var appleMusicArtistID: String?
     var instagram: String?
 }
 

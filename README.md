@@ -7,8 +7,9 @@ Cell service at a 15,000-person festival in a rural Iowa valley is unusable, so 
 assumes there is no network. The full schedule, every artist bio, all 48 pieces of artist
 artwork, the festival's maps and the vendor directory ship inside the binary and work in
 airplane mode.
-The network is only used to pick up set-time changes and the forecast, both of which
-cache what they fetch and fall back to what's already on the phone.
+The network is only used to pick up set-time changes, the forecast, the crowd's ratings
+and each artist's top songs on Apple Music — all of which cache what they fetch and fall
+back to what's already on the phone.
 
 ## Features
 
@@ -23,8 +24,11 @@ cache what they fetch and fall back to what's already on the phone.
   it. Falls back to the festival at large before anything is starred.
 - **Live Activity** — the set you're watching on the Lock Screen and in the Dynamic
   Island from 90 minutes before it starts, with a countdown that runs on its own.
-- **Artist pages** — bios and links out to Spotify and Instagram, reached by tapping any
-  set on the schedule or in your lineup.
+- **Artist pages** — bios and links out to Apple Music, Spotify and Instagram, reached by
+  tapping any set on the schedule or in your lineup.
+- **Top songs** — each artist's five best-known tracks from the Apple Music catalog, each
+  playable as a 30-second preview without an Apple Music subscription. Looked up once and
+  cached, so the list is still there in the valley.
 - **Rate a set** — one to five stars on any set once it's under way, with an optional line
   about it, and a ranked recap of everything you rated. Rating works with no signal and
   uploads later; scores are pooled through CloudKit so every set also carries the average
@@ -58,9 +62,9 @@ if that ID is taken on your account, and re-run `xcodegen generate`.
 
 Requires iOS 17 or later (the app uses the `@Observable` macro).
 
-Three capabilities need setting up on the App ID in the
+Four capabilities need setting up on the App ID in the
 [developer portal](https://developer.apple.com/account/resources/identifiers/) before a
-build does everything it should. All three are declared in `project.yml`, but the
+build does everything it should. The first three are declared in `project.yml`, but the
 entitlement alone isn't enough — the App ID has to carry the capability and the
 provisioning profile has to be regenerated afterwards.
 
@@ -81,6 +85,13 @@ tick that container). Without it the ratings feature still works — you rate se
 recap screen ranks them — but nothing uploads and no crowd average appears, and the
 recap says as much rather than sitting there empty. There's a schema to create too; see
 [Shared ratings](#shared-ratings).
+
+**MusicKit** is the fourth, and it's the odd one out: there is no entitlement to declare,
+so nothing about it appears in `project.yml` beyond the `NSAppleMusicUsageDescription`
+string, and a build without it looks correctly signed. Tick **MusicKit** on the app
+identifier (and pick the app in the media-services sheet it opens). Without it MusicKit
+can't get a developer token, every catalog lookup fails, and the Top songs section on each
+artist page says it couldn't reach Apple Music while the rest of the page is unaffected.
 
 That container is **not** `iCloud.` plus the bundle ID, which is what `CKContainer`'s
 default would look for, so `CommunityRatings.containerIdentifier` names it in full and
@@ -156,10 +167,15 @@ python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by a
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
+python3 applemusic.py --write  # Apple Music catalog id per artist -> schedule.json
 ```
 
 Run `scrape.py` before `images.py` — the latter reads the artist list and writes each
-artist's asset name back into `schedule.json`. Run `guide.py` before `maps.py` for the
+artist's asset name back into `schedule.json`. `applemusic.py` wants the artist list too,
+and is the one script here that doesn't touch the festival site; see
+[Top songs](#top-songs-from-apple-music) for what it does and why every artist needs a
+pin. Run it with no arguments to check the pins already in the file without writing
+anything. Run `guide.py` before `maps.py` for the
 same reason: `guide.py` rewrites `info.json` wholesale and `maps.py` adds the `maps`
 array back onto it.
 
@@ -175,8 +191,9 @@ legend of their own, so a new one means both `DIETARY` in the script and `Dietar
 the app need it added, or it would quietly disappear from the filters.
 
 `python3 validate.py` checks all three files against what the Swift models require —
-missing fields, unparseable dates, duplicate ids, dietary codes the app would drop —
-before a bad file reaches a build.
+missing fields, unparseable dates, duplicate ids, dietary codes the app would drop,
+Apple Music ids that aren't ids — before a bad file reaches a build. It stays offline;
+checking that a catalog id still resolves is `applemusic.py`'s job.
 
 ## The maps on MapKit
 
@@ -256,6 +273,60 @@ Apple requires the Weather trademark and a link to its legal page wherever the d
 appears, so `WeatherAttributionView` sits at the bottom of the weather screen. The marks
 are remote images; the cached service name and legal text stand in when there's no signal
 to load them.
+
+## Top songs from Apple Music
+
+`AppleMusicStore` matches each artist in the lineup to their entry in the Apple Music
+catalog and keeps their five top songs; `PreviewPlayer` plays the previews.
+
+**Every artist is pinned to a catalog id**, in `appleMusicArtistID` in `schedule.json`,
+because matching by name doesn't survive contact with this lineup. A catalog search
+always returns *something*, and 18 of the 48 names are shared by more than one act on
+Apple Music: five Ambles, five Geese, eight Wisps, seven Samias, eight MUNAs. Showing a
+stranger's songs under a band's photograph is worse than showing none, and it is not a
+mistake anyone would catch from the outside.
+
+`scripts/applemusic.py` does the pinning and re-checks it. Names only one catalog artist
+answers to are resolved automatically; the rest are settled by playing the candidates and
+checking them against the artist's own bio, and each one is written down in the script's
+`RESOLVED` table with the evidence — *"Cobra" and "Taxes", off Getting Killed* for the
+Brooklyn Geese, *Children's Music; "Pop See Ko"* for the Koo Koo on the Miniland stage.
+Run with no arguments, it looks every pinned id up again and fails on one that's dead or
+now points at a differently named artist.
+
+Two acts are pinned to `"none"`, the sentinel for *we looked, and they aren't there*:
+Duo Beats and Sarah Tonin, both Miniland locals whose names several strangers record
+under. That is not the same as having no id — no id means "search their name" — and the
+artist page drops the Top songs block entirely for them rather than explaining itself
+under a heading.
+
+The name search is still there, and it is what an artist added by a mid-festival schedule
+refresh gets: an exact match once both names are normalised for case, accents,
+punctuation and `&`/`and`, and nothing otherwise.
+
+Previews, not the songs themselves. `ApplicationMusicPlayer` would play the full track,
+but only for someone with an Apple Music subscription, and it does it by taking over the
+system now-playing queue — cutting off whatever was on in the car. A preview asset plays
+for everyone with no subscription at all, which is the right trade for a section whose
+job is *what does this band sound like*; the Apple Music link is one tap away for the
+rest. Previews play through the ring/silent switch like music rather than being silenced
+like a UI sound, and the audio session is handed back on stop so whatever was playing
+before resumes.
+
+What comes back is flattened into `ArtistCatalog` — plain `Codable` values, the same
+thing `WeatherSnapshot` does to WeatherKit's types — and written to Application Support,
+keyed by our artist id. So an artist page opened once on a network still lists their
+songs in a field with no signal, with the date it was saved under them; only the previews
+themselves need the network. A lookup is trusted for a week. Nothing is bundled: preview
+URLs and song rankings would be a year stale by the festival.
+
+Authorization is asked for on a tap on the artist page, never at launch. iOS only ever
+asks once, and a media prompt in front of the schedule on first run is one most people
+would refuse for the wrong reason. Refused is a state the section says out loud, with a
+button through to Settings, rather than a heading with nothing under it.
+
+Nothing here touches the library, the listening history or any playlist — the only
+request made is a public catalog lookup, and nothing is written back to Apple Music.
 
 ## Rating sets
 
@@ -407,11 +478,13 @@ Hinterland/
   Shared/      compiled into the app AND the widget extension — FestivalData, Favorites,
                Theme (palette + formatting), AppGroup, ScheduleFile, Lineup,
                NowPlayingActivity (the ActivityKit attributes)
-  Models/      GuideData, MapData, VendorData, WeatherData — Codable mirrors of the JSON
+  Models/      GuideData, MapData, VendorData, WeatherData, AppleMusicData — Codable
+               mirrors of the JSON and of what's kept from the Apple Music catalog
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
-               LiveActivityController, Ratings (yours), CommunityRatings (everyone's)
-  Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, GroundsMap,
-               MapImage, Weather, WeatherCard, Components
+               LiveActivityController, Ratings (yours), CommunityRatings (everyone's),
+               AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
+  Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, AppleMusic,
+               GroundsMap, MapImage, Weather, WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),
@@ -419,7 +492,7 @@ HinterlandWidgets/
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area
-scripts/       scrapers, the map bundler and the icon generator
+scripts/       scrapers, the map bundler, the icon generator, the Apple Music pinner
 ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```
 
@@ -429,3 +502,8 @@ Artist photography is pulled from the festival's own CDN and is copyrighted by
 Hinterland and the respective photographers. That's fine for a personal or
 TestFlight-distributed build; it would need licensing before any public App Store
 release.
+
+Song titles, album art and previews come from the Apple Music catalog and belong to
+Apple and the rights holders. Apple's terms ask for the service to be named wherever its
+content appears, which is what the **Apple Music** link in the Top songs header is doing
+as well as being the way out to the full catalog.
