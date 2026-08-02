@@ -62,6 +62,28 @@ struct ScheduleView: View {
             .navigationDestination(for: WeatherRoute.self) { _ in
                 WeatherView()
             }
+            .navigationDestination(for: PastLineupRoute.self) { route in
+                switch route {
+                case .index:
+                    PastLineupsView()
+                case .year(let value):
+                    if let year = store.pastLineups.year(value) {
+                        PastYearView(year: year)
+                    }
+                }
+            }
+            // The lineup is what this tab is, so the ten before it belong behind it
+            // rather than in a fifth tab — which is also where the festival's own site
+            // files them, under Lineup.
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(value: PastLineupRoute.index) {
+                        Image(systemName: "clock.arrow.circlepath")
+                    }
+                    .tint(Theme.accent)
+                    .accessibilityLabel("Past lineups")
+                }
+            }
             .refreshable {
                 await store.refresh()
                 await weather.refresh(force: true)

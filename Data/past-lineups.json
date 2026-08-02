@@ -1,0 +1,1031 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-02T18:26:01Z",
+  "source": "https://www.hinterlandiowa.com/past-lineups",
+  "years": [
+    {
+      "year": 2025,
+      "days": [
+        {
+          "id": "2025-1",
+          "headliner": "Tyler, The Creator",
+          "support": [
+            {
+              "name": "Clairo"
+            },
+            {
+              "name": "Remi Wolf"
+            },
+            {
+              "name": "Royel Otis"
+            },
+            {
+              "name": "Rebecca Black"
+            },
+            {
+              "name": "Good Neighbours"
+            },
+            {
+              "name": "INJI"
+            },
+            {
+              "name": "Scowl"
+            },
+            {
+              "name": "Rebecca Black DJ Set",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "cdisiac",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2025-2",
+          "headliner": "Kacey Musgraves",
+          "support": [
+            {
+              "name": "The Marías"
+            },
+            {
+              "name": "Still Woozy"
+            },
+            {
+              "name": "Role Model"
+            },
+            {
+              "name": "Glass Beams"
+            },
+            {
+              "name": "Gigi Perez"
+            },
+            {
+              "name": "Willow Avalon"
+            },
+            {
+              "name": "hey, nothing"
+            },
+            {
+              "name": "Nordista Freeze",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Hembree",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Little Engines Presents",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2025-3",
+          "headliner": "Lana Del Rey",
+          "support": [
+            {
+              "name": "Bleachers"
+            },
+            {
+              "name": "Sierra Ferrell"
+            },
+            {
+              "name": "Wyatt Flores"
+            },
+            {
+              "name": "Michael Marcagi"
+            },
+            {
+              "name": "Evan Honer"
+            },
+            {
+              "name": "Orla Gartland"
+            },
+            {
+              "name": "Sam Austins"
+            },
+            {
+              "name": "Gordi",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Haffway",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Derry & the Dirty Dishes",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Koo Koo",
+              "stage": "Miniland Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "days": [
+        {
+          "id": "2024-1",
+          "headliner": "Hozier",
+          "support": [
+            {
+              "name": "Orville Peck"
+            },
+            {
+              "name": "Hippo Campus"
+            },
+            {
+              "name": "Sam Barber"
+            },
+            {
+              "name": "The Last Dinner Party"
+            },
+            {
+              "name": "Josiah And The Bonnevilles"
+            },
+            {
+              "name": "Debbii Dawson"
+            },
+            {
+              "name": "Valencia Grace"
+            },
+            {
+              "name": "Model/Actriz",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Molly Martin",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2024-2",
+          "headliner": "Vampire Weekend",
+          "support": [
+            {
+              "name": "Lizzy McAlpine"
+            },
+            {
+              "name": "Charley Crockett"
+            },
+            {
+              "name": "Red Clay Strays"
+            },
+            {
+              "name": "Madison Cunningham"
+            },
+            {
+              "name": "Richy Mitch & The Coal Miners"
+            },
+            {
+              "name": "Blondshell"
+            },
+            {
+              "name": "Hans Williams"
+            },
+            {
+              "name": "Billy Woods",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Waylon Wyatt",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Pedal Steel Noah",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2024-3",
+          "headliner": "Noah Kahan",
+          "support": [
+            {
+              "name": "Mt. Joy"
+            },
+            {
+              "name": "Ethel Cain"
+            },
+            {
+              "name": "Chappell Roan"
+            },
+            {
+              "name": "The Japanese House"
+            },
+            {
+              "name": "Flipturn"
+            },
+            {
+              "name": "Katy Kirby"
+            },
+            {
+              "name": "Odie Leigh"
+            },
+            {
+              "name": "Koo Koo",
+              "stage": "Hinterkids Stage"
+            },
+            {
+              "name": "Jeremie Albino",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Natalie Prauser",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "days": [
+        {
+          "id": "2023-1",
+          "headliner": "Bon Iver",
+          "support": [
+            {
+              "name": "Sylvan Esso"
+            },
+            {
+              "name": "Houndmouth"
+            },
+            {
+              "name": "The Regrettes"
+            },
+            {
+              "name": "Skeggs"
+            },
+            {
+              "name": "Marijuana Deathsquads"
+            },
+            {
+              "name": "Thomas Dollbaum"
+            }
+          ]
+        },
+        {
+          "id": "2023-2",
+          "headliner": "Zach Bryan",
+          "support": [
+            {
+              "name": "Angel Olsen"
+            },
+            {
+              "name": "Noah Kahan"
+            },
+            {
+              "name": "The Teskey Brothers"
+            },
+            {
+              "name": "Joy Oladokun"
+            },
+            {
+              "name": "Wilderado"
+            },
+            {
+              "name": "Riley Downing"
+            },
+            {
+              "name": "Pony Bradshaw"
+            },
+            {
+              "name": "Richy Mitch & The Coal Miners",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Sunny War",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Koo Koo Kanga Roo",
+              "stage": "Hinterkids Stage"
+            },
+            {
+              "name": "Mitchell Walsmith",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "Matt Keen",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2023-3",
+          "headliner": "Maggie Rogers",
+          "support": [
+            {
+              "name": "Wallows"
+            },
+            {
+              "name": "Alex G"
+            },
+            {
+              "name": "Faye Webster"
+            },
+            {
+              "name": "Del Water Gap"
+            },
+            {
+              "name": "Tomberlin"
+            },
+            {
+              "name": "spill tab"
+            },
+            {
+              "name": "Yot Club"
+            },
+            {
+              "name": "Field Medic",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Savannah Conley",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Luke Fox",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "The Holdaways",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "days": [
+        {
+          "id": "2022-1",
+          "headliner": "Billy Strings",
+          "support": [
+            {
+              "name": "Sierra Ferrell"
+            },
+            {
+              "name": "The Texas Gentlemen"
+            },
+            {
+              "name": "Riddy Arman"
+            },
+            {
+              "name": "Nick Shoulders"
+            },
+            {
+              "name": "Joe Pera",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Surprise Valley",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2022-2",
+          "headliner": "Glass Animals",
+          "support": [
+            {
+              "name": "Turnstile"
+            },
+            {
+              "name": "The Aces"
+            },
+            {
+              "name": "Briston Maroney"
+            },
+            {
+              "name": "Goth Babe"
+            },
+            {
+              "name": "Petey"
+            },
+            {
+              "name": "Yoke Lore"
+            },
+            {
+              "name": "Heatbox",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Summer Dean",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2022-3",
+          "headliner": "Nathaniel Rateliff & The Night Sweats",
+          "support": [
+            {
+              "name": "Lake Street Dive"
+            },
+            {
+              "name": "Trampled by Turtles"
+            },
+            {
+              "name": "Jenny Lewis"
+            },
+            {
+              "name": "Durand Jones & The Indications"
+            },
+            {
+              "name": "Mat Kearney"
+            },
+            {
+              "name": "TK & The Holy Know-Nothings"
+            },
+            {
+              "name": "Jesse Daniel"
+            },
+            {
+              "name": "Miko Marks"
+            },
+            {
+              "name": "Vinyl Ranch",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Ethridge Netz",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2022-4",
+          "headliner": "Phoebe Bridgers",
+          "support": [
+            {
+              "name": "Kurt Vile & The Violators"
+            },
+            {
+              "name": "Lucy Dacus"
+            },
+            {
+              "name": "MUNA"
+            },
+            {
+              "name": "Liz Cooper"
+            },
+            {
+              "name": "Tré Burt"
+            },
+            {
+              "name": "The Kernal"
+            },
+            {
+              "name": "Hayden Pedigo"
+            },
+            {
+              "name": "Tim Heidecker",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Emma Butterworth",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "days": [
+        {
+          "id": "2021-1",
+          "headliner": "The Avett Brothers",
+          "support": [
+            {
+              "name": "Old Crow Medicine Show"
+            },
+            {
+              "name": "Caamp"
+            },
+            {
+              "name": "Yola"
+            },
+            {
+              "name": "Cut Worms"
+            },
+            {
+              "name": "Hex Girls"
+            },
+            {
+              "name": "Mooseknuckle",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2021-2",
+          "headliner": "Tyler Childers",
+          "support": [
+            {
+              "name": "Black Pumas"
+            },
+            {
+              "name": "The Marcus King Band"
+            },
+            {
+              "name": "Zach Bryan"
+            },
+            {
+              "name": "Shooter Jennings"
+            },
+            {
+              "name": "Paul Cauthen"
+            },
+            {
+              "name": "The Dip"
+            },
+            {
+              "name": "Kelsey Waldon"
+            },
+            {
+              "name": "Lillie Mae"
+            },
+            {
+              "name": "Orville Peck ft. songs by The Unrighteous Brothers",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Croy and the Boys",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Jake Simon",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "Dickie",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2021-3",
+          "headliner": "Leon Bridges",
+          "support": [
+            {
+              "name": "Khruangbin"
+            },
+            {
+              "name": "Mt. Joy"
+            },
+            {
+              "name": "Orville Peck"
+            },
+            {
+              "name": "Hamilton Leithauser"
+            },
+            {
+              "name": "Charley Crockett"
+            },
+            {
+              "name": "Bendigo Fletcher"
+            },
+            {
+              "name": "Vincent Neil Emerson"
+            },
+            {
+              "name": "Not Quite Brothers",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "The Winnie Blues",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "Jason Walsmith",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "days": [
+        {
+          "id": "2019-1",
+          "headliner": "Hozier",
+          "support": [
+            {
+              "name": "Kacey Musgraves"
+            },
+            {
+              "name": "Hippo Campus"
+            },
+            {
+              "name": "Jade Bird"
+            },
+            {
+              "name": "Keuning"
+            },
+            {
+              "name": "The Envy Corps",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2019-2",
+          "headliner": "Jason Isbell & The 400 Unit",
+          "support": [
+            {
+              "name": "St. Paul and The Broken Bones"
+            },
+            {
+              "name": "The Wood Brothers"
+            },
+            {
+              "name": "Colter Wall"
+            },
+            {
+              "name": "The Dead South"
+            },
+            {
+              "name": "Ron Gallo"
+            },
+            {
+              "name": "John Moreland"
+            },
+            {
+              "name": "The Maytags"
+            },
+            {
+              "name": "Adam Bruce"
+            },
+            {
+              "name": "Trevor Sensor",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Southbound",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Louise Lately",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "The Ruralists",
+              "stage": "Brunch Stage"
+            }
+          ]
+        },
+        {
+          "id": "2019-3",
+          "headliner": "Brandi Carlile",
+          "support": [
+            {
+              "name": "Maggie Rogers"
+            },
+            {
+              "name": "Dawes"
+            },
+            {
+              "name": "Brent Cobb"
+            },
+            {
+              "name": "The War and Treaty"
+            },
+            {
+              "name": "Ruston Kelly"
+            },
+            {
+              "name": "The Nude Party"
+            },
+            {
+              "name": "Elizabeth Moen"
+            },
+            {
+              "name": "Annalibera",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Tomar & The FCs",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Dan Tedesco",
+              "stage": "Brunch Stage"
+            },
+            {
+              "name": "Kemble The Band",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "days": [
+        {
+          "id": "2018-1",
+          "headliner": "Band of Horses",
+          "support": [
+            {
+              "name": "CHVRCHES"
+            },
+            {
+              "name": "Tash Sultana"
+            },
+            {
+              "name": "Ancient Posse"
+            },
+            {
+              "name": "State Disco",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2018-2",
+          "headliner": "Sturgill Simpson",
+          "support": [
+            {
+              "name": "Nathaniel Rateliff & The Night Sweats"
+            },
+            {
+              "name": "Blackberry Smoke"
+            },
+            {
+              "name": "Margo Price"
+            },
+            {
+              "name": "Anderson East"
+            },
+            {
+              "name": "J. Roddy Walston and The Business"
+            },
+            {
+              "name": "Tyler Childers"
+            },
+            {
+              "name": "The Nadas"
+            },
+            {
+              "name": "Wheeler Walker Jr.",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Polk County 5",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Porter Union",
+              "stage": "Campfire and Brunch Stage"
+            },
+            {
+              "name": "Izabel Crane",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "days": [
+        {
+          "id": "2017-1",
+          "headliner": "alt-J",
+          "support": [
+            {
+              "name": "The Head and the Heart"
+            },
+            {
+              "name": "Foxygen"
+            },
+            {
+              "name": "Annalibera"
+            },
+            {
+              "name": "Adam Bruce",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Extravision",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2017-2",
+          "headliner": "Ryan Adams",
+          "support": [
+            {
+              "name": "Gary Clark Jr."
+            },
+            {
+              "name": "Dwight Yoakam"
+            },
+            {
+              "name": "Shakey Graves"
+            },
+            {
+              "name": "Nikki Lane"
+            },
+            {
+              "name": "JD McPherson"
+            },
+            {
+              "name": "The Cactus Blossoms"
+            },
+            {
+              "name": "Max Jury"
+            },
+            {
+              "name": "Dan Tedesco",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Pale Blue Erf",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Dirty Rotten Scoundrels",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Porter Union",
+              "stage": "Brunch Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "days": [
+        {
+          "id": "2016-1",
+          "headliner": "Ray LaMontagne",
+          "support": [
+            {
+              "name": "Cold War Kids"
+            },
+            {
+              "name": "Houndmouth"
+            },
+            {
+              "name": "San Fermin"
+            },
+            {
+              "name": "James Biehn",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Some Friends",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Snuckle",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2016-2",
+          "headliner": "Willie Nelson",
+          "support": [
+            {
+              "name": "Grace Potter"
+            },
+            {
+              "name": "Lake Street Dive"
+            },
+            {
+              "name": "Shovels & Rope"
+            },
+            {
+              "name": "Turnpike Troubadours"
+            },
+            {
+              "name": "Hayes Carll"
+            },
+            {
+              "name": "Pokey LaFarge"
+            },
+            {
+              "name": "William Elliott Whitmore"
+            },
+            {
+              "name": "Field Division"
+            },
+            {
+              "name": "Dan Tedesco",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Dustin Smith",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "The Cardinal Sound",
+              "stage": "Campfire Stage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "days": [
+        {
+          "id": "2015-1",
+          "headliner": "Edward Sharpe & The Magnetic Zeros",
+          "support": [
+            {
+              "name": "Future Islands"
+            },
+            {
+              "name": "TV on the Radio"
+            },
+            {
+              "name": "The Envy Corps"
+            },
+            {
+              "name": "Adam Bruce",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Luke Fox",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Trevor Sensor",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2015-2",
+          "headliner": "Old Crow Medicine Show",
+          "support": [
+            {
+              "name": "Brandi Carlile"
+            },
+            {
+              "name": "Yonder Mountain String Band"
+            },
+            {
+              "name": "Lucius"
+            },
+            {
+              "name": "St. Paul & The Broken Bones"
+            },
+            {
+              "name": "Justin Townes Earle"
+            },
+            {
+              "name": "Joe Pug"
+            },
+            {
+              "name": "Madisen Ward & The Mama Bear"
+            },
+            {
+              "name": "Trevor Sensor"
+            },
+            {
+              "name": "Mr. Baber’s Neighbors",
+              "stage": "Campfire Stage"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

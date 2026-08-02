@@ -126,8 +126,35 @@ for area in vendors.get("areas", []):
             if code not in DIETARY_CODES:
                 errors.append(f'vendor {vendor["name"]}: unknown dietary code "{code}"')
 
+# -------------------------------------------------------------- past-lineups.json
+with open(os.path.join(ROOT, "Data", "past-lineups.json"), encoding="utf-8") as handle:
+    past = json.load(handle)
+
+require(past, ["version", "generatedAt", "years"], "past lineups")
+check_date(past.get("generatedAt"), "past lineups.generatedAt")
+seen_years, day_ids, past_acts = set(), set(), 0
+for entry in past.get("years", []):
+    require(entry, ["year", "days"], "past lineup year")
+    year = entry.get("year")
+    if year in seen_years:
+        errors.append(f"duplicate past lineup year: {year}")
+    seen_years.add(year)
+    if not entry.get("days"):
+        errors.append(f"past lineup {year}: no days")
+
+    for day in entry.get("days", []):
+        require(day, ["id", "headliner", "support"], f"past lineup {year} day")
+        # The archive renders straight from these ids; a collision would misroute a row.
+        if day.get("id") in day_ids:
+            errors.append(f'duplicate past lineup day id: {day["id"]}')
+        day_ids.add(day.get("id"))
+        past_acts += 1 + len(day.get("support", []))
+        for act in day.get("support", []):
+            require(act, ["name"], f'past lineup {year} act')
+
 # ------------------------------------------------------------ bundled artwork
 catalog = os.path.join(ROOT, "Hinterland", "Resources", "Assets.xcassets")
+
 for artist in schedule["artists"]:
     asset = artist.get("imageAsset")
     if asset and not os.path.exists(os.path.join(catalog, "Artists", f"{asset}.imageset")):
@@ -144,4 +171,5 @@ if errors:
     sys.exit(1)
 
 print(f"OK — {len(schedule['days'])} days, {total} sets, {len(artist_ids)} artists, "
-      f"{topics} guide topics, {stands} food stands, artwork and icon present")
+      f"{topics} guide topics, {stands} food stands, "
+      f"{len(seen_years)} past lineups ({past_acts} acts), artwork and icon present")

@@ -32,6 +32,8 @@ targets:
         buildPhase: resources
       - path: Data/vendors.json
         buildPhase: resources
+      - path: Data/past-lineups.json
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jreed91.hinterland

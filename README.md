@@ -5,8 +5,8 @@ An offline-first iOS app for [Hinterland Music Festival](https://www.hinterlandi
 
 Cell service at a 15,000-person festival in a rural Iowa valley is unusable, so the app
 assumes there is no network. The full schedule, every artist bio, all 48 pieces of artist
-artwork, the festival's maps and the vendor directory ship inside the binary and work in
-airplane mode.
+artwork, the festival's maps, the vendor directory and ten years of past lineups ship
+inside the binary and work in airplane mode.
 The network is only used to pick up set-time changes, the forecast, the crowd's ratings
 and each artist's top songs on Apple Music — all of which cache what they fetch and fall
 back to what's already on the phone.
@@ -37,6 +37,9 @@ back to what's already on the phone.
   Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
   they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
   nut-free and sugar-free.
+- **Past lineups** — every Hinterland since 2015, from the Schedule tab: each year's
+  headliners and its whole bill, day by day, side stages marked. Bundled, so it settles
+  the argument about who played 2017 with no signal.
 - **Maps** — the festival's four maps (grounds, concourse, driving routes, shuttle
   parking) bundled as artwork and pinch-zoomable, plus a MapKit view that georeferences
   the grounds map so the blue dot shows where you are on it.
@@ -164,6 +167,7 @@ cd scripts
 python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios, Spotify IDs
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
 python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
+python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
@@ -184,13 +188,13 @@ designer uses (`Grounds_Map`, `Concourse_Map`, `Route`, `Shuttle`), ignoring the
 photography alongside them. It exits non-zero if any of the four has gone missing, which
 means the artwork was renamed — update `MAPS` at the top of the script.
 
-All three scrapers exit non-zero if they parse nothing, which is the signal that the
+All four scrapers exit non-zero if they parse nothing, which is the signal that the
 site's markup changed and the selectors need attention. `vendors.py` also exits on a
 dietary code it doesn't recognise: the codes are printed on the vendor page with no
 legend of their own, so a new one means both `DIETARY` in the script and `DietaryTag` in
 the app need it added, or it would quietly disappear from the filters.
 
-`python3 validate.py` checks all three files against what the Swift models require —
+`python3 validate.py` checks all four files against what the Swift models require —
 missing fields, unparseable dates, duplicate ids, dietary codes the app would drop,
 Apple Music ids that aren't ids — before a bad file reaches a build. It stays offline;
 checking that a catalog id still resolves is `applemusic.py`'s job.
@@ -432,6 +436,39 @@ Shared scores are user data leaving the device, so an App Store release needs th
 declared in the privacy nutrition label and in a `PrivacyInfo.xcprivacy` the project
 doesn't yet carry.
 
+## Past lineups
+
+`Data/past-lineups.json` is the festival's own [archive
+page](https://www.hinterlandiowa.com/past-lineups) — ten festivals, 2015 through 2025,
+272 acts — scraped by `scripts/past_lineups.py` and bundled like `map.json` and
+`vendors.json`. Bundled only: summers that already happened don't change over a weekend,
+so there is nothing a refresh could usefully bring down.
+
+It's reached from the clock button in the Schedule tab's toolbar rather than from a tab of
+its own. The tab bar is already four items wide with "Food & Drink" in it, and this is
+where the festival's own nav files it — under Lineup, next to the set times.
+
+The archive's shape is the site's shape. Each year is a list of days, each day a headliner
+and the rest of that day's bill under it, side stages marked the way the site marks them
+(`Joe Pera (Campfire Stage)`). What the page never says is *which* day of the weekend a
+bill was — there are no dates on it anywhere — so neither does the JSON, and the screen
+says as much at the bottom of each year rather than inventing a Friday.
+
+Two things worth knowing about the parsing:
+
+- Webflow pads each year's template with empty slots and pads short bills with paragraphs
+  holding a zero-width joiner. Both are dropped; a day with no headliner isn't a day.
+- One 2025 Campfire billing is printed "Campire Stage". `STAGE_FIXES` in the script
+  corrects it, because the app colours a stage badge by matching the name and an
+  unrecognised stage comes out grey next to the Campfire sets either side of it.
+
+The gap at 2020 isn't written down anywhere — `missingYears` derives it from the years
+that are there, so the footer explains the jump from 2019 to 2021 on its own, and would
+explain the next one without an edit.
+
+The posters the site shows alongside each year are deliberately left on the site: they're
+a wall of small type at phone size, and every name on them is already in the bill.
+
 ## The widget and the Live Activity
 
 Both answer the same question — what am I watching, and what's after it — so the rule for
@@ -478,13 +515,14 @@ Hinterland/
   Shared/      compiled into the app AND the widget extension — FestivalData, Favorites,
                Theme (palette + formatting), AppGroup, ScheduleFile, Lineup,
                NowPlayingActivity (the ActivityKit attributes)
-  Models/      GuideData, MapData, VendorData, WeatherData, AppleMusicData — Codable
-               mirrors of the JSON and of what's kept from the Apple Music catalog
+  Models/      GuideData, MapData, VendorData, PastLineupData, WeatherData,
+               AppleMusicData — Codable mirrors of the JSON and of what's kept from the
+               Apple Music catalog
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
                LiveActivityController, Ratings (yours), CommunityRatings (everyone's),
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
   Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, AppleMusic,
-               GroundsMap, MapImage, Weather, WeatherCard, Components
+               PastLineups, GroundsMap, MapImage, Weather, WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),
@@ -492,6 +530,7 @@ HinterlandWidgets/
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area
+               past-lineups.json — every lineup since 2015
 scripts/       scrapers, the map bundler, the icon generator, the Apple Music pinner
 ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```
