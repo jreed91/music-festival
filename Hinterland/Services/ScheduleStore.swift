@@ -29,6 +29,9 @@ final class ScheduleStore {
     /// Food & drink stands by area. Bundled only; the lineup of vendors is settled well
     /// before gates and doesn't move during the weekend the way set times do.
     let vendors: VendorData
+    /// Every Hinterland before this one. Bundled only — ten summers that already happened
+    /// don't move over a weekend the way this one's set times do.
+    let pastLineups: PastLineupData
     private(set) var isRefreshing = false
     private(set) var lastRefreshed: Date?
     private(set) var refreshError: String?
@@ -49,6 +52,7 @@ final class ScheduleStore {
         guide = Self.loadBundled(GuideData.self, named: "info")
         map = Self.loadBundled(MapData.self, named: "map")
         vendors = Self.loadBundled(VendorData.self, named: "vendors")
+        pastLineups = Self.loadBundled(PastLineupData.self, named: "past-lineups")
     }
 
     // MARK: - Refresh
