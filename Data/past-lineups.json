@@ -1,8 +1,186 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-02T18:26:01Z",
+  "generatedAt": "2026-08-06T14:04:16Z",
   "source": "https://www.hinterlandiowa.com/past-lineups",
   "years": [
+    {
+      "year": 2026,
+      "days": [
+        {
+          "id": "2026-1",
+          "headliner": "KATSEYE",
+          "support": [
+            {
+              "name": "Porch Light"
+            },
+            {
+              "name": "Frost Children"
+            },
+            {
+              "name": "Jane Remover"
+            },
+            {
+              "name": "Oklou"
+            },
+            {
+              "name": "AUDREY NUNA"
+            },
+            {
+              "name": "ASHNIKKO"
+            },
+            {
+              "name": "beabadoobee"
+            },
+            {
+              "name": "Duo Beats",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Lipstick Homicide",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Nourished by Time",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Pixel Grip",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2026-2",
+          "headliner": "Lorde",
+          "support": [
+            {
+              "name": "Saint Avangeline"
+            },
+            {
+              "name": "Wisp"
+            },
+            {
+              "name": "SOFIA ISELLA"
+            },
+            {
+              "name": "Paris Paloma"
+            },
+            {
+              "name": "Snow Strippers"
+            },
+            {
+              "name": "MUNA"
+            },
+            {
+              "name": "Crooked Torus",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Sarah Tonin",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Leslie & The Ly's",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Between Friends",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Ninajirachi",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2026-3",
+          "headliner": "Mumford & Sons",
+          "support": [
+            {
+              "name": "Amble"
+            },
+            {
+              "name": "Waylon Wyatt"
+            },
+            {
+              "name": "Julia Wolf"
+            },
+            {
+              "name": "CMAT"
+            },
+            {
+              "name": "Santigold"
+            },
+            {
+              "name": "The Format"
+            },
+            {
+              "name": "Jessie Murph"
+            },
+            {
+              "name": "Derry & the Dirty Dishes",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Quintron & Miss Pussycat",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "The Brook & The Bluff",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Buffalo Traffic Jam",
+              "stage": "Campfire Stage"
+            }
+          ]
+        },
+        {
+          "id": "2026-4",
+          "headliner": "Kali Uchis",
+          "support": [
+            {
+              "name": "Haute & Freddy"
+            },
+            {
+              "name": "Samia"
+            },
+            {
+              "name": "Audrey Hobert"
+            },
+            {
+              "name": "Suki Waterhouse"
+            },
+            {
+              "name": "Wet Leg"
+            },
+            {
+              "name": "Geese"
+            },
+            {
+              "name": "Young Miko"
+            },
+            {
+              "name": "Koo Koo",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Jeffery Lewis",
+              "stage": "Miniland Stage"
+            },
+            {
+              "name": "Die Spitz",
+              "stage": "Campfire Stage"
+            },
+            {
+              "name": "Gouge Away",
+              "stage": "Campfire Stage"
+            }
+          ]
+        }
+      ]
+    },
     {
       "year": 2025,
       "days": [
