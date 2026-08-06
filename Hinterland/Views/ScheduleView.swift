@@ -2,6 +2,10 @@ import Combine
 import SwiftUI
 
 /// The full schedule, one day at a time, with an optional stage filter.
+///
+/// Deliberately not the owner of a `NavigationStack`: this is the root of the first tab
+/// while the festival is on, and a screen pushed from the recap once it's over.
+/// `FestivalHomeView` owns the stack and decides which of those this is.
 struct ScheduleView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(WeatherStore.self) private var weather
@@ -21,78 +25,60 @@ struct ScheduleView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 10) {
-                    // A tornado warning outranks whatever is about to start on the Main
-                    // Stage, so it goes above the card that says so.
-                    if let alert = weather.snapshot?.urgentAlert {
-                        WeatherAlertBanner(advisory: alert)
-                    }
+        ScrollView {
+            LazyVStack(spacing: 10) {
+                // A tornado warning outranks whatever is about to start on the Main
+                // Stage, so it goes above the card that says so.
+                if let alert = weather.snapshot?.urgentAlert {
+                    WeatherAlertBanner(advisory: alert)
+                }
 
-                    if let live = store.liveNow(at: now).first ?? store.upNext(after: now).first {
-                        NowCard(performance: live, isLive: live.isLive(at: now))
-                    }
-                    // Under the Now card rather than over it: what's playing is why this
-                    // screen exists, the weather is the context you read it in.
-                    WeatherCard()
-                        .padding(.bottom, 2)
+                if let live = store.liveNow(at: now).first ?? store.upNext(after: now).first {
+                    NowCard(performance: live, isLive: live.isLive(at: now))
+                }
+                // Under the Now card rather than over it: what's playing is why this
+                // screen exists, the weather is the context you read it in.
+                WeatherCard()
+                    .padding(.bottom, 2)
 
-                    if let day {
-                        ForEach(store.performances(on: day, stage: stageFilter)) { performance in
-                            NavigationLink(value: performance) {
-                                PerformanceRow(performance: performance)
-                            }
-                            .buttonStyle(.plain)
+                if let day {
+                    ForEach(store.performances(on: day, stage: stageFilter)) { performance in
+                        NavigationLink(value: performance) {
+                            PerformanceRow(performance: performance)
                         }
+                        .buttonStyle(.plain)
                     }
+                }
 
-                    freshness
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+                freshness
             }
-            .background(Theme.background)
-            .navigationTitle("Schedule")
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .top, spacing: 0) { header }
-            .navigationDestination(for: Performance.self) { performance in
-                ArtistDetailView(artistID: performance.artistId)
-            }
-            .navigationDestination(for: WeatherRoute.self) { _ in
-                WeatherView()
-            }
-            .navigationDestination(for: PastLineupRoute.self) { route in
-                switch route {
-                case .index:
-                    PastLineupsView()
-                case .year(let value):
-                    if let year = store.pastLineups.year(value) {
-                        PastYearView(year: year)
-                    }
-                }
-            }
-            // The lineup is what this tab is, so the ten before it belong behind it
-            // rather than in a fifth tab — which is also where the festival's own site
-            // files them, under Lineup.
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(value: PastLineupRoute.index) {
-                        Image(systemName: "clock.arrow.circlepath")
-                    }
-                    .tint(Theme.accent)
-                    .accessibilityLabel("Past lineups")
-                }
-            }
-            .refreshable {
-                await store.refresh()
-                await weather.refresh(force: true)
-            }
-            .onReceive(ticker) { now = $0 }
-            // The ticker doesn't run while the app is backgrounded, so catch up on the
-            // way back in rather than showing yesterday for up to half a minute.
-            .onAppear { now = Date() }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 24)
         }
+        .background(Theme.background)
+        .navigationTitle("Schedule")
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top, spacing: 0) { header }
+        // The lineup is what this tab is, so the ten before it belong behind it
+        // rather than in a fifth tab — which is also where the festival's own site
+        // files them, under Lineup.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(value: PastLineupRoute.index) {
+                    Image(systemName: "clock.arrow.circlepath")
+                }
+                .tint(Theme.accent)
+                .accessibilityLabel("Past lineups")
+            }
+        }
+        .refreshable {
+            await store.refresh()
+            await weather.refresh(force: true)
+        }
+        .onReceive(ticker) { now = $0 }
+        // The ticker doesn't run while the app is backgrounded, so catch up on the
+        // way back in rather than showing yesterday for up to half a minute.
+        .onAppear { now = Date() }
     }
 
     /// Where the set times came from and when. The Info tab used to carry this alongside

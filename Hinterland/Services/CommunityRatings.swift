@@ -10,6 +10,14 @@ struct CrowdRating: Codable, Equatable {
     var average: Double { count == 0 ? 0 : Double(total) / Double(count) }
 }
 
+/// One set in the festival-wide ranking: who played, and what the field gave them.
+struct CrowdTopSet: Identifiable {
+    let performance: Performance
+    let rating: CrowdRating
+
+    var id: String { performance.id }
+}
+
 /// The whole crowd table as it was at `fetchedAt`, which is what gets cached to disk so
 /// the averages are still on screen in a field with no signal.
 struct CrowdRatings: Codable, Equatable {
@@ -126,6 +134,44 @@ final class CommunityRatings {
 
     var fetchedAt: Date? { crowd?.fetchedAt }
     var hasPendingUploads: Bool { !outbox.isEmpty }
+
+    /// The festival's best sets according to everyone, best first.
+    ///
+    /// `minimum` is what stops the weekend being won by a set one person loved: an average
+    /// of 5.0 from a single rating is not a result, and at a festival where most of the
+    /// field goes unrated it would otherwise top this list every time. Ties break on the
+    /// bigger sample, then on who played first.
+    func topSets(in data: FestivalData, minimum: Int = 3, limit: Int = 5) -> [CrowdTopSet] {
+        guard let crowd else { return [] }
+        let ranked = data.allPerformances
+            .compactMap { performance -> CrowdTopSet? in
+                guard let entry = crowd.byPerformanceID[performance.id],
+                      entry.count >= minimum else { return nil }
+                return CrowdTopSet(performance: performance, rating: entry)
+            }
+            .sorted {
+                if $0.rating.average != $1.rating.average {
+                    return $0.rating.average > $1.rating.average
+                }
+                if $0.rating.count != $1.rating.count { return $0.rating.count > $1.rating.count }
+                return $0.performance.start < $1.performance.start
+            }
+        return Array(ranked.prefix(limit))
+    }
+
+    /// Why `topSets` came back empty, in the reader's terms.
+    ///
+    /// The crowd section stays on screen whether or not there is anything to rank, so it
+    /// always needs something to say. Sharing deliberately isn't one of the answers: it
+    /// only governs uploads, and a phone that shares nothing still reads the averages.
+    func emptyRankingMessage(minimum: Int) -> String {
+        guard crowd != nil else {
+            return lastError ?? "No ratings downloaded yet — with a connection, pull down "
+                              + "to fetch what everyone else made of the weekend."
+        }
+        return "No set has \(minimum) ratings yet. As more people rate the sets they saw, "
+             + "the weekend's best turn up here."
+    }
 
     /// Whether anything is stopping the outbox from draining, which is worth a line on
     /// screen whenever there's something in it.

@@ -115,6 +115,22 @@ enum Format {
         return formatter.string(from: date)
     }
 
+    /// "Jul 30 – Aug 2", from the `yyyy-MM-dd` strings the festival gives its own dates in.
+    /// Nil if either one doesn't parse, so a caller can fall back rather than print a range
+    /// with a hole in it.
+    static func dateRange(_ start: String, _ end: String) -> String? {
+        let parser = DateFormatter()
+        parser.timeZone = timeZone
+        parser.dateFormat = "yyyy-MM-dd"
+        guard let from = parser.date(from: start), let to = parser.date(from: end) else {
+            return nil
+        }
+        let printer = DateFormatter()
+        printer.timeZone = timeZone
+        printer.dateFormat = "MMM d"
+        return "\(printer.string(from: from)) – \(printer.string(from: to))"
+    }
+
     /// An average rating to one decimal — "4.3" — in the reader's own number format.
     static func rating(_ average: Double) -> String {
         average.formatted(.number.precision(.fractionLength(1)))

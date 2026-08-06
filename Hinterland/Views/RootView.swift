@@ -20,7 +20,9 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $tab) {
-            ScheduleView()
+            // The schedule while the festival is on, the recap once it's over — the tab
+            // keeps its name either way, because "Schedule" is still what's behind it.
+            FestivalHomeView()
                 .tabItem { Label("Schedule", systemImage: "calendar") }
                 .tag(RootTab.schedule)
             MyLineupView()

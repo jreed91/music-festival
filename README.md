@@ -5,7 +5,7 @@ An offline-first iOS app for [Hinterland Music Festival](https://www.hinterlandi
 
 Cell service at a 15,000-person festival in a rural Iowa valley is unusable, so the app
 assumes there is no network. The full schedule, every artist bio, all 48 pieces of artist
-artwork, the festival's maps, the vendor directory and ten years of past lineups ship
+artwork, the festival's maps, the vendor directory and eleven years of past lineups ship
 inside the binary and work in airplane mode.
 The network is only used to pick up set-time changes, the forecast, the crowd's ratings
 and each artist's top songs on Apple Music — all of which cache what they fetch and fall
@@ -40,6 +40,11 @@ back to what's already on the phone.
 - **Past lineups** — every Hinterland since 2015, from the Schedule tab: each year's
   headliners and its whole bill, day by day, side stages marked. Bundled, so it settles
   the argument about who played 2017 with no signal.
+- **The recap** — once the last set has ended, the Schedule tab becomes a wrap-up of the
+  weekend: how many sets you saw and for how many hours, your best of the festival, the
+  day you gave the most to, and the festival's best sets according to everyone who rated
+  one. Shareable as a rendered card. The schedule itself is one tap away, and the year
+  joins the archive.
 - **Maps** — the festival's four maps (grounds, concourse, driving routes, shuttle
   parking) bundled as artwork and pinch-zoomable, plus a MapKit view that georeferences
   the grounds map so the blue dot shows where you are on it.
@@ -167,7 +172,8 @@ cd scripts
 python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios, Spotify IDs
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
 python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
-python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015
+python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015,
+                                    #   including this year's, folded in from schedule.json
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
 python3 appicon.py             # regenerates the app icon
@@ -436,11 +442,65 @@ Shared scores are user data leaving the device, so an App Store release needs th
 declared in the privacy nutrition label and in a `PrivacyInfo.xcprivacy` the project
 doesn't yet carry.
 
+## After the festival
+
+The Schedule tab has two roots. While the festival is on it's `ScheduleView`, the
+day-by-day list. Once the last band has finished it's `RecapView`, the wrap-up.
+`FestivalHomeView` owns the navigation stack for both, so the recap can push the schedule
+and the schedule can still push everything it always could.
+
+Which one is the root is a question of the clock, answered by `FestivalData.phase(at:)`
+against the **end of the last set** rather than the end of the last date — Hinterland's
+closing Campfire set starts at 12.30am, and a festival that declared itself over while a
+band was still playing would be wrong for the best hour of the weekend. Nothing is written
+down and nothing needs flipping: next year's `schedule.json` turns the tab back over on
+its own, with no build. A one-minute ticker means the phone in someone's pocket at the end
+of the last set rolls over by itself rather than on next launch.
+
+`Recap` (in `Models/`) does the counting, deliberately away from the view, because the
+counting rules are the part worth arguing about:
+
+- **Sets seen** is everything you rated *plus* everything you starred that has since
+  finished, as a union rather than a sum — most starred sets are also rated ones, and
+  adding the two would put the weekend out by roughly the weekend. Stars are a plan and
+  plans get abandoned, so this is the generous count, which is the right one for a
+  souvenir and the wrong one for anything else.
+- **Hours of music** is the set lengths of those, rounded to the half hour. Two sets that
+  overlapped both count: you were at both, briefly.
+- **Your biggest day** ties to the earlier day, and **stages** are ordered by how much of
+  your weekend each one got.
+- **Starred but never rated** is the one number on the screen that's a to-do rather than a
+  souvenir, and it links into My Ratings.
+
+**The festival's best** ranks every set the crowd rated, best first, from the table
+`CommunityRatings` already sweeps — no extra query. A set needs at least three ratings to
+be in it: an average of 5.0 from one person is not a result, and at a festival where most
+of the field goes unrated it would win every time. The section stays on screen whether or
+not there's anything in it, because a section that comes and goes with the state of the
+network is one nobody can rely on; when it's empty it says which kind of empty it is.
+Sharing is never the answer it gives — sharing governs uploads only, and a phone that
+shares nothing still reads the averages. The toggle appears under the list for the other
+reason: it's why *you* aren't in it.
+
+The share button hands off a `RecapShare`, which carries both a PNG and the plain-text
+ranking as two representations of one item, so Messages takes the picture and a notes app
+takes the text without either being asked to choose. The card is drawn by `ImageRenderer`
+from `RecapShareCard` — nothing in that view reads the environment, because the renderer
+draws it outside the view hierarchy, and nothing in it uses `appFont`, because type in a
+shared picture doesn't scale with the settings of the person who sent it. It's rendered
+when the screen appears and again when a rating changes, rather than inside `ShareLink`,
+where a render pass per body evaluation would be a scroll that stutters for a picture
+nobody has asked for yet.
+
+Someone who starred nothing and rated nothing gets the festival's recap instead of their
+own — the crowd's best sets, the bill, the archive — with one line about how to have a
+weekend of their own next time. Nothing on the screen reads as zero.
+
 ## Past lineups
 
 `Data/past-lineups.json` is the festival's own [archive
-page](https://www.hinterlandiowa.com/past-lineups) — ten festivals, 2015 through 2025,
-272 acts — scraped by `scripts/past_lineups.py` and bundled like `map.json` and
+page](https://www.hinterlandiowa.com/past-lineups) — eleven festivals, 2015 through 2026,
+320 acts — scraped by `scripts/past_lineups.py` and bundled like `map.json` and
 `vendors.json`. Bundled only: summers that already happened don't change over a weekend,
 so there is nothing a refresh could usefully bring down.
 
@@ -454,13 +514,25 @@ and the rest of that day's bill under it, side stages marked the way the site ma
 bill was — there are no dates on it anywhere — so neither does the JSON, and the screen
 says as much at the bottom of each year rather than inventing a Friday.
 
-Two things worth knowing about the parsing:
+Three things worth knowing about the parsing:
 
 - Webflow pads each year's template with empty slots and pads short bills with paragraphs
   holding a zero-width joiner. Both are dropped; a day with no headliner isn't a day.
 - One 2025 Campfire billing is printed "Campire Stage". `STAGE_FIXES` in the script
   corrects it, because the app colours a stage badge by matching the name and an
   unrecognised stage comes out grey next to the Campfire sets either side of it.
+- **This year is folded in from `schedule.json`.** The festival adds the year it just ran
+  to that page, but the bill it publishes is the Main Stage and nothing else — the
+  published 2026 page lists 31 acts where the app's own schedule played 48. So once the
+  last set has ended (`this_year()` checks the clock against `schedule.json`, not the
+  calendar — the closing Campfire set starts at half past midnight), the script merges the
+  two: every act the page leaves out is appended under that day's bill, with its stage,
+  which is where the scraped years put their side stages anyway. Matching is on
+  `festival_source.slug`, days pair on the headliner rather than on position, and a day
+  that doesn't pair is left exactly as scraped. If the site hasn't published the year at
+  all, the whole thing is built from the schedule instead: the last Main Stage set of each
+  day takes the heading, the rest of the bill reads down from it, side stages last. Either
+  way, re-running is idempotent and the site's own account of a day always wins.
 
 The gap at 2020 isn't written down anywhere — `missingYears` derives it from the years
 that are there, so the footer explains the jump from 2019 to 2021 on its own, and would
@@ -517,12 +589,14 @@ Hinterland/
                NowPlayingActivity (the ActivityKit attributes)
   Models/      GuideData, MapData, VendorData, PastLineupData, WeatherData,
                AppleMusicData — Codable mirrors of the JSON and of what's kept from the
-               Apple Music catalog
+               Apple Music catalog — plus Recap, which is the counting behind the
+               post-festival screen and the phase rule that decides when it appears
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
                LiveActivityController, Ratings (yours), CommunityRatings (everyone's),
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
-  Views/       Schedule, MyLineup, Ratings, Maps, FoodDrink, ArtistDetail, AppleMusic,
-               PastLineups, GroundsMap, MapImage, Weather, WeatherCard, Components
+  Views/       Schedule, Recap (+ RecapShareCard), MyLineup, Ratings, Maps, FoodDrink,
+               ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
+               WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),
