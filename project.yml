@@ -22,6 +22,13 @@ targets:
     platform: iOS
     sources:
       - path: Hinterland
+        excludes:
+          - PrivacyInfo.xcprivacy
+      # The privacy manifest, listed on its own (and excluded above) so it's certain to land
+      # in Copy Bundle Resources at the bundle root, which is the only place App Store
+      # Connect looks for it. What it declares is explained under "Privacy" in the README.
+      - path: Hinterland/PrivacyInfo.xcprivacy
+        buildPhase: resources
       # Added as individual files, not a folder reference, so they land at the bundle
       # root where Bundle.main.url(forResource:withExtension:) finds them.
       - path: Data/schedule.json
@@ -100,6 +107,11 @@ targets:
     platform: iOS
     sources:
       - path: HinterlandWidgets
+        excludes:
+          - PrivacyInfo.xcprivacy
+      # An extension is its own bundle and needs its own manifest; same reason as the app's.
+      - path: HinterlandWidgets/PrivacyInfo.xcprivacy
+        buildPhase: resources
       # Compiled into both targets: the models, the starred sets, the palette, and the
       # rule for which set to feature. One copy, so the widget can't disagree with the app.
       - path: Hinterland/Shared
