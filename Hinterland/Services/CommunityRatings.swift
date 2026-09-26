@@ -313,7 +313,7 @@ final class CommunityRatings {
                 let record = CKRecord(recordType: Self.recordType, recordID: recordID)
                 record[Self.performanceKey] = performanceID as NSString
                 record[Self.starsKey] = stars as NSNumber
-                record[Self.yearKey] = festivalYear as NSNumber
+                record[Self.yearKey] = year(of: performanceID) as NSNumber
                 saves.append(record)
             }
         }
@@ -368,6 +368,22 @@ final class CommunityRatings {
         } catch {
             lastError = Self.message(for: error)
         }
+    }
+
+    /// The festival a set belongs to, read off its ID rather than taken from the schedule
+    /// that happens to be loaded.
+    ///
+    /// Set IDs start with the day they were played (`2026-07-30-main-stage-…`), and the
+    /// outbox outlives the schedule: once next year's arrives, flipping the sharing switch
+    /// re-queues every rating on the phone, and stamping those with the current year would
+    /// file last summer's sets under this summer's averages. The current year is only the
+    /// fallback for an ID that doesn't carry a date.
+    private func year(of performanceID: String) -> Int {
+        let prefix = performanceID.prefix(5)
+        guard prefix.count == 5, prefix.last == "-", let year = Int(prefix.dropLast()) else {
+            return festivalYear
+        }
+        return year
     }
 
     @MainActor
