@@ -79,6 +79,8 @@ struct MyLineupView: View {
                         .appFont(12, weight: .bold)
                         .foregroundStyle(Theme.tertiaryText)
                         .padding(.top, 8)
+                        .accessibilityLabel("\(group.day.weekday), \(Format.dayLabel(group.day))")
+                        .accessibilityAddTraits(.isHeader)
 
                     ForEach(group.sets) { performance in
                         NavigationLink(value: performance) {

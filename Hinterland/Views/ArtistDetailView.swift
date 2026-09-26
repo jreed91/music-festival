@@ -36,6 +36,7 @@ struct ArtistDetailView: View {
                             Text("About")
                                 .appFont(13, weight: .bold)
                                 .foregroundStyle(Theme.tertiaryText)
+                                .accessibilityAddTraits(.isHeader)
                             Text(bio)
                                 .appFont(15)
                                 .foregroundStyle(.white.opacity(0.86))
@@ -85,6 +86,7 @@ struct ArtistDetailView: View {
                 .shadow(radius: 12)
                 .padding(20)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
         }
     }
 
@@ -126,6 +128,9 @@ struct ArtistDetailView: View {
                     }
                 }
             }
+            // When, where and the weather as one stop, with the times read as a range.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(spokenSetHeader(performance, day: day))
             Spacer(minLength: 0)
             Button {
                 favorites.toggle(performance)
@@ -141,7 +146,21 @@ struct ArtistDetailView: View {
                                 in: Capsule())
             }
             .buttonStyle(.plain)
+            // "Starred" reads as a state and "Star" as a noun; say what the tap does.
+            .accessibilityLabel(favorites.contains(performance) ? "Remove from My Lineup"
+                                                                : "Add to My Lineup")
         }
+    }
+
+    private func spokenSetHeader(_ performance: Performance, day: FestivalDay?) -> String {
+        var parts: [String] = []
+        if let day { parts.append("\(day.weekday), \(Format.dayLabel(day))") }
+        parts.append(Format.spokenRange(performance.start, performance.end))
+        parts.append(Stage(name: performance.stage).displayName)
+        if let hour = weather.snapshot?.hour(containing: performance.start) {
+            parts.append(SetForecastBadge.spokenLabel(for: hour))
+        }
+        return parts.joined(separator: ", ")
     }
 
     /// Rate the set, see what everyone else made of it, and once rated write a line about
@@ -165,6 +184,8 @@ struct ArtistDetailView: View {
                             .appFont(11)
                             .foregroundStyle(Theme.tertiaryText)
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(CrowdBadge.spokenLabel(for: crowd))
                 }
             }
 
@@ -206,6 +227,7 @@ struct ArtistDetailView: View {
                 Text("Listen & follow")
                     .appFont(13, weight: .bold)
                     .foregroundStyle(Theme.tertiaryText)
+                    .accessibilityAddTraits(.isHeader)
 
                 // Three buttons now, and they grow with Dynamic Type — a row that wraps
                 // beats one whose third button is off the right edge.

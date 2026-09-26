@@ -73,9 +73,23 @@ struct StarRating: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(value == stars
-                                    ? "Clear rating"
-                                    : "Rate \(value) star\(value == 1 ? "" : "s")")
+            }
+        }
+        // One control to VoiceOver rather than five buttons, each read as "Rate 3 stars"
+        // with nothing saying which one is lit: swipe up or down to change it, the way a
+        // slider works. Swiping down from one star is the same as tapping the star you
+        // gave, so it clears the rating under the same rule.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Your rating")
+        .accessibilityValue(stars == 0 ? "Not rated" : "\(stars) of 5 stars")
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment:
+                if stars < SetRating.scale.upperBound { onSelect(stars + 1) }
+            case .decrement:
+                if stars > 1 { onSelect(stars - 1) } else if stars == 1 { onSelect(1) }
+            @unknown default:
+                break
             }
         }
     }
@@ -98,7 +112,12 @@ struct RatingBadge: View {
         .padding(.vertical, compact ? 3 : 4)
         .background(Theme.accent.opacity(0.14), in: Capsule())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("You rated this \(stars) out of 5")
+        .accessibilityLabel(Self.spokenLabel(stars: stars))
+    }
+
+    /// Also what a row that summarises itself for VoiceOver says in the badge's place.
+    static func spokenLabel(stars: Int) -> String {
+        "You rated this \(stars) out of 5"
     }
 }
 
@@ -121,8 +140,12 @@ struct CrowdBadge: View {
         .padding(.vertical, compact ? 3 : 4)
         .background(Theme.crowd.opacity(0.14), in: Capsule())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Everyone rated this \(Format.rating(rating.average)) out of 5, "
-                          + "from \(rating.count) \(rating.count == 1 ? "person" : "people")")
+        .accessibilityLabel(Self.spokenLabel(for: rating))
+    }
+
+    static func spokenLabel(for rating: CrowdRating) -> String {
+        "Everyone rated this \(Format.rating(rating.average)) out of 5, "
+            + "from \(rating.count) \(rating.count == 1 ? "person" : "people")"
     }
 }
 
@@ -178,6 +201,7 @@ struct EmptyStateView: View {
             Image(systemName: symbol)
                 .appFont(40, weight: .light)
                 .foregroundStyle(Theme.tertiaryText)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.headline)
                 .foregroundStyle(.white)
@@ -188,6 +212,7 @@ struct EmptyStateView: View {
         }
         .frame(maxWidth: 300)
         .padding(32)
+        .accessibilityElement(children: .combine)
     }
 }
 

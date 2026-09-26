@@ -60,11 +60,13 @@ struct WeatherView: View {
                             .foregroundStyle(Theme.tertiaryText)
                     }
                 }
+                .accessibilityElement(children: .combine)
                 Spacer(minLength: 0)
                 Image(systemName: current.symbolName)
                     .symbolRenderingMode(.multicolor)
                     .appFont(46)
                     .padding(.top, 6)
+                    .accessibilityHidden(true)
             }
 
             Divider().overlay(Theme.hairline)
@@ -125,6 +127,10 @@ struct WeatherView: View {
                                     .frame(height: 12)
                             }
                             .frame(minWidth: 40)
+                            // One stop per hour, read as a sentence, rather than the
+                            // hour, the temperature and the rain chance as separate stops.
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(spokenHour(hour))
                         }
                     }
                     .padding(.horizontal, 14)
@@ -132,6 +138,15 @@ struct WeatherView: View {
                 }
             }
         }
+    }
+
+    private func spokenHour(_ hour: HourConditions) -> String {
+        var label = "\(Format.hour(hour.date)), \(Format.temperature(hour.temperature)), "
+            + hour.condition
+        if hour.precipitationChance >= 0.1 {
+            label += ", \(Format.percent(hour.precipitationChance)) chance of rain"
+        }
+        return label
     }
 
     // MARK: - The weekend
@@ -205,6 +220,28 @@ struct WeatherView: View {
             }
         }
         .padding(14)
+        // High and low sit side by side as two bare numbers; spoken, they need saying
+        // which is which.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenDay(day, conditions: conditions))
+    }
+
+    private func spokenDay(_ day: FestivalDay, conditions: DayConditions?) -> String {
+        var parts = [day.weekday, Format.dayLabel(day)]
+        if let conditions {
+            parts.append(conditions.condition)
+            parts.append("high \(Format.temperature(conditions.high))")
+            parts.append("low \(Format.temperature(conditions.low))")
+            if conditions.precipitationChance >= 0.1 {
+                parts.append("\(Format.percent(conditions.precipitationChance)) chance of rain")
+            }
+            if let sunset = conditions.sunset {
+                parts.append("sunset \(Format.time(sunset))")
+            }
+        } else {
+            parts.append("Too far out to forecast")
+        }
+        return parts.joined(separator: ", ")
     }
 
     // MARK: - Empty state and footer
@@ -275,6 +312,7 @@ private struct WeatherSection<Content: View>: View {
                 .appFont(12, weight: .bold)
                 .foregroundStyle(Theme.tertiaryText)
                 .padding(.horizontal, 2)
+                .accessibilityAddTraits(.isHeader)
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Theme.surface,
@@ -295,6 +333,7 @@ private struct WeatherStat: View {
                 .appFont(13)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 18)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 1) {
                 Text(label)
                     .appFont(10, weight: .semibold)
@@ -306,5 +345,6 @@ private struct WeatherStat: View {
                     .minimumScaleFactor(0.8)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 }

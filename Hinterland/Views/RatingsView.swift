@@ -51,6 +51,7 @@ struct RatingsView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                     .tint(Theme.accent)
+                    .accessibilityLabel("Share my ratings")
                 }
             }
         }
@@ -90,6 +91,10 @@ struct RatingsView: View {
                             }
                             .padding(.horizontal, 14)
                             .padding(.top, 8)
+                            // The badge already says how many people; the text beside it
+                            // would only say it again.
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(CrowdBadge.spokenLabel(for: crowd))
                         }
 
                         if !entry.rating.note.isEmpty {
@@ -108,6 +113,7 @@ struct RatingsView: View {
                         .appFont(12, weight: .bold)
                         .foregroundStyle(Theme.tertiaryText)
                         .padding(.top, 14)
+                        .accessibilityAddTraits(.isHeader)
 
                     ForEach(awaiting) { performance in
                         NavigationLink(value: performance) {
@@ -222,6 +228,8 @@ struct RatingsView: View {
             }
             Spacer(minLength: 0)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(summaryLabel)
         .padding(16)
         .background(
             LinearGradient(colors: [Theme.accent.opacity(0.22), Theme.surface],
@@ -229,6 +237,14 @@ struct RatingsView: View {
             in: RoundedRectangle(cornerRadius: 16, style: .continuous)
         )
         .padding(.top, 12)
+    }
+
+    private var summaryLabel: String {
+        var label = "\(ranked.count) \(ranked.count == 1 ? "set" : "sets") rated"
+        if let average = ratings.average(in: store.data) {
+            label += ", averaging \(Format.rating(average)) stars"
+        }
+        return label
     }
 
     /// What the share sheet hands off. Ratings only — the notes are yours, and a share

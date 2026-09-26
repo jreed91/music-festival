@@ -579,6 +579,25 @@ never had signal since installing still has the times.
 Tapping either opens `hinterland://lineup`, which `RootView` turns into a jump to the
 My Lineup tab rather than wherever the app was last left.
 
+## Accessibility
+
+Text follows the reader's Dynamic Type setting through `appFont`, which anchors each
+size to its nearest system text style. The day picker is the one place that stops
+growing, at the first accessibility size, because four days have to stay four columns.
+
+For VoiceOver, every set in a list reads as one element, artist first: time, stage,
+whether it's on now, whether it's in My Lineup, and your rating or the crowd's.
+Double-tap opens the artist, and adding or removing it from My Lineup is a custom action
+on the row (swipe up or down). The star rating on an artist's page is a single
+adjustable control: swipe up or down to change it, and swiping down from one star clears
+it. Map pins say what kind of place they are and move focus onto the card they open.
+The day picker, weather rows, recap tiles, vendor cards, the widget and the Live
+Activity are each grouped the same way, so a screen reads in as few stops as it shows
+things.
+
+These labels are written by hand, so a new row or badge needs its own. Check it with
+VoiceOver on a device or the Accessibility Inspector in the simulator.
+
 ## Layout
 
 ```

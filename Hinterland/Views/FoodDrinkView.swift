@@ -41,6 +41,10 @@ struct FoodDrinkView: View {
                         Text("\(area.vendors.count)")
                             .foregroundStyle(Theme.tertiaryText)
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(area.name), \(area.vendors.count) "
+                                      + "\(area.vendors.count == 1 ? "stand" : "stands")")
+                    .accessibilityAddTraits(.isHeader)
                 }
                 .listRowBackground(Theme.surface)
             }
@@ -87,6 +91,7 @@ struct FoodDrinkView: View {
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .buttonStyle(.plain)
+                        .accessibilityLabel("Clear dietary filters")
                 }
             }
             .padding(.vertical, 2)
@@ -130,6 +135,23 @@ struct VendorCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
+            details
+            if let link = vendor.url, let url = URL(string: link) {
+                Link(destination: url) {
+                    Text(url.host()?.replacingOccurrences(of: "www.", with: "") ?? link)
+                        .appFont(11)
+                        .foregroundStyle(Theme.accent)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    /// Everything but the link, as one stop for VoiceOver: a stand's name, town, menu and
+    /// tags were five or more swipes each, which across a food court is a long way to
+    /// scroll by ear. The link stays its own stop so it's still something you can open.
+    private var details: some View {
+        VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(vendor.name)
                     .appFont(15, weight: .semibold)
@@ -167,16 +189,8 @@ struct VendorCard: View {
                     .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
             }
-
-            if let link = vendor.url, let url = URL(string: link) {
-                Link(destination: url) {
-                    Text(url.host()?.replacingOccurrences(of: "www.", with: "") ?? link)
-                        .appFont(11)
-                        .foregroundStyle(Theme.accent)
-                }
-            }
         }
-        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }
 

@@ -75,6 +75,7 @@ struct GroundsMapView: View {
                 } label: {
                     Image(systemName: "location")
                 }
+                .accessibilityLabel("Show my location")
                 Menu {
                     Toggle("Illustrated maps", isOn: $showsIllustration)
                     Toggle("Satellite", isOn: $usesSatellite)
@@ -90,6 +91,7 @@ struct GroundsMapView: View {
                 } label: {
                     Image(systemName: "square.3.layers.3d")
                 }
+                .accessibilityLabel("Map options")
             }
         }
         .tint(Theme.accent)
@@ -119,6 +121,9 @@ struct GroundsMapView: View {
                                         in: Capsule())
                             .foregroundStyle(isOn ? Color.black.opacity(0.85) : Theme.secondaryText)
                     }
+                    .accessibilityLabel(category.spokenName(plural: true))
+                    .accessibilityAddTraits(isOn ? [.isSelected] : [])
+                    .accessibilityHint(isOn ? "Hides these pins" : "Shows these pins")
                 }
             }
             .padding(.horizontal, 12)
@@ -163,6 +168,10 @@ private struct POICard: View {
     let userLocation: CLLocation?
     let dismiss: () -> Void
 
+    /// Tapping a pin opens this card at the bottom of the screen, nowhere near the pin,
+    /// so VoiceOver is moved onto it rather than left on the map.
+    @AccessibilityFocusState private var nameFocused: Bool
+
     private var poi: MapPOI { placed.poi }
 
     var body: some View {
@@ -171,12 +180,15 @@ private struct POICard: View {
                 Label(poi.name, systemImage: poi.category.symbol)
                     .appFont(16, weight: .semibold)
                     .foregroundStyle(.white)
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($nameFocused)
                 Spacer()
                 Button(action: dismiss) {
                     Image(systemName: "xmark.circle.fill")
                         .appFont(18)
                         .foregroundStyle(Theme.tertiaryText)
                 }
+                .accessibilityLabel("Close")
             }
 
             if let note = poi.note {
@@ -191,6 +203,7 @@ private struct POICard: View {
                     Label(distance, systemImage: "figure.walk")
                         .appFont(12, weight: .medium)
                         .foregroundStyle(Theme.accent)
+                        .accessibilityLabel("\(distance) away")
                 }
                 Spacer()
                 Button {
@@ -208,6 +221,13 @@ private struct POICard: View {
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
             .stroke(Theme.hairline, lineWidth: 1))
+        // Keyed on the pin so picking a second one while the card is up moves focus too.
+        // The pause lets the card finish sliding in, since focus asked for before an
+        // element is on screen can be ignored.
+        .task(id: placed.id) {
+            try? await Task.sleep(for: .milliseconds(350))
+            nameFocused = true
+        }
     }
 
     /// Straight-line distance — there's no route across a field worth computing.
@@ -505,10 +525,37 @@ private final class POIAnnotationView: MKMarkerAnnotationView {
         titleVisibility = poi.category == .stage ? .visible : .adaptive
         displayPriority = poi.category.displayPriority
         canShowCallout = false
+
+        // MapKit reads a marker's title and stops, and plenty of titles lean on the
+        // glyph to say what kind of place they are — "Basecamp", "Art House", "Box
+        // Office". Say the kind too, unless the name already does, and what a tap does,
+        // since the card it opens is at the bottom of the screen, away from the pin.
+        let kind = poi.category.spokenName(plural: false)
+        accessibilityLabel = poi.name.localizedCaseInsensitiveContains(kind)
+            ? poi.name
+            : "\(poi.name), \(kind)"
+        accessibilityHint = "Shows details and walking directions"
     }
 }
 
 private extension POICategory {
+    /// What VoiceOver calls the category. `label` is written for a chip, where "ADA" fits
+    /// and reads fine, but is spelled out letter by letter when spoken.
+    func spokenName(plural: Bool) -> String {
+        switch self {
+        case .stage: return plural ? "Stages" : "Stage"
+        case .entrance: return plural ? "Entrances" : "Entrance"
+        case .gate: return plural ? "Gates" : "Gate"
+        case .drink: return plural ? "Bars" : "Bar"
+        case .restroom: return "Toilets"
+        case .info: return "Info and tickets"
+        case .accessibility: return "Accessibility services"
+        case .exit: return plural ? "Emergency exits" : "Emergency exit"
+        case .food, .water, .merch, .medical, .shade, .services, .camping, .parking:
+            return label
+        }
+    }
+
     /// Which pin survives when several land on the same patch of screen. The concourse
     /// packs sixty-odd of them into a few hundred metres, so the things you go looking
     /// for outrank the things you only want to see once you're standing next to them.

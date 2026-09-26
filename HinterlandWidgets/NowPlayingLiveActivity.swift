@@ -49,6 +49,7 @@ struct NowPlayingLiveActivity: Widget {
             } compactLeading: {
                 Image(systemName: stage.symbol)
                     .foregroundStyle(stage.color)
+                    .accessibilityLabel("\(state.artist), \(stage.displayName)")
             } compactTrailing: {
                 Countdown(state: state)
                     .appFont(12, weight: .semibold, design: .rounded)
@@ -57,6 +58,7 @@ struct NowPlayingLiveActivity: Widget {
             } minimal: {
                 Image(systemName: stage.symbol)
                     .foregroundStyle(stage.color)
+                    .accessibilityLabel("\(state.artist), \(stage.displayName)")
             }
             .keylineTint(Theme.accent)
             .widgetURL(URL(string: "hinterland://lineup"))
@@ -106,6 +108,9 @@ private struct LockScreenCard: View {
                     .foregroundStyle(Theme.secondaryText)
             }
             .foregroundStyle(state.stage.color)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(state.stage.displayName), "
+                              + Format.spokenRange(state.start, state.end))
 
             SetProgress(state: state)
 
@@ -119,6 +124,9 @@ private struct LockScreenCard: View {
             }
         }
         .padding(14)
+        // The whole card is one set, so it's one stop on the Lock Screen. Combined rather
+        // than given a written label, because a string can't carry the live countdown.
+        .accessibilityElement(children: .combine)
     }
 }
 
