@@ -385,7 +385,7 @@ stopping — anything else would be a lie about what the switch does.
 | --- | --- |
 | Container | `iCloud.jreed91.hinterland`, named in `CommunityRatings.containerIdentifier` |
 | Record type | `SetRating` in the public database, default zone |
-| Fields | `performanceID` (string), `stars` (int 1–5), `festivalYear` (int) |
+| Fields | `performanceID` (string), `stars` (int 1–5), `festivalYear` (int, read off the set ID's date so an old rating re-uploaded after next year's schedule arrives stays in its own year) |
 | Record name | `<performanceID>_<userRecordName>` |
 | Written by | the creating user only; readable by everyone |
 
