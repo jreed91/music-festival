@@ -215,6 +215,7 @@ Pages are cached under `scripts/.cache`, so pass `--refresh` to re-fetch.
 ```sh
 cd scripts
 python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios, Spotify IDs
+                               #   (this calendar year's /set-times page; --year 2027 for another)
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
 python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
 python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015,
@@ -249,6 +250,8 @@ the app need it added, or it would quietly disappear from the filters.
 missing fields, unparseable dates, duplicate ids, dietary codes the app would drop,
 Apple Music ids that aren't ids — before a bad file reaches a build. It stays offline;
 checking that a catalog id still resolves is `applemusic.py`'s job.
+Pass it a path (`python3 validate.py rehearsal/schedule-2027.json`) to check a schedule
+that isn't `Data/schedule.json` yet.
 
 ## The maps on MapKit
 
@@ -569,6 +572,31 @@ more and there's nothing left to rate.
 This only protects someone who opens a build carrying it while their year is still the
 current one, or before next year's schedule is cached. Ship it to the App Store before
 the next `schedule.json` goes up on `main`.
+
+A year the bundled archive doesn't list yet (the year after next arriving on a build that
+never had next year's bill) still gets a row in Past Lineups that opens its recap, and the
+recap only links to "*year* in the archive" when this build's archive has that year.
+
+## Rehearsing next year
+
+Next year's schedule can't be tried by pushing it, because every installed app would pick
+it up. `scripts/rehearse_rollover.py` writes a stand-in instead, to
+`scripts/rehearsal/schedule-<year>.json`: this year's bill moved forward 52 weeks, with new
+dates, new set IDs and a fresh `generatedAt`. It checks that the file validates, is newer
+than the live one, and shares no set ID with this year (ratings, stars and memories are
+all keyed by set ID). To see it on a phone, point a debug build's
+`ScheduleStore.remoteURL` at that file's raw URL on a branch. What the 2027 rehearsal
+turned up, and what already held:
+
+- **Held:** the Schedule tab turning back from the recap (`FestivalData.phase` reads the
+  new last set), the widget and Live Activity (both read the newest schedule and only
+  match stars against its set IDs; the Live Activity title is built from the schedule's
+  year each time a card starts), reminders, WeatherKit (festival days are matched by full
+  date, so next year's show "Too far out" until they're in range), and `FestivalMemories`
+  putting the old year away before the refresh replaces it.
+- **Fixed:** `scrape.py` had the 2026 page and year written in; the crowd averages kept
+  querying last year until the next launch; the recap's archive link and Past Lineups
+  both assumed the bundled archive already had every year the schedule could name.
 
 ## Past lineups
 

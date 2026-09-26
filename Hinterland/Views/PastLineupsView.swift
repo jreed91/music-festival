@@ -20,6 +20,11 @@ struct PastLineupsView: View {
     var body: some View {
         List {
             Section {
+                ForEach(yearsOnlyYouHave, id: \.year) { memory in
+                    NavigationLink(value: PastLineupRoute.yours(memory.year)) {
+                        MemoryOnlyRow(memory: memory)
+                    }
+                }
                 ForEach(archive.years) { year in
                     NavigationLink(value: PastLineupRoute.year(year.year)) {
                         YearRow(year: year, memory: memories.memory(for: year.year))
@@ -46,6 +51,19 @@ struct PastLineupsView: View {
         .background(Theme.background)
         .navigationTitle("Past Lineups")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    /// Years you have a recap for that this build's archive doesn't list yet.
+    ///
+    /// The archive ships in the binary while the schedule arrives live, so a phone still on
+    /// this build when the year after next's schedule lands has a recap for a year the
+    /// archive never heard of. Without a row of its own it would be saved and unreachable.
+    /// The current year is left out: while it's on, it isn't past, and once it's over the
+    /// recap is the first tab.
+    private var yearsOnlyYouHave: [FestivalMemory] {
+        memories.byYear.values
+            .filter { archive.year($0.year) == nil && $0.year != store.data.festival.year }
+            .sorted { $0.year > $1.year }
     }
 
     /// The run of years, and the gap in it. 2020 is missing from the archive because there
@@ -103,6 +121,33 @@ private struct YearRow: View {
                  + "\(recap.attendedCount == 1 ? "set" : "sets")"
         }
         return "You were there · \(recap.ratedCount) rated · \(Format.rating(average)) average"
+    }
+}
+
+/// A year you were at that the bundled archive doesn't have yet: your recap, and a line
+/// saying the bill itself comes with an update.
+private struct MemoryOnlyRow: View {
+    let memory: FestivalMemory
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(String(memory.year))
+                .appFont(17, weight: .bold)
+                .foregroundStyle(.white)
+            Text("The full bill arrives with the next app update.")
+                .appFont(12)
+                .foregroundStyle(Theme.secondaryText)
+                .fixedSize(horizontal: false, vertical: true)
+            Label(yourLine, systemImage: "star.fill")
+                .appFont(11, weight: .semibold)
+                .foregroundStyle(Theme.accent)
+        }
+        .padding(.vertical, 3)
+    }
+
+    private var yourLine: String {
+        let count = memory.recap.attendedCount
+        return "Your recap · \(count) \(count == 1 ? "set" : "sets")"
     }
 }
 
