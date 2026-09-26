@@ -11,7 +11,10 @@ struct CrowdRating: Codable, Equatable {
 }
 
 /// One set in the festival-wide ranking: who played, and what the field gave them.
-struct CrowdTopSet: Identifiable {
+///
+/// Codable so `FestivalMemories` can keep a year's ranking after the crowd table has moved
+/// on to the next festival.
+struct CrowdTopSet: Codable, Equatable, Identifiable {
     let performance: Performance
     let rating: CrowdRating
 

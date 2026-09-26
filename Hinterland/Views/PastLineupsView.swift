@@ -5,12 +5,15 @@ enum PastLineupRoute: Hashable {
     case index
     /// One year's bill, by `PastLineupYear.year`.
     case year(Int)
+    /// Your recap and ratings for a year, by `FestivalMemory.year`.
+    case yours(Int)
 }
 
 /// Every Hinterland before this one, newest first. Bundled like the rest of the app, so it
 /// reads in the valley — which is where the argument about who played 2017 tends to start.
 struct PastLineupsView: View {
     @Environment(ScheduleStore.self) private var store
+    @Environment(FestivalMemories.self) private var memories
 
     private var archive: PastLineupData { store.pastLineups }
 
@@ -19,7 +22,7 @@ struct PastLineupsView: View {
             Section {
                 ForEach(archive.years) { year in
                     NavigationLink(value: PastLineupRoute.year(year.year)) {
-                        YearRow(year: year)
+                        YearRow(year: year, memory: memories.memory(for: year.year))
                     }
                 }
             } footer: {
@@ -63,6 +66,9 @@ struct PastLineupsView: View {
 
 private struct YearRow: View {
     let year: PastLineupYear
+    /// Set when you rated or starred anything that year, so the list shows which ones
+    /// you were at.
+    let memory: FestivalMemory?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -81,8 +87,22 @@ private struct YearRow: View {
                 .appFont(12)
                 .foregroundStyle(Theme.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
+            if let memory {
+                Label(yourLine(memory), systemImage: "star.fill")
+                    .appFont(11, weight: .semibold)
+                    .foregroundStyle(Theme.accent)
+            }
         }
         .padding(.vertical, 3)
+    }
+
+    private func yourLine(_ memory: FestivalMemory) -> String {
+        let recap = memory.recap
+        guard let average = recap.average else {
+            return "You were there · \(recap.attendedCount) "
+                 + "\(recap.attendedCount == 1 ? "set" : "sets")"
+        }
+        return "You were there · \(recap.ratedCount) rated · \(Format.rating(average)) average"
     }
 }
 
@@ -93,10 +113,14 @@ struct PastYearView: View {
     let year: PastLineupYear
 
     @Environment(ScheduleStore.self) private var store
+    @Environment(FestivalMemories.self) private var memories
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
+                if let memory = memories.memory(for: year.year) {
+                    yourYear(memory)
+                }
                 ForEach(year.days) { day in
                     dayCard(day)
                 }
@@ -107,6 +131,41 @@ struct PastYearView: View {
         .background(Theme.background)
         .navigationTitle(String(year.year))
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    /// Your recap for the year, above the bill: the thing you're likelier to have come
+    /// looking for than who played third on the Friday.
+    private func yourYear(_ memory: FestivalMemory) -> some View {
+        let recap = memory.recap
+        var detail = "\(recap.attendedCount) \(recap.attendedCount == 1 ? "set" : "sets") seen"
+        if let average = recap.average {
+            detail += " · \(recap.ratedCount) rated · \(Format.rating(average)) average"
+        }
+        return NavigationLink(value: PastLineupRoute.yours(memory.year)) {
+            HStack(spacing: 10) {
+                Image(systemName: "star.leadinghalf.filled")
+                    .appFont(18)
+                    .foregroundStyle(Theme.accent)
+                    .frame(width: 26)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Your \(String(memory.year)) recap and ratings")
+                        .appFont(14, weight: .semibold)
+                        .foregroundStyle(.white)
+                    Text(detail)
+                        .appFont(11)
+                        .foregroundStyle(Theme.tertiaryText)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .appFont(12, weight: .semibold)
+                    .foregroundStyle(Theme.tertiaryText)
+            }
+            .padding(14)
+            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private func dayCard(_ day: PastLineupDay) -> some View {
