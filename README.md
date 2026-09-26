@@ -40,6 +40,8 @@ back to what's already on the phone.
 - **Past lineups** — every Hinterland since 2015, from the Schedule tab: each year's
   headliners and its whole bill, day by day, side stages marked. Bundled, so it settles
   the argument about who played 2017 with no signal.
+  Years you were at carry your recap and ratings too, kept after next year's schedule
+  replaces them.
 - **The recap** — once the last set has ended, the Schedule tab becomes a wrap-up of the
   weekend: how many sets you saw and for how many hours, your best of the festival, the
   day you gave the most to, and the festival's best sets according to everyone who rated
@@ -496,6 +498,36 @@ Someone who starred nothing and rated nothing gets the festival's recap instead 
 own — the crowd's best sets, the bill, the archive — with one line about how to have a
 weekend of their own next time. Nothing on the screen reads as zero.
 
+## Keeping last year's weekend
+
+Ratings and stars are keyed by performance ID (`2026-07-31-main-stage-lorde`), and an ID
+only means something next to the schedule it came from. Installed apps pull
+`schedule.json` live from `main`, so the moment next year's goes up, this year's sets are
+gone from `store.data`: the ratings are still on the phone, but the recap and My Ratings
+can no longer say which band any of them were for, and both empty out.
+
+`FestivalMemories` keeps each year its own copy. A `FestivalMemory` is that year's
+schedule cut down to the sets you rated or starred — shaped like the real `FestivalData`,
+so `Recap` counts it without knowing the difference — plus your ratings and notes, the
+festival's size, and the crowd averages for your sets and the festival's best as they
+were last downloaded. It lives in the app group next to the ratings and is rewritten for
+the current year whenever the schedule, a rating, a star or the crowd table changes, so
+whichever of those happens last before next year's schedule lands is already saved.
+`RootView` also records the outgoing schedule when a refresh changes the year, and fills in
+the year this build shipped with from the bundle if a newer schedule was cached before the
+build was first opened. That fallback never overwrites a copy made while the year was
+current, and an empty crowd read never wipes averages saved earlier. Nothing is pruned:
+the raw ratings and stars stay where they were.
+
+Each remembered year shows up in **Past Lineups**: a line on the year's row saying you were
+there, and a card above that year's bill opening `PastRecapView`, the recap and every set
+you rated with your notes. It's read-only, because the sets aren't in the schedule any
+more and there's nothing left to rate.
+
+This only protects someone who opens a build carrying it while their year is still the
+current one, or before next year's schedule is cached. Ship it to the App Store before
+the next `schedule.json` goes up on `main`.
+
 ## Past lineups
 
 `Data/past-lineups.json` is the festival's own [archive
@@ -593,9 +625,10 @@ Hinterland/
                post-festival screen and the phase rule that decides when it appears
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
                LiveActivityController, Ratings (yours), CommunityRatings (everyone's),
+               FestivalMemories (each year's recap, kept past the next schedule),
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
-  Views/       Schedule, Recap (+ RecapShareCard), MyLineup, Ratings, Maps, FoodDrink,
-               ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
+  Views/       Schedule, Recap (+ RecapShareCard, PastRecap), MyLineup, Ratings, Maps,
+               FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
                WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
 HinterlandWidgets/

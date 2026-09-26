@@ -22,6 +22,10 @@ final class ScheduleStore {
     )!
 
     private(set) var data: FestivalData
+    /// The schedule this build shipped with, even when a newer download is what's showing.
+    /// Kept so `FestivalMemories` can still put this build's year away if next year's
+    /// schedule was cached before the build was first opened.
+    let bundled: FestivalData
     private(set) var guide: GuideData
     /// Georeferenced grounds map and its pins. Bundled only — it describes artwork that
     /// ships in the binary, so there is nothing to refresh.
@@ -49,6 +53,7 @@ final class ScheduleStore {
         } else {
             data = bundled
         }
+        self.bundled = bundled
         guide = Self.loadBundled(GuideData.self, named: "info")
         map = Self.loadBundled(MapData.self, named: "map")
         vendors = Self.loadBundled(VendorData.self, named: "vendors")

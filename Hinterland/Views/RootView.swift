@@ -11,6 +11,7 @@ struct RootView: View {
     @Environment(WeatherStore.self) private var weather
     @Environment(Favorites.self) private var favorites
     @Environment(Ratings.self) private var ratings
+    @Environment(FestivalMemories.self) private var memories
     @Environment(CommunityRatings.self) private var community
     @Environment(NotificationManager.self) private var notifications
     @Environment(LiveActivityController.self) private var liveActivity
@@ -38,6 +39,9 @@ struct RootView: View {
         .tint(Theme.accent)
         .preferredColorScheme(.dark)
         .task {
+            // Before the refresh, which is the one thing here that can swap the year out
+            // from under the ratings.
+            rememberFestival()
             await notifications.refreshAuthorization()
             // Best-effort catch-up on set-time changes; failure just leaves the bundle in place.
             await store.refresh()
@@ -52,10 +56,18 @@ struct RootView: View {
         }
         // Starring a set should arm its reminder immediately, without a settings trip.
         .onChange(of: favorites.ids) { _, _ in
+            rememberFestival()
             syncReminders()
             Task { await syncLiveActivity() }
         }
-        .onChange(of: store.data) { _, _ in
+        .onChange(of: store.data) { old, _ in
+            // The outgoing schedule first: when a refresh brings next year's, this is the
+            // last moment anything can still say which sets last year's ratings were for.
+            if old.festival.year != store.data.festival.year {
+                memories.record(old, ratings: ratings.byPerformanceID,
+                                starredIDs: favorites.ids, community: community)
+            }
+            rememberFestival()
             syncReminders()
             Task { await syncLiveActivity() }
         }
@@ -63,7 +75,11 @@ struct RootView: View {
         .onChange(of: ratings.byPerformanceID) { old, new in
             community.noteLocalChange(from: old, to: new)
             Task { await community.push() }
+            rememberFestival()
         }
+        // The crowd table is per year and the next one replaces it, so each download is
+        // worth keeping.
+        .onChange(of: community.fetchedAt) { _, _ in rememberFestival() }
         .onChange(of: liveActivity.isEnabled) { _, _ in
             Task { await syncLiveActivity() }
         }
@@ -90,6 +106,18 @@ struct RootView: View {
             if url.host == "lineup" || url.pathComponents.contains("lineup") {
                 tab = .lineup
             }
+        }
+    }
+
+    /// Keeps this year's `FestivalMemory` current, so it's already complete whenever next
+    /// year's schedule turns up. Also fills in the year this build shipped with if a newer
+    /// schedule was cached before this version first ran — but never over a better copy.
+    private func rememberFestival() {
+        memories.record(store.data, ratings: ratings.byPerformanceID,
+                        starredIDs: favorites.ids, community: community)
+        if store.bundled.festival.year != store.data.festival.year {
+            memories.record(store.bundled, ratings: ratings.byPerformanceID,
+                            starredIDs: favorites.ids, community: community, replacing: false)
         }
     }
 

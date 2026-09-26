@@ -7,6 +7,7 @@ struct HinterlandApp: App {
     @State private var weather: WeatherStore
     @State private var favorites = Favorites()
     @State private var ratings = Ratings()
+    @State private var memories = FestivalMemories()
     @State private var community: CommunityRatings
     @State private var notifications = NotificationManager()
     @State private var liveActivity = LiveActivityController()
@@ -48,6 +49,7 @@ struct HinterlandApp: App {
                 .environment(weather)
                 .environment(favorites)
                 .environment(ratings)
+                .environment(memories)
                 .environment(community)
                 .environment(notifications)
                 .environment(liveActivity)
