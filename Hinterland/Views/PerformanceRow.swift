@@ -72,8 +72,6 @@ struct PerformanceRow: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(isStarred ? "Remove \(performance.artist) from My Lineup"
-                                          : "Add \(performance.artist) to My Lineup")
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 14)
@@ -82,5 +80,31 @@ struct PerformanceRow: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .strokeBorder(isLive ? Theme.accent.opacity(0.55) : Color.clear, lineWidth: 1.5)
         )
+        // One stop per set for VoiceOver, artist first. Left to itself VoiceOver builds
+        // the row's label from its pieces in drawing order — "8:00pm – 9:15pm, NOW",
+        // then the artist — and the star button inside it is hard to reach at all.
+        // Every caller wraps this in a link to the artist, so double-tap opens them, and
+        // the star becomes an action on the row: swipe up or down to it, as in Mail.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenSummary)
+        .accessibilityAction(named: isStarred ? "Remove from My Lineup" : "Add to My Lineup") {
+            favorites.toggle(performance)
+        }
+        .accessibilityInputLabels([performance.artist])
+    }
+
+    private var spokenSummary: String {
+        var parts = [performance.artist,
+                     Format.spokenRange(performance.start, performance.end),
+                     Stage(name: performance.stage).displayName]
+        if isLive { parts.append("On now") }
+        if isStarred { parts.append("In My Lineup") }
+        if let rating = ratings.rating(for: performance) {
+            parts.append(RatingBadge.spokenLabel(stars: rating.stars))
+        } else if let crowd = community.rating(for: performance) {
+            parts.append(CrowdBadge.spokenLabel(for: crowd))
+        }
+        if showsConflictWarning { parts.append("Overlaps another set in My Lineup") }
+        return parts.joined(separator: ", ")
     }
 }

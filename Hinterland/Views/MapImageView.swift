@@ -40,7 +40,7 @@ struct MapImageView: View {
     let map: FestivalMap
 
     var body: some View {
-        ZoomableImage(imageName: map.asset)
+        ZoomableImage(imageName: map.asset, title: map.title)
             .background(Theme.background)
             .navigationTitle(map.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -50,6 +50,8 @@ struct MapImageView: View {
 
 struct ZoomableImage: UIViewRepresentable {
     let imageName: String
+    /// What VoiceOver calls the picture, which is otherwise an unnamed scroll view.
+    let title: String
 
     func makeUIView(context: Context) -> UIScrollView {
         let scrollView = ZoomingScrollView()
@@ -64,6 +66,9 @@ struct ZoomableImage: UIViewRepresentable {
         let imageView = UIImageView(image: UIImage(named: imageName))
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
+        imageView.isAccessibilityElement = true
+        imageView.accessibilityLabel = title
+        imageView.accessibilityTraits = .image
         scrollView.addSubview(imageView)
         scrollView.imageView = imageView
         context.coordinator.imageView = imageView

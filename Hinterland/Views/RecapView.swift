@@ -131,6 +131,7 @@ struct RecapView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                     .tint(Theme.accent)
+                    .accessibilityLabel("Share my recap")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -168,6 +169,7 @@ struct RecapView: View {
                 .foregroundStyle(Theme.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
         .background(
@@ -249,6 +251,7 @@ struct RecapView: View {
                         Image(systemName: "star.leadinghalf.filled")
                             .appFont(18)
                             .foregroundStyle(Theme.accent)
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("\(recap.unrated.count) starred "
                                + "\(recap.unrated.count == 1 ? "set" : "sets") you never rated")
@@ -262,6 +265,7 @@ struct RecapView: View {
                         Image(systemName: "chevron.right")
                             .appFont(12, weight: .semibold)
                             .foregroundStyle(Theme.tertiaryText)
+                            .accessibilityHidden(true)
                     }
                     .padding(14)
                     .background(Theme.surface,
@@ -306,6 +310,7 @@ struct RecapView: View {
                 .appFont(14)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 20)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(13, weight: .semibold)
@@ -317,6 +322,7 @@ struct RecapView: View {
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
+        .accessibilityElement(children: .combine)
     }
 
     /// For someone who starred nothing and rated nothing, this screen is about the
@@ -451,6 +457,7 @@ struct RecapView: View {
                 .appFont(15)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 26)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(14, weight: .semibold)
@@ -464,6 +471,7 @@ struct RecapView: View {
             Image(systemName: "chevron.right")
                 .appFont(12, weight: .semibold)
                 .foregroundStyle(Theme.tertiaryText)
+                .accessibilityHidden(true)
         }
         .padding(14)
         .contentShape(Rectangle())
@@ -475,6 +483,7 @@ struct RecapView: View {
             .foregroundStyle(Theme.tertiaryText)
             .padding(.top, 12)
             .padding(.horizontal, 4)
+            .accessibilityAddTraits(.isHeader)
     }
 
     // MARK: Sharing
@@ -522,6 +531,8 @@ struct StatTile: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        // "4, sets seen" as one stop rather than a number and, a swipe later, what it counts.
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -585,6 +596,22 @@ private struct RankedSetRow: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenSummary)
+        .accessibilityInputLabels([performance.artist])
+    }
+
+    /// Rank, artist, then the number the list is ranked on. The rank is said as
+    /// "Number 2" rather than a bare "2", which on its own sounds like a count.
+    private var spokenSummary: String {
+        var parts = ["Number \(rank)", performance.artist]
+        switch detail {
+        case .yours(let stars): parts.append(RatingBadge.spokenLabel(stars: stars))
+        case .crowd(let rating): parts.append(CrowdBadge.spokenLabel(for: rating))
+        }
+        if let crowd { parts.append(CrowdBadge.spokenLabel(for: crowd)) }
+        parts.append(Stage(name: performance.stage).displayName)
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -594,6 +621,7 @@ private struct TrailingIconLabelStyle: LabelStyle {
         HStack(spacing: 4) {
             configuration.title
             configuration.icon.appFont(11, weight: .semibold)
+                .accessibilityHidden(true)
         }
     }
 }

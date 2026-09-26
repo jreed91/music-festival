@@ -152,6 +152,10 @@ struct ScheduleView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                // Otherwise read as the picker's abbreviations and bare numbers — "FRI,
+                // Jul 31, 86" — with nothing to say which day was the one showing.
+                .accessibilityLabel(spokenDay(candidate))
+                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
         .padding(.horizontal, 16)
@@ -180,6 +184,14 @@ struct ScheduleView: View {
         }
     }
 
+    private func spokenDay(_ day: FestivalDay) -> String {
+        var label = "\(day.weekday), \(Format.dayLabel(day))"
+        if let conditions = forecast(for: day) {
+            label += ", high of \(Format.temperature(conditions.high)), \(conditions.condition)"
+        }
+        return label
+    }
+
     /// The day's high and symbol under its label in the picker — nil until WeatherKit's
     /// ten-day horizon reaches that far, which for a festival still weeks out it hasn't.
     private func forecast(for day: FestivalDay) -> DayConditions? {
@@ -197,6 +209,7 @@ struct ScheduleView: View {
                 .background(isSelected ? tint : tint.opacity(0.14), in: Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 }
 
@@ -240,5 +253,14 @@ private struct NowCard: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(spokenSummary)
+        .accessibilityInputLabels([performance.artist])
+    }
+
+    private var spokenSummary: String {
+        let stage = Stage(name: performance.stage).displayName
+        return isLive
+            ? "On now: \(performance.artist), \(stage), until \(Format.time(performance.end))"
+            : "Up next: \(performance.artist), \(stage), \(Format.relative(performance.start))"
     }
 }

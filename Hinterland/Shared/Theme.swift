@@ -106,6 +106,12 @@ enum Format {
         "\(time(start)) – \(time(end))"
     }
 
+    /// `range` for VoiceOver. It reads the dash as a pause, so "8:00pm – 9:15pm" comes out
+    /// as two unrelated times rather than a set that runs from one to the other.
+    static func spokenRange(_ start: Date, _ end: Date) -> String {
+        "\(time(start)) to \(time(end))"
+    }
+
     static func dayLabel(_ day: FestivalDay) -> String {
         let formatter = DateFormatter()
         formatter.timeZone = timeZone

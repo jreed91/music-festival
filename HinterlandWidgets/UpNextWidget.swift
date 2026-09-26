@@ -122,6 +122,9 @@ struct UpNextWidgetView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        // One stop for the set rather than four. Combined rather than given a written
+        // label, because a string can't carry the countdown the system keeps ticking.
+        .accessibilityElement(children: .combine)
     }
 
     private var medium: some View {
@@ -146,6 +149,7 @@ struct UpNextWidgetView: View {
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
             }
         }
     }
@@ -190,6 +194,7 @@ struct UpNextWidgetView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder
@@ -205,6 +210,9 @@ struct UpNextWidgetView: View {
             }
             .progressViewStyle(.circular)
             .widgetAccentable()
+            // A ring and a stage glyph say nothing out loud; the artist is the point.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("On now: \(headline.artist), \(Stage(name: headline.stage).displayName)")
         } else if let headline = entry.focus.headline {
             VStack(spacing: 0) {
                 Image(systemName: Stage(name: headline.stage).symbol)
@@ -213,10 +221,14 @@ struct UpNextWidgetView: View {
                     .appFont(11, weight: .medium)
             }
             .widgetAccentable()
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Up next: \(headline.artist), \(Stage(name: headline.stage).displayName), "
+                              + Format.time(headline.start))
         } else {
             Image(systemName: "star")
                 .appFont(16)
                 .widgetAccentable()
+                .accessibilityLabel("No sets starred")
         }
     }
 }
@@ -236,6 +248,7 @@ private struct SetLabel: View {
                 .fill(Theme.accent)
                 .frame(width: 5, height: 5)
                 .opacity(performance.isLive(at: at) ? 1 : 0)
+                .accessibilityHidden(true)
             Text(label)
                 .appFont(10, weight: .heavy)
                 .foregroundStyle(Theme.accent)
@@ -267,6 +280,7 @@ private struct CountdownLine: View {
             } else {
                 Text(Format.time(performance.start))
                 Text("·")
+                    .accessibilityHidden(true)
                 Text(performance.start, style: .relative)
             }
         }
@@ -283,6 +297,7 @@ private struct EmptyLineup: View {
             Image(systemName: "star")
                 .appFont(18)
                 .foregroundStyle(Theme.accent)
+                .accessibilityHidden(true)
             Text("Nothing starred")
                 .appFont(14, weight: .semibold)
                 .foregroundStyle(.white)

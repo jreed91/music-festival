@@ -82,8 +82,21 @@ struct WeatherCard: View {
                         in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(current.map { "Weather, \(Format.temperature($0.temperature)), \($0.condition)" }
-                            ?? "Weather forecast")
+        .accessibilityLabel(spokenSummary)
+    }
+
+    /// Everything the card shows, including the rain warning the label used to drop —
+    /// the one line on it that changes what someone carries out to the field.
+    private var spokenSummary: String {
+        guard let current else { return "Weather forecast" }
+        var parts = ["Weather", Format.temperature(current.temperature), current.condition]
+        if let wetHour {
+            parts.append("\(Format.percent(wetHour.precipitationChance)) chance of rain by "
+                       + Format.hour(wetHour.date))
+        } else if current.showsApparentTemperature {
+            parts.append("feels like \(Format.temperature(current.apparentTemperature))")
+        }
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -110,6 +123,7 @@ struct WeatherAlertBanner: View {
                 Image(systemName: "chevron.right")
                     .appFont(12, weight: .semibold)
                     .opacity(0.7)
+                    .accessibilityHidden(true)
             }
             .foregroundStyle(Theme.background)
             .padding(.horizontal, 14)
@@ -186,7 +200,17 @@ struct SetForecastBadge: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(Theme.surfaceRaised, in: Capsule())
-        .accessibilityLabel("At set time: \(Format.temperature(hour.temperature)), \(hour.condition)")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Self.spokenLabel(for: hour))
+    }
+
+    /// The rain chance is said whenever it's drawn, which the label used to leave out.
+    static func spokenLabel(for hour: HourConditions) -> String {
+        var label = "At set time: \(Format.temperature(hour.temperature)), \(hour.condition)"
+        if hour.precipitationChance >= 0.2 {
+            label += ", \(Format.percent(hour.precipitationChance)) chance of rain"
+        }
+        return label
     }
 }
 

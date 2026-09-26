@@ -197,6 +197,8 @@ struct PastYearView: View {
             }
             Spacer(minLength: 0)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isHeadliner ? [.isHeader] : [])
     }
 
     private var footer: some View {

@@ -72,6 +72,7 @@ struct PastRecapView: View {
                         Image(systemName: "square.and.arrow.up")
                     }
                     .tint(Theme.accent)
+                    .accessibilityLabel("Share this recap")
                 }
             }
         }
@@ -93,6 +94,7 @@ struct PastRecapView: View {
                 .foregroundStyle(Theme.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(18)
         .background(
@@ -152,6 +154,10 @@ struct PastRecapView: View {
                 }
                 Spacer(minLength: 0)
             }
+            // One stop per set, the same shape as the rows on this year's recap. The
+            // note stays its own stop underneath.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(spokenSet(performance, rank: rank, stars: stars))
             if !note.isEmpty {
                 Text(note)
                     .appFont(12)
@@ -162,6 +168,22 @@ struct PastRecapView: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
         .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func spokenSet(_ performance: Performance, rank: Int?, stars: Int?) -> String {
+        var parts: [String] = []
+        if let rank { parts.append("Number \(rank)") }
+        parts.append(performance.artist)
+        if let stars { parts.append(RatingBadge.spokenLabel(stars: stars)) }
+        if let crowd = memory.crowd[performance.id] {
+            parts.append(CrowdBadge.spokenLabel(for: crowd))
+        }
+        parts.append(Stage(name: performance.stage).displayName)
+        if let day = memory.schedule.day(containing: performance) {
+            parts.append("\(day.weekday), \(Format.dayLabel(day))")
+        }
+        parts.append(Format.spokenRange(performance.start, performance.end))
+        return parts.joined(separator: ", ")
     }
 
     private func when(_ performance: Performance) -> String {
@@ -205,6 +227,7 @@ struct PastRecapView: View {
                 .appFont(14)
                 .foregroundStyle(Theme.accent)
                 .frame(width: 20)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(13, weight: .semibold)
@@ -216,6 +239,7 @@ struct PastRecapView: View {
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
+        .accessibilityElement(children: .combine)
     }
 
     /// The festival's best as the crowd had it when this year was put away. Left out
@@ -252,6 +276,10 @@ struct PastRecapView: View {
                     .padding(.horizontal, 12)
                     .background(Theme.surface,
                                 in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Number \(index + 1), \(entry.performance.artist), "
+                                      + CrowdBadge.spokenLabel(for: entry.rating) + ", "
+                                      + Stage(name: entry.performance.stage).displayName)
                 }
                 if let fetchedAt = memory.crowdFetchedAt {
                     Text("Everyone's ratings as of "
@@ -270,5 +298,6 @@ struct PastRecapView: View {
             .foregroundStyle(Theme.tertiaryText)
             .padding(.top, 12)
             .padding(.horizontal, 4)
+            .accessibilityAddTraits(.isHeader)
     }
 }
