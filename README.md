@@ -150,6 +150,45 @@ workflow. Two things worth knowing:
 If a cloud archive fails signing with "requires a development team", set `DEVELOPMENT_TEAM`
 in `project.yml` — the local project Xcode writes your team into is never uploaded.
 
+### Releasing a build
+
+The version lives in `project.yml` under `settings.base`, shared by the app and the widget
+(App Store Connect rejects an extension whose version doesn't match its app):
+`MARKETING_VERSION` is what the store shows, `CURRENT_PROJECT_VERSION` the build number.
+Bump the marketing version for each release that goes to the App Store, and the build
+number for every upload, since App Store Connect refuses a build number it has already
+seen for that version. Xcode Cloud assigns its own build number to the archives it
+uploads, so `CURRENT_PROJECT_VERSION` mostly matters for archives made from Xcode.
+
+Most of a release happens outside this repo, so here is the whole list, in order:
+
+1. **Everything the build should carry is on `main`.** Xcode Cloud archives whatever
+   `main` holds when it starts, not whatever was there when the version was bumped.
+2. **Bump the version** in `project.yml` and merge it.
+3. **Deploy the CloudKit schema to production** in the
+   [CloudKit console](https://icloud.developer.apple.com) (container
+   `iCloud.jreed91.hinterland` → **Deploy Schema Changes**), if the development schema has
+   changed since the last deploy. Check that `SetRating` exists in production with the
+   Queryable index on `festivalYear`. A TestFlight or App Store build talks to production
+   only; skip this and every rating stays in the outbox and no crowd average appears. See
+   [Shared ratings](#shared-ratings).
+4. **Archive.** Start the Xcode Cloud workflow on `main` (or **Product → Archive** in
+   Xcode after `xcodegen generate`). Swift is never compiled before this point, so this is
+   where a compile error from a merged PR turns up.
+5. **TestFlight.** Once the build finishes processing, install it on a phone and check the
+   things that only a distributed build exercises: rate a set and watch the recap footer
+   say *Your ratings uploaded*, pull to refresh My Ratings for crowd averages, open a past
+   year in Past Lineups, and put the widget on the home screen.
+6. **App Store.** Add the build to a new version in App Store Connect, confirm the privacy
+   label still matches the table under [Privacy](#privacy), write the release notes and
+   submit for review.
+7. **After it's live,** and only then, is it safe to push next year's `schedule.json` to
+   `main`. A phone that never opens a build with `FestivalMemories` before the new
+   schedule lands loses the old year's recap (see
+   [Keeping last year's weekend](#keeping-last-years-weekend)).
+
+Steps 3 to 6 need the Apple developer account and can't be done from a pull request.
+
 ## Updating the schedule mid-festival
 
 `Data/schedule.json` is the single source of truth, bundled at build time **and** fetched
