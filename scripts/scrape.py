@@ -8,9 +8,15 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "Data", "schedule.json")
 CENTRAL = datetime.timezone(datetime.timedelta(hours=-5))   # CDT; the festival is in summer
 REFRESH = "--refresh" in sys.argv
+# The festival publishes each summer's times at /set-times-<year>, and the year stamped
+# into the file is what every year-keyed thing in the app (memories, shared ratings, the
+# recap's title) files the weekend under. Defaults to this calendar year, which is right
+# from the day the page appears until the festival is long over; `--year 2027` otherwise.
+YEAR = int(sys.argv[sys.argv.index("--year") + 1]) if "--year" in sys.argv \
+    else datetime.date.today().year
 
 # ---------------------------------------------------------------------- set times
-src = page("/set-times-2026", refresh=REFRESH)
+src = page(f"/set-times-{YEAR}", refresh=REFRESH)
 
 # Stage headings and set rows appear in document order, so a single ordered pass over
 # these three token types reconstructs which stage each row belongs to.
@@ -52,6 +58,11 @@ for chunk in src.split('class="set-times-day-column"')[1:]:
 
 if not days:
     sys.exit("No days parsed — the set times page markup probably changed.")
+# Webflow can serve the old page at a new slug (or a cached copy can be last year's). Set
+# IDs are the dates, so a mislabelled year would file last summer's sets under this one.
+stray = sorted({day["date"] for day in days if not day["date"].startswith(f"{YEAR}-")})
+if stray:
+    sys.exit(f"/set-times-{YEAR} lists dates outside {YEAR}: {', '.join(stray)}")
 
 # The site publishes start times only. Infer each end from the next set on the same
 # stage, leaving a changeover gap, and give closers a fixed sensible length.
@@ -140,7 +151,7 @@ data = {
         .replace(microsecond=0).isoformat().replace("+00:00", "Z"),
     "festival": {
         "name": "Hinterland",
-        "year": 2026,
+        "year": YEAR,
         "venue": "Avenue of the Saints Amphitheater",
         "city": "St. Charles, Iowa",
         "latitude": 41.2861,

@@ -105,7 +105,9 @@ final class CommunityRatings {
     /// persisted, because the whole point is surviving a weekend with no signal.
     private(set) var outbox: [String: Int]
 
-    private let festivalYear: Int
+    /// Read from the schedule at launch, and moved on by `rollOver(to:)` when a refresh
+    /// brings next year's in while the app is open.
+    private var festivalYear: Int
     private let container: CKContainer
     private var lastAttempt: Date?
 
@@ -242,6 +244,21 @@ final class CommunityRatings {
         } catch {
             lastError = Self.message(for: error)
         }
+    }
+
+    /// Next year's schedule arrived while the app was running. Without this the averages
+    /// keep being fetched for last year until the next launch, because the year was only
+    /// ever read once, in `HinterlandApp.init`.
+    ///
+    /// Called after `FestivalMemories` has put the outgoing year away with the table as it
+    /// stood. The old table is left on screen rather than cleared: its IDs are last year's,
+    /// so it matches none of next year's sets, and the next sweep replaces it.
+    @MainActor
+    func rollOver(to year: Int) async {
+        guard year != festivalYear else { return }
+        festivalYear = year
+        lastAttempt = nil
+        await refresh(force: true)
     }
 
     // MARK: - Writing

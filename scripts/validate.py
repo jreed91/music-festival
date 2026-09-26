@@ -33,7 +33,10 @@ def check_date(value, where):
 
 
 # ------------------------------------------------------------------- schedule.json
-with open(os.path.join(ROOT, "Data", "schedule.json"), encoding="utf-8") as handle:
+# A schedule path can be passed in to check one that isn't the live file yet — next year's
+# before it goes to `main`, or the rehearsal copy from `rehearse_rollover.py`.
+SCHEDULE = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "Data", "schedule.json")
+with open(SCHEDULE, encoding="utf-8") as handle:
     schedule = json.load(handle)
 
 require(schedule, ["version", "generatedAt", "festival", "artists", "days"], "schedule")

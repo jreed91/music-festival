@@ -66,6 +66,10 @@ struct RootView: View {
             if old.festival.year != store.data.festival.year {
                 memories.record(old, ratings: ratings.byPerformanceID,
                                 starredIDs: favorites.ids, community: community)
+                // Only now, with last year's crowd table safely in its memory, do the
+                // averages move on to the new year.
+                let year = store.data.festival.year
+                Task { await community.rollOver(to: year) }
             }
             rememberFestival()
             syncReminders()

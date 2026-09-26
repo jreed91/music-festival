@@ -421,14 +421,19 @@ struct RecapView: View {
             sectionHeading("THE BILL")
 
             VStack(spacing: 0) {
-                NavigationLink(value: PastLineupRoute.year(store.data.festival.year)) {
-                    linkRow(symbol: "list.bullet.rectangle.portrait",
-                            title: "\(String(store.data.festival.year)) in the archive",
-                            detail: "Every act that played, day by day")
-                }
-                .buttonStyle(.plain)
+                // The archive is bundled and the schedule isn't: when next year's weekend
+                // ends on a build shipped before it, that year isn't in `past-lineups.json`
+                // yet, and the link would open onto a blank screen.
+                if store.pastLineups.year(store.data.festival.year) != nil {
+                    NavigationLink(value: PastLineupRoute.year(store.data.festival.year)) {
+                        linkRow(symbol: "list.bullet.rectangle.portrait",
+                                title: "\(String(store.data.festival.year)) in the archive",
+                                detail: "Every act that played, day by day")
+                    }
+                    .buttonStyle(.plain)
 
-                Divider().overlay(Theme.hairline).padding(.leading, 46)
+                    Divider().overlay(Theme.hairline).padding(.leading, 46)
+                }
 
                 NavigationLink(value: RecapRoute.schedule) {
                     linkRow(symbol: "calendar",
