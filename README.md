@@ -40,6 +40,8 @@ back to what's already on the phone.
 - **Past lineups** — every Hinterland since 2015, from the Schedule tab: each year's
   headliners and its whole bill, day by day, side stages marked. Bundled, so it settles
   the argument about who played 2017 with no signal.
+  Years you were at carry your recap and ratings too, kept after next year's schedule
+  replaces them.
 - **The recap** — once the last set has ended, the Schedule tab becomes a wrap-up of the
   weekend: how many sets you saw and for how many hours, your best of the festival, the
   day you gave the most to, and the festival's best sets according to everyone who rated
@@ -120,6 +122,10 @@ install the container.
 
 `ITSAppUsesNonExemptEncryption` is already set to `false` in `project.yml`, so uploads
 skip the export-compliance prompt.
+
+Before the first App Store submission, fill in the privacy label from the table under
+[Privacy](#privacy) — App Store Connect won't submit without it, and it has to match the
+manifest.
 
 ### Xcode Cloud
 
@@ -438,9 +444,8 @@ screen's footer is where the reason shows up. In rough order of likelihood:
 | Saved on your phone… | Nothing is wrong. There's no signal, the outbox is holding, and it drains on the next foreground with a network. |
 | Your ratings uploaded *(time)* | The outbox emptied. If the console still shows nothing, you're looking at the other environment. |
 
-Shared scores are user data leaving the device, so an App Store release needs them
-declared in the privacy nutrition label and in a `PrivacyInfo.xcprivacy` the project
-doesn't yet carry.
+Shared scores are user data leaving the device, so they're declared in the privacy
+manifest and have to be in the App Store privacy label too — see [Privacy](#privacy).
 
 ## After the festival
 
@@ -495,6 +500,36 @@ nobody has asked for yet.
 Someone who starred nothing and rated nothing gets the festival's recap instead of their
 own — the crowd's best sets, the bill, the archive — with one line about how to have a
 weekend of their own next time. Nothing on the screen reads as zero.
+
+## Keeping last year's weekend
+
+Ratings and stars are keyed by performance ID (`2026-07-31-main-stage-lorde`), and an ID
+only means something next to the schedule it came from. Installed apps pull
+`schedule.json` live from `main`, so the moment next year's goes up, this year's sets are
+gone from `store.data`: the ratings are still on the phone, but the recap and My Ratings
+can no longer say which band any of them were for, and both empty out.
+
+`FestivalMemories` keeps each year its own copy. A `FestivalMemory` is that year's
+schedule cut down to the sets you rated or starred — shaped like the real `FestivalData`,
+so `Recap` counts it without knowing the difference — plus your ratings and notes, the
+festival's size, and the crowd averages for your sets and the festival's best as they
+were last downloaded. It lives in the app group next to the ratings and is rewritten for
+the current year whenever the schedule, a rating, a star or the crowd table changes, so
+whichever of those happens last before next year's schedule lands is already saved.
+`RootView` also records the outgoing schedule when a refresh changes the year, and fills in
+the year this build shipped with from the bundle if a newer schedule was cached before the
+build was first opened. That fallback never overwrites a copy made while the year was
+current, and an empty crowd read never wipes averages saved earlier. Nothing is pruned:
+the raw ratings and stars stay where they were.
+
+Each remembered year shows up in **Past Lineups**: a line on the year's row saying you were
+there, and a card above that year's bill opening `PastRecapView`, the recap and every set
+you rated with your notes. It's read-only, because the sets aren't in the schedule any
+more and there's nothing left to rate.
+
+This only protects someone who opens a build carrying it while their year is still the
+current one, or before next year's schedule is cached. Ship it to the App Store before
+the next `schedule.json` goes up on `main`.
 
 ## Past lineups
 
@@ -598,6 +633,71 @@ things.
 These labels are written by hand, so a new row or badge needs its own. Check it with
 VoiceOver on a device or the Accessibility Inspector in the simulator.
 
+## Privacy
+
+Everything the app knows about you stays on the phone except one thing: the stars you give
+a set, when sharing is on. That's what both the privacy manifests and the App Store privacy
+label have to describe, and the two have to agree — App Review compares them.
+
+### The manifests
+
+`Hinterland/PrivacyInfo.xcprivacy` and `HinterlandWidgets/PrivacyInfo.xcprivacy`, one per
+bundle, each listed in `project.yml` as a resource so it lands at the bundle root. They
+declare:
+
+- **No tracking**, and no tracking domains.
+- **Collected (app only):** *Other User Content* (the star rating) and *User ID* (the
+  CloudKit user record ID the rating's record is named after), both linked to the user,
+  neither used for tracking, both for *App Functionality*. The widget collects nothing.
+- **Required-reason APIs:** `UserDefaults` only, with `CA92.1` (the app's own settings and
+  the ratings outbox in `.standard`) and `1C8F.1` (the app group suite the app and widget
+  share). No file timestamps, boot time, disk space or keyboard APIs are called.
+
+Add to these whenever a change starts calling another
+[required-reason API](https://developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api)
+or sending something new off the phone. A third-party SDK would bring its own manifest; the
+app has none today.
+
+### The App Store privacy label
+
+Filled in by hand under **App Store Connect → App Privacy**, and not stored anywhere in
+this repo, so this is the record of what to enter:
+
+| Question | Answer |
+| --- | --- |
+| Do you or your third-party partners collect data from this app? | Yes |
+| Data types | **User Content → Other User Content**; **Identifiers → User ID** |
+| Used for | App Functionality (only) |
+| Linked to the user's identity? | Yes, for both |
+| Used for tracking? | No, for both |
+
+The resulting label reads *Data Linked to You: User Content, Identifiers*, with no *Data
+Used to Track You*.
+
+Why that answer and not "no data collected":
+
+- **The rating** is a `SetRating` record in the CloudKit public database: `performanceID`,
+  `stars`, `festivalYear`. It stays there after the request is served, readable in the
+  CloudKit console, which is Apple's definition of *collected*. Your written notes never
+  leave the phone and aren't part of it.
+- **Linked**, because each record is named `<performanceID>_<userRecordID>` — that's what
+  makes re-rating overwrite your own row — and CloudKit stamps it with its creator. The user
+  record ID is scoped to this container and isn't your Apple ID, but it is a stable
+  account-level ID, which is exactly what *User ID* covers.
+- **Optional** doesn't change the answer: the label covers data that *can* be collected, and
+  sharing is on by default. Turning it off deletes your records rather than just stopping.
+
+What's deliberately *not* on the label, because none of it is collected:
+
+- **Location.** Used only to draw the blue dot on the grounds map; never stored or sent.
+  The forecast asks WeatherKit about the venue's fixed coordinates, not yours.
+- **Starred sets, your own ratings, notes, reminders.** Local, or in the app group.
+- **Apple Music.** Catalog lookups send an artist's name, nothing about you.
+- **The schedule refresh.** A plain GET of `schedule.json` from GitHub with no identifiers.
+
+If shared ratings ever move off CloudKit to a server of our own (the `recordCap` note
+above), revisit this: that server would see IP addresses, and anything it logs is collected.
+
 ## Layout
 
 ```
@@ -612,14 +712,17 @@ Hinterland/
                post-festival screen and the phase rule that decides when it appears
   Services/    ScheduleStore (loading + refresh), WeatherStore, NotificationManager,
                LiveActivityController, Ratings (yours), CommunityRatings (everyone's),
+               FestivalMemories (each year's recap, kept past the next schedule),
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
-  Views/       Schedule, Recap (+ RecapShareCard), MyLineup, Ratings, Maps, FoodDrink,
-               ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
+  Views/       Schedule, Recap (+ RecapShareCard, PastRecap), MyLineup, Ratings, Maps,
+               FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
                WeatherCard, Components
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
+  PrivacyInfo.xcprivacy — the app's privacy manifest
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),
-               NowPlayingLiveActivity (Lock Screen and Dynamic Island)
+               NowPlayingLiveActivity (Lock Screen and Dynamic Island), and its own
+               PrivacyInfo.xcprivacy
 Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area

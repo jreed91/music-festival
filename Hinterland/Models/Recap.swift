@@ -92,12 +92,34 @@ struct Recap {
          ratings: Ratings,
          favorites: Favorites,
          now: Date = Date()) {
+        self.init(data: data, ratings: ratings.byPerformanceID, starredIDs: favorites.ids,
+                  now: now)
+    }
+
+    /// The same counting from plain values rather than the live stores, so a year that is
+    /// no longer the one in `schedule.json` can still be recapped from its `FestivalMemory`.
+    init(data: FestivalData,
+         ratings byID: [String: SetRating],
+         starredIDs: Set<String>,
+         now: Date = Date()) {
         // Everything is worked out into locals first and assigned at the end. Half of this
         // reads the results of the other half, and a stored property can't be read back
         // out of a closure until the whole value is initialised.
-        let ranked = ratings.ranked(in: data).map { RatedSet(performance: $0.performance,
-                                                             rating: $0.rating) }
-        let starred = favorites.performances(in: data)
+        //
+        // Best first, then earliest — the same order `Ratings.ranked(in:)` reads in.
+        let ranked = data.allPerformances
+            .compactMap { performance -> RatedSet? in
+                guard let rating = byID[performance.id] else { return nil }
+                return RatedSet(performance: performance, rating: rating)
+            }
+            .sorted {
+                $0.rating.stars == $1.rating.stars
+                    ? $0.performance.start < $1.performance.start
+                    : $0.rating.stars > $1.rating.stars
+            }
+        let starred = data.allPerformances
+            .filter { starredIDs.contains($0.id) }
+            .sorted { $0.start < $1.start }
 
         // A set counts once however it got here, so this is a union and not a sum: the
         // sets you starred *and* rated are most of them, and counting those twice would
@@ -115,8 +137,10 @@ struct Recap {
 
         festival = data.festival
         rated = ranked
-        average = ratings.average(in: data)
-        unrated = ratings.unrated(among: starred, at: now)
+        average = ranked.isEmpty
+            ? nil
+            : Double(ranked.reduce(0) { $0 + $1.rating.stars }) / Double(ranked.count)
+        unrated = starred.filter { $0.end <= now && byID[$0.id] == nil }
         attended = seen
         watched = seen.reduce(0) { $0 + $1.duration }
         // `max(by:)` keeps the first of equal elements and the days are in order, so a tie

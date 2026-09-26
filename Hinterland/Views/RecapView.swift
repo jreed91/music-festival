@@ -16,6 +16,7 @@ enum RecapRoute: Hashable {
 /// schedule turns it back over on its own.
 struct FestivalHomeView: View {
     @Environment(ScheduleStore.self) private var store
+    @Environment(FestivalMemories.self) private var memories
 
     @State private var now = Date()
 
@@ -52,6 +53,10 @@ struct FestivalHomeView: View {
                 case .year(let value):
                     if let year = store.pastLineups.year(value) {
                         PastYearView(year: year)
+                    }
+                case .yours(let value):
+                    if let memory = memories.memory(for: value) {
+                        PastRecapView(memory: memory)
                     }
                 }
             }
@@ -505,8 +510,8 @@ struct RecapView: View {
 
 // MARK: - Pieces
 
-/// One big number and what it counts.
-private struct StatTile: View {
+/// One big number and what it counts. Shared with `PastRecapView`.
+struct StatTile: View {
     let value: String
     let label: String
     var tint: Color = .white
