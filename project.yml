@@ -88,6 +88,12 @@ targets:
           - BarlowCondensed-Bold.ttf
           - BarlowCondensed-ExtraBold.ttf
         UIUserInterfaceStyle: Dark
+        # Keeps iOS 26 from swapping in its floating Liquid Glass tab bar, which ignores
+        # the opaque appearance set in HinterlandApp and lenses the rows scrolling under
+        # it into a smear of doubled text. After Dark wants a flat black bar with a
+        # hairline. Apple has said this opt-out goes away in a later release, so the bar
+        # will need a native iOS 26 treatment before then.
+        UIDesignRequiresCompatibility: true
         # Without this the Live Activity request fails at runtime with no other clue.
         NSSupportsLiveActivities: true
         # The widget and the Live Activity open the app on My Lineup through this scheme.

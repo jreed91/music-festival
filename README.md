@@ -707,7 +707,10 @@ short version, as it lands in code:
   line shrinks to fit instead. A new view should do the same.
 - **App icon** is "Yard light", from `scripts/appicon.svg`.
 
-The app is dark only.
+The app is dark only, and it opts out of the iOS 26 Liquid Glass tab bar
+(`UIDesignRequiresCompatibility` in `project.yml`): the floating glass bar ignores the
+opaque black appearance and smears the rows scrolling under it. Apple will retire that
+opt-out in a later iOS, so the tab bar needs a native treatment before then.
 
 ## Accessibility
 
