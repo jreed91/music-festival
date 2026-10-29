@@ -117,11 +117,14 @@ struct RecapView: View {
 
                 crowdSection
                 archive
+
+                Horizon()
+                    .padding(.top, 40)
+                    .padding(.horizontal, -22)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 22)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -130,7 +133,7 @@ struct RecapView: View {
                     ShareLink(item: share, preview: SharePreview("My " + title)) {
                         Image(systemName: "square.and.arrow.up")
                     }
-                    .tint(Theme.accent)
+                    .tint(Theme.ink)
                     .accessibilityLabel("Share my recap")
                 }
             }
@@ -138,7 +141,7 @@ struct RecapView: View {
                 NavigationLink(value: RecapRoute.schedule) {
                     Image(systemName: "calendar")
                 }
-                .tint(Theme.accent)
+                .tint(Theme.ink)
                 .accessibilityLabel("Full schedule")
             }
         }
@@ -156,28 +159,23 @@ struct RecapView: View {
     // MARK: Header
 
     private var banner: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("THAT'S A WRAP")
-                .appFont(11, weight: .heavy)
-                .foregroundStyle(Theme.accent)
-            Text(title)
-                .appFont(30, weight: .heavy, design: .rounded)
+                .appFont(13, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.sodium)
+            Text(title.uppercased())
+                .marqueeFont(96)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
-                .appFont(12)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(15)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(
-            LinearGradient(colors: [Theme.accent.opacity(0.28), Theme.surface],
-                           startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-        )
-        .padding(.top, 12)
+        .padding(.top, 8)
     }
 
     /// The weekend in one line: when it was, and how much of it there was.
@@ -202,7 +200,7 @@ struct RecapView: View {
             StatTile(value: recap.watchedHours.formatted(.number.precision(.fractionLength(0...1))),
                      label: "hours of music")
             if let average = recap.average {
-                StatTile(value: Format.rating(average), label: "your average", tint: Theme.accent)
+                StatTile(value: Format.rating(average), label: "your average", tint: Theme.sodium)
             } else {
                 StatTile(value: "\(recap.ratedCount)", label: "sets rated")
             }
@@ -231,11 +229,11 @@ struct RecapView: View {
                           : "Your ratings, with your notes",
                           systemImage: "chevron.right")
                         .labelStyle(TrailingIconLabelStyle())
-                        .appFont(13, weight: .semibold)
-                        .foregroundStyle(Theme.accent)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 4)
-                        .padding(.top, 2)
+                        .appFont(15, weight: .bold)
+                        .tracking(1.2)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.ink)
+                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
                 }
                 .buttonStyle(.plain)
             }
@@ -250,26 +248,30 @@ struct RecapView: View {
                     HStack(spacing: 10) {
                         Image(systemName: "star.leadinghalf.filled")
                             .appFont(18)
-                            .foregroundStyle(Theme.accent)
+                            .foregroundStyle(Theme.sodium)
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("\(recap.unrated.count) starred "
                                + "\(recap.unrated.count == 1 ? "set" : "sets") you never rated")
-                                .appFont(13, weight: .semibold)
+                                .appFont(17, weight: .semibold)
                                 .foregroundStyle(Theme.ink)
                             Text("Rate them and they join everyone else's averages.")
-                                .appFont(11)
-                                .foregroundStyle(Theme.tertiaryText)
+                                .appFont(14)
+                                .foregroundStyle(Theme.inkMuted)
                         }
+                        .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
                             .appFont(12, weight: .semibold)
-                            .foregroundStyle(Theme.tertiaryText)
+                            .foregroundStyle(Theme.inkFaint)
                             .accessibilityHidden(true)
                     }
                     .padding(14)
-                    .background(Theme.surface,
-                                in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(Theme.nightRaised)
+                    .overlay(alignment: .leading) {
+                        Rectangle().fill(Theme.sodium).frame(width: 3)
+                    }
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .padding(.top, 4)
@@ -300,24 +302,24 @@ struct RecapView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.nightRaised, in: Rectangle())
         .padding(.top, 4)
     }
 
     private func factRow(symbol: String, title: String, detail: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: symbol)
-                .appFont(14)
-                .foregroundStyle(Theme.accent)
-                .frame(width: 20)
+                .appFont(16)
+                .foregroundStyle(Theme.inkMuted)
+                .frame(width: 22)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .appFont(13, weight: .semibold)
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(Theme.ink)
                 Text(detail)
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(14)
+                    .foregroundStyle(Theme.inkMuted)
             }
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -330,25 +332,29 @@ struct RecapView: View {
     private var nothingOfYourOwn: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("You didn't rate anything this year")
-                .appFont(15, weight: .semibold)
+                .appFont(17, weight: .semibold)
                 .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
             Text("If you were there, the sets are all still in the schedule — open one and "
                + "give it your stars. They'll show up here, and in everyone's averages.")
-                .appFont(12)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(14)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
             NavigationLink(value: RecapRoute.schedule) {
                 Label("Open the schedule", systemImage: "chevron.right")
                     .labelStyle(TrailingIconLabelStyle())
-                    .appFont(13, weight: .semibold)
-                    .foregroundStyle(Theme.accent)
+                    .appFont(15, weight: .bold)
+                    .tracking(1.2)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Theme.ink)
+                    .frame(minHeight: 44)
             }
             .buttonStyle(.plain)
             .padding(.top, 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.nightRaised, in: Rectangle())
         .padding(.top, 4)
     }
 
@@ -365,13 +371,14 @@ struct RecapView: View {
 
             if crowdTop.isEmpty {
                 Text(community.emptyRankingMessage(minimum: Self.crowdMinimum))
-                    .appFont(12)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 Text("Every set with at least \(Self.crowdMinimum) ratings, best first.")
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(14)
+                    .foregroundStyle(Theme.inkMuted)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 ForEach(Array(crowdTop.enumerated()), id: \.element.id) { index, entry in
                     NavigationLink(value: entry.performance) {
@@ -386,8 +393,8 @@ struct RecapView: View {
                 if let fetchedAt = community.fetchedAt {
                     Text("As of " + fetchedAt.formatted(date: .abbreviated, time: .shortened)
                        + ". Pull down to check for more.")
-                        .appFont(11)
-                        .foregroundStyle(Theme.tertiaryText)
+                        .appFont(12)
+                        .foregroundStyle(Theme.inkFaint)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -397,9 +404,9 @@ struct RecapView: View {
             // what gets uploaded stays on My Ratings, which is where you turn it off.
             if !community.isSharing {
                 Toggle("Put my ratings in these averages", isOn: $bindable.isSharing)
-                    .appFont(13, weight: .semibold)
+                    .appFont(15, weight: .semibold)
                     .foregroundStyle(Theme.ink)
-                    .tint(Theme.accent)
+                    .tint(Theme.sodium)
                     .padding(.top, 2)
             }
         }
@@ -451,7 +458,7 @@ struct RecapView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Theme.nightRaised, in: Rectangle())
         }
         .padding(.top, 4)
     }
@@ -459,23 +466,23 @@ struct RecapView: View {
     private func linkRow(symbol: String, title: String, detail: String) -> some View {
         HStack(spacing: 10) {
             Image(systemName: symbol)
-                .appFont(15)
-                .foregroundStyle(Theme.accent)
+                .appFont(16)
+                .foregroundStyle(Theme.inkMuted)
                 .frame(width: 26)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .appFont(14, weight: .semibold)
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(Theme.ink)
                 Text(detail)
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(14)
+                    .foregroundStyle(Theme.inkMuted)
             }
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
             Image(systemName: "chevron.right")
                 .appFont(12, weight: .semibold)
-                .foregroundStyle(Theme.tertiaryText)
+                .foregroundStyle(Theme.inkFaint)
                 .accessibilityHidden(true)
         }
         .padding(14)
@@ -484,10 +491,15 @@ struct RecapView: View {
 
     private func sectionHeading(_ text: String) -> some View {
         Text(text)
-            .appFont(12, weight: .bold)
-            .foregroundStyle(Theme.tertiaryText)
-            .padding(.top, 12)
-            .padding(.horizontal, 4)
+            .appFont(13, weight: .bold)
+            .tracking(2.4)
+            .foregroundStyle(Theme.inkFaint)
+            .padding(.top, 24)
+            .padding(.bottom, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .overlay(alignment: .bottom) {
+                Rectangle().fill(Theme.ink).frame(height: 2)
+            }
             .accessibilityAddTraits(.isHeader)
     }
 
@@ -524,18 +536,22 @@ struct StatTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .appFont(24, weight: .heavy, design: .rounded)
+                .marqueeFont(64)
                 .foregroundStyle(tint)
+                .onAirGlow(tint == Theme.sodium)
+                // A third of the screen is all a tile gets, so a long number shrinks
+                // rather than losing a digit.
                 .lineLimit(1)
-                .minimumScaleFactor(0.6)
-            Text(label)
-                .appFont(10, weight: .semibold)
-                .foregroundStyle(Theme.tertiaryText)
+                .minimumScaleFactor(0.5)
+            Text(label.uppercased())
+                .appFont(11, weight: .bold)
+                .tracking(1.4)
+                .foregroundStyle(Theme.inkFaint)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.nightRaised, in: Rectangle())
         // "4, sets seen" as one stop rather than a number and, a swipe later, what it counts.
         .accessibilityElement(children: .combine)
     }
@@ -563,31 +579,31 @@ private struct RankedSetRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Text("\(rank)")
-                .appFont(15, weight: .heavy, design: .rounded)
-                .foregroundStyle(Theme.tertiaryText)
-                .frame(width: 18)
+                .marqueeFont(48)
+                .foregroundStyle(Theme.inkFaint)
+                .fixedSize()
+                .frame(minWidth: 24)
 
-            ArtistImage(artist: artist, size: 44)
-                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 9, style: .continuous)
-                        .strokeBorder(Theme.hairline)
-                )
+            ArtistImage(artist: artist, size: 48)
+                .clipShape(Rectangle())
+                .overlay(Rectangle().strokeBorder(Theme.hairline))
 
             VStack(alignment: .leading, spacing: 5) {
-                Text(performance.artist)
-                    .appFont(15, weight: .semibold)
+                Text(performance.artist.uppercased())
+                    .marqueeFont(36)
                     .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
-                HStack(spacing: 6) {
+                // Wraps on a narrow phone or at big type rather than pushing the stage
+                // off the edge.
+                FlowLayout(spacing: 8, lineSpacing: 4) {
                     switch detail {
                     case .yours(let stars):
                         RatingBadge(stars: stars, compact: true)
                     case .crowd(let rating):
                         CrowdBadge(rating: rating, compact: true)
                         Text("\(rating.count) \(rating.count == 1 ? "rating" : "ratings")")
-                            .appFont(10)
-                            .foregroundStyle(Theme.tertiaryText)
+                            .appFont(12)
+                            .foregroundStyle(Theme.inkFaint)
                     }
                     if let crowd {
                         CrowdBadge(rating: crowd, compact: true)
@@ -600,7 +616,7 @@ private struct RankedSetRow: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.nightRaised)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(spokenSummary)
         .accessibilityInputLabels([performance.artist])

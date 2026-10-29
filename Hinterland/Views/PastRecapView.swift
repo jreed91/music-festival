@@ -59,10 +59,10 @@ struct PastRecapView: View {
                 superlatives
                 crowdSection
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 22)
             .padding(.bottom, 24)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle("Your " + String(memory.year))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -83,26 +83,21 @@ struct PastRecapView: View {
     private var banner: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("YOUR WEEKEND")
-                .appFont(11, weight: .heavy)
-                .foregroundStyle(Theme.accent)
-            Text(title)
-                .appFont(30, weight: .heavy, design: .rounded)
+                .appFont(13, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.sodium)
+            Text(title.uppercased())
+                .marqueeFont(96)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
-                .appFont(12)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(15)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .combine)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(
-            LinearGradient(colors: [Theme.accent.opacity(0.28), Theme.surface],
-                           startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-        )
-        .padding(.top, 12)
+        .padding(.top, 8)
     }
 
     private var subtitle: String {
@@ -124,16 +119,13 @@ struct PastRecapView: View {
             HStack(spacing: 12) {
                 if let rank {
                     Text("\(rank)")
-                        .appFont(15, weight: .heavy, design: .rounded)
+                        .appFont(20, weight: .heavy)
                         .foregroundStyle(Theme.tertiaryText)
                         .frame(width: 18)
                 }
                 ArtistImage(artist: memory.schedule.artist(id: performance.artistId), size: 44)
-                    .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 9, style: .continuous)
-                            .strokeBorder(Theme.hairline)
-                    )
+                    .clipShape(Rectangle())
+                    .overlay(Rectangle().strokeBorder(Theme.hairline))
                 VStack(alignment: .leading, spacing: 5) {
                     Text(performance.artist)
                         .appFont(15, weight: .semibold)
@@ -167,7 +159,7 @@ struct PastRecapView: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Theme.nightRaised, in: Rectangle())
     }
 
     private func spokenSet(_ performance: Performance, rank: Int?, stars: Int?) -> String {
@@ -214,8 +206,8 @@ struct PastRecapView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(14)
-                .background(Theme.surface,
-                            in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(Theme.nightRaised,
+                            in: Rectangle())
                 .padding(.top, 14)
             }
         }
@@ -252,7 +244,7 @@ struct PastRecapView: View {
                 ForEach(Array(memory.crowdTop.enumerated()), id: \.element.id) { index, entry in
                     HStack(spacing: 12) {
                         Text("\(index + 1)")
-                            .appFont(15, weight: .heavy, design: .rounded)
+                            .appFont(20, weight: .heavy)
                             .foregroundStyle(Theme.tertiaryText)
                             .frame(width: 18)
                         VStack(alignment: .leading, spacing: 5) {
@@ -274,8 +266,8 @@ struct PastRecapView: View {
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
-                    .background(Theme.surface,
-                                in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(Theme.nightRaised,
+                                in: Rectangle())
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Number \(index + 1), \(entry.performance.artist), "
                                       + CrowdBadge.spokenLabel(for: entry.rating) + ", "
