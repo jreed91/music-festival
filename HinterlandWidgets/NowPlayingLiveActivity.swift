@@ -11,8 +11,8 @@ struct NowPlayingLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: NowPlayingAttributes.self) { context in
             LockScreenCard(state: context.state, festival: context.attributes.festivalName)
-                .activityBackgroundTint(Theme.background)
-                .activitySystemActionForegroundColor(Theme.accent)
+                .activityBackgroundTint(Theme.night)
+                .activitySystemActionForegroundColor(Theme.sodium)
                 .widgetURL(URL(string: "hinterland://lineup"))
         } dynamicIsland: { context in
             let state = context.state
@@ -20,20 +20,25 @@ struct NowPlayingLiveActivity: Widget {
 
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(stage.displayName, systemImage: stage.symbol)
-                        .appFont(12, weight: .semibold)
-                        .foregroundStyle(stage.color)
+                    HStack(spacing: 5) {
+                        StageGlyph(stage: stage, size: 8)
+                        Text(stage.displayName.uppercased())
+                            .appFont(11, weight: .bold)
+                            .tracking(1.2)
+                            .foregroundStyle(stage.color)
+                    }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Countdown(state: state)
-                        .appFont(13, weight: .semibold, design: .rounded)
-                        .foregroundStyle(Theme.accent)
+                        .appFont(14, weight: .bold)
+                        .foregroundStyle(Theme.sodium)
                 }
                 DynamicIslandExpandedRegion(.center) {
-                    Text(state.artist)
-                        .appFont(17, weight: .bold)
+                    Text(state.artist.uppercased())
+                        .marqueeFont(34)
+                        .foregroundStyle(Theme.sodium)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                        .minimumScaleFactor(0.5)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: 6) {
@@ -47,20 +52,20 @@ struct NowPlayingLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                Image(systemName: stage.symbol)
-                    .foregroundStyle(stage.color)
+                StageGlyph(stage: stage, size: 12)
+                    .accessibilityElement()
                     .accessibilityLabel("\(state.artist), \(stage.displayName)")
             } compactTrailing: {
                 Countdown(state: state)
-                    .appFont(12, weight: .semibold, design: .rounded)
-                    .foregroundStyle(Theme.accent)
+                    .appFont(13, weight: .bold)
+                    .foregroundStyle(Theme.sodium)
                     .frame(maxWidth: 58)
             } minimal: {
-                Image(systemName: stage.symbol)
-                    .foregroundStyle(stage.color)
+                StageGlyph(stage: stage, size: 12)
+                    .accessibilityElement()
                     .accessibilityLabel("\(state.artist), \(stage.displayName)")
             }
-            .keylineTint(Theme.accent)
+            .keylineTint(Theme.sodium)
             .widgetURL(URL(string: "hinterland://lineup"))
         }
     }
@@ -77,30 +82,34 @@ private struct LockScreenCard: View {
             HStack {
                 Text(festival.uppercased())
                     .appFont(10, weight: .heavy)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .tracking(1.6)
+                    .foregroundStyle(Theme.inkFaint)
                 Spacer(minLength: 8)
-                Text(state.isStarred ? "YOUR LINEUP" : "ON NOW")
+                Text(state.isStarred ? "YOUR LINEUP" : "ON AIR")
                     .appFont(10, weight: .heavy)
-                    .foregroundStyle(Theme.accent)
+                    .tracking(1.6)
+                    .foregroundStyle(Theme.sodium)
             }
 
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(state.artist)
-                    .appFont(22, weight: .bold)
-                    .foregroundStyle(.white)
+            HStack(alignment: .lastTextBaseline, spacing: 10) {
+                Text(state.artist.uppercased())
+                    .marqueeFont(52)
+                    .foregroundStyle(Theme.sodium)
+                    .onAirGlow()
+                    // The card can't grow, so a long name shrinks rather than losing its end.
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(0.5)
                 Spacer(minLength: 4)
                 Countdown(state: state)
-                    .appFont(15, weight: .semibold, design: .rounded)
-                    .foregroundStyle(Theme.accent)
+                    .appFont(18, weight: .bold)
+                    .foregroundStyle(Theme.ink)
             }
 
             HStack(spacing: 6) {
-                Image(systemName: state.stage.symbol)
-                    .appFont(10, weight: .semibold)
-                Text(state.stage.displayName)
-                    .appFont(12, weight: .semibold)
+                StageGlyph(stage: state.stage, size: 8)
+                Text(state.stage.displayName.uppercased())
+                    .appFont(11, weight: .bold)
+                    .tracking(1.4)
                 Text("·")
                     .foregroundStyle(Theme.tertiaryText)
                 Text(Format.range(state.start, state.end))
@@ -164,7 +173,7 @@ private struct SetProgress: View {
                 EmptyView()
             }
             .progressViewStyle(.linear)
-            .tint(state.stage.color)
+            .tint(Theme.sodium)
         }
     }
 }

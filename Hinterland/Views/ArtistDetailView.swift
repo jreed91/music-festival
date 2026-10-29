@@ -33,13 +33,14 @@ struct ArtistDetailView: View {
                     setTimes
                     if let bio = artist?.bio, !bio.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("About")
+                            Text("ABOUT")
                                 .appFont(13, weight: .bold)
-                                .foregroundStyle(Theme.tertiaryText)
+                                .tracking(2.4)
+                                .foregroundStyle(Theme.inkFaint)
                                 .accessibilityAddTraits(.isHeader)
                             Text(bio)
                                 .appFont(15)
-                                .foregroundStyle(.white.opacity(0.86))
+                                .foregroundStyle(Theme.ink.opacity(0.86))
                                 .lineSpacing(4)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -80,10 +81,10 @@ struct ArtistDetailView: View {
                 startPoint: .center, endPoint: .bottom)
                 .frame(height: 320)
 
-            Text(artist?.name ?? "")
-                .appFont(32, weight: .heavy)
-                .foregroundStyle(.white)
-                .shadow(radius: 12)
+            Text((artist?.name ?? "").uppercased())
+                .marqueeFont(104)
+                .foregroundStyle(Theme.ink)
+                .shadow(color: Theme.night, radius: 12)
                 .padding(20)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
@@ -103,8 +104,7 @@ struct ArtistDetailView: View {
                     }
                 }
                 .padding(14)
-                .background(Theme.surface,
-                            in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(Theme.nightRaised)
             }
         }
     }
@@ -118,7 +118,7 @@ struct ArtistDetailView: View {
                     .foregroundStyle(Theme.tertiaryText)
                 Text(Format.range(performance.start, performance.end))
                     .appFont(17, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 HStack(spacing: 6) {
                     StageBadge(stage: Stage(name: performance.stage))
                     // Absent rather than guessed when the forecast doesn't reach
@@ -136,14 +136,19 @@ struct ArtistDetailView: View {
                 favorites.toggle(performance)
             } label: {
                 let starred = favorites.contains(performance)
-                Label(starred ? "Starred" : "Star",
-                      systemImage: starred ? "star.fill" : "star")
-                    .appFont(13, weight: .semibold)
-                    .foregroundStyle(starred ? Theme.background : Theme.accent)
+                Label(starred ? "In lineup" : "Add",
+                      systemImage: "star.fill")
+                    .appFont(13, weight: .bold)
+                    .tracking(1.6)
+                    .textCase(.uppercase)
+                    .foregroundStyle(starred ? Theme.onSodium : Theme.sodium)
                     .padding(.horizontal, 14)
-                    .padding(.vertical, 9)
-                    .background(starred ? Theme.accent : Theme.accent.opacity(0.16),
-                                in: Capsule())
+                    .frame(minHeight: 44)
+                    .background(starred ? Theme.sodium : Theme.glass,
+                                in: RoundedRectangle(cornerRadius: 6))
+                    .overlay(RoundedRectangle(cornerRadius: 6)
+                        .strokeBorder(Theme.sodium, lineWidth: 1.5))
+                    .shadow(color: Theme.sodium.opacity(0.6), radius: 6)
             }
             .buttonStyle(.plain)
             // "Starred" reads as a state and "Star" as a noun; say what the tap does.
@@ -210,7 +215,7 @@ struct ArtistDetailView: View {
             if let note = rating?.note, !note.isEmpty {
                 Text(note)
                     .appFont(13)
-                    .foregroundStyle(.white.opacity(0.86))
+                    .foregroundStyle(Theme.ink.opacity(0.86))
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(10)
@@ -261,7 +266,7 @@ private struct LinkButton: View {
             Link(destination: url) {
                 Label(title, systemImage: symbol)
                     .appFont(14, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 11)
                     .background(Theme.surfaceRaised, in: Capsule())

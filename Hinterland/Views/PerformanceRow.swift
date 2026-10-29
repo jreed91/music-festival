@@ -1,85 +1,110 @@
 import SwiftUI
 
-/// One set in a list: artwork, time, artist, stage, and the star that drives My Lineup.
+/// One set in a list: start time, the artist in Six Caps, stage and rating, and the star
+/// that drives My Lineup. The SetRow of the After Dark design system.
+///
+/// The set on air is the one full-bleed `sodium` fill in a list; a starred set's time
+/// and star are `sodium`; a set that's over fades to `inkFaint`. Names wrap rather than
+/// truncate, however long and however large the reader's text is.
 struct PerformanceRow: View {
     let performance: Performance
     var showsConflictWarning = false
+    /// "9:30pm" rather than "9:30", for lists with no hour numeral beside them.
+    var showsFullTime = false
 
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
     @Environment(Ratings.self) private var ratings
     @Environment(CommunityRatings.self) private var community
 
-    private var artist: Artist? { store.data.artist(id: performance.artistId) }
     private var isStarred: Bool { favorites.contains(performance) }
     private var isLive: Bool { performance.isLive(at: Date()) }
+    private var isOver: Bool { performance.end <= Date() }
 
     var body: some View {
-        HStack(spacing: 12) {
-            ArtistImage(artist: artist, size: 56)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(Theme.hairline)
-                )
+        HStack(alignment: .center, spacing: 12) {
+            Text(showsFullTime ? Format.time(performance.start) : Format.clock(performance.start))
+                .appFont(20, weight: .bold)
+                .monospacedDigit()
+                .foregroundStyle(timeColor)
+                .frame(minWidth: 52, alignment: .leading)
+                .fixedSize()
 
             VStack(alignment: .leading, spacing: 5) {
-                HStack(spacing: 6) {
-                    Text(Format.range(performance.start, performance.end))
-                        .appFont(12, weight: .medium, design: .rounded)
-                        .foregroundStyle(Theme.secondaryText)
+                Text(performance.artist.uppercased())
+                    .marqueeFont(38)
+                    .foregroundStyle(isLive ? Theme.onSodium : (isOver ? Theme.inkFaint : Theme.ink))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                FlowLayout(spacing: 10, lineSpacing: 6) {
                     if isLive {
-                        Text("NOW")
-                            .appFont(9, weight: .heavy)
-                            .foregroundStyle(Theme.background)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(Theme.accent, in: Capsule())
+                        Text("ON AIR")
+                            .appFont(11, weight: .heavy)
+                            .tracking(1.6)
+                            .foregroundStyle(Theme.onSodium)
                     }
-                }
-
-                Text(performance.artist)
-                    .appFont(17, weight: .semibold)
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-
-                HStack(spacing: 6) {
-                    StageBadge(stage: Stage(name: performance.stage), compact: true)
+                    if isLive {
+                        Text(Stage(name: performance.stage).displayName.uppercased())
+                            .appFont(10, weight: .bold)
+                            .tracking(1.4)
+                            .foregroundStyle(Theme.onSodium)
+                    } else {
+                        StageBadge(stage: Stage(name: performance.stage), compact: true)
+                    }
+                    Text(Format.minutes(performance.duration))
+                        .appFont(10, weight: .bold)
+                        .tracking(1.4)
+                        .foregroundStyle(isLive ? Theme.onSodium : Theme.inkFaint)
                     // One number per row: yours if you gave one, the crowd's if you
                     // didn't. Both at this size is a row nobody can read at a glance.
-                    if let rating = ratings.rating(for: performance) {
-                        RatingBadge(stars: rating.stars, compact: true)
-                    } else if let crowd = community.rating(for: performance) {
-                        CrowdBadge(rating: crowd, compact: true)
-                    }
-                    if showsConflictWarning {
-                        Label("Overlaps", systemImage: "exclamationmark.triangle.fill")
-                            .appFont(10, weight: .semibold)
-                            .foregroundStyle(Theme.warning)
+                    if !isLive {
+                        if let rating = ratings.rating(for: performance) {
+                            RatingBadge(stars: rating.stars, compact: true)
+                        } else if let crowd = community.rating(for: performance) {
+                            CrowdBadge(rating: crowd, compact: true)
+                        }
                     }
                 }
-            }
 
-            Spacer(minLength: 4)
+                if showsConflictWarning, let minutes = clashMinutes {
+                    Text("CLASH · \(minutes) MIN")
+                        .appFont(11, weight: .heavy)
+                        .tracking(1.4)
+                        .foregroundStyle(Theme.onCaution)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 4)
+                        .background(Theme.caution)
+                        .padding(.top, 2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Button {
                 favorites.toggle(performance)
             } label: {
-                Image(systemName: isStarred ? "star.fill" : "star")
+                Image(systemName: "star.fill")
                     .appFont(18)
-                    .foregroundStyle(isStarred ? Theme.accent : Theme.tertiaryText)
+                    .foregroundStyle(starColor)
                     .frame(width: 44, height: 44)   // keep a comfortable tap target
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(isLive ? Theme.accent.opacity(0.55) : Color.clear, lineWidth: 1.5)
-        )
+        .padding(.vertical, 12)
+        .padding(.horizontal, isLive ? 12 : 0)
+        .padding(.leading, showsConflictWarning ? 12 : 0)
+        .background(isLive ? Theme.sodium : Color.clear)
+        .overlay(alignment: .leading) {
+            if showsConflictWarning {
+                Rectangle().fill(Theme.caution).frame(width: 3)
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if !isLive {
+                Rectangle().fill(Theme.hairline).frame(height: 1)
+            }
+        }
+        .contentShape(Rectangle())
         // One stop per set for VoiceOver, artist first. Left to itself VoiceOver builds
         // the row's label from its pieces in drawing order — "8:00pm – 9:15pm, NOW",
         // then the artist — and the star button inside it is hard to reach at all.
@@ -93,18 +118,42 @@ struct PerformanceRow: View {
         .accessibilityInputLabels([performance.artist])
     }
 
+    private var timeColor: Color {
+        if isLive { return Theme.onSodium }
+        if isOver { return Theme.inkFaint }
+        return isStarred ? Theme.sodium : Theme.inkMuted
+    }
+
+    private var starColor: Color {
+        if isLive { return isStarred ? Theme.onSodium : Theme.onSodium.opacity(0.35) }
+        return isStarred ? Theme.sodium : Theme.unlit
+    }
+
+    /// The longest overlap this set has with another starred set, in minutes.
+    private var clashMinutes: Int? {
+        let overlaps = favorites.conflicts(in: store.data).compactMap { pair -> TimeInterval? in
+            guard pair.0 == performance || pair.1 == performance else { return nil }
+            return min(pair.0.end, pair.1.end).timeIntervalSince(max(pair.0.start, pair.1.start))
+        }
+        guard let longest = overlaps.max() else { return nil }
+        return Int((longest / 60).rounded())
+    }
+
     private var spokenSummary: String {
         var parts = [performance.artist,
                      Format.spokenRange(performance.start, performance.end),
                      Stage(name: performance.stage).displayName]
-        if isLive { parts.append("On now") }
+        if isLive { parts.append("On air") }
         if isStarred { parts.append("In My Lineup") }
         if let rating = ratings.rating(for: performance) {
             parts.append(RatingBadge.spokenLabel(stars: rating.stars))
         } else if let crowd = community.rating(for: performance) {
             parts.append(CrowdBadge.spokenLabel(for: crowd))
         }
-        if showsConflictWarning { parts.append("Overlaps another set in My Lineup") }
+        if showsConflictWarning {
+            parts.append(clashMinutes.map { "Clashes with another set in My Lineup by \($0) minutes" }
+                         ?? "Overlaps another set in My Lineup")
+        }
         return parts.joined(separator: ", ")
     }
 }

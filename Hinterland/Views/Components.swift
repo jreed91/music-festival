@@ -5,54 +5,57 @@ import UIKit
 /// `MapData`. Split out from `Theme` when the palette moved to `Shared` — the widget
 /// needs the colours and the formatting, but none of this.
 extension POICategory {
-    /// Pin colours, kept bright enough to read as markers over both the illustration and
-    /// satellite imagery.
+    /// Pin colours. After Dark keeps the map to the system's few signals rather than a
+    /// colour per category: stages in their stage colour, medical in `signal`, water in
+    /// `rain`, and everything else in cream, so the pins you need in a hurry stand out.
     var tint: Color {
         switch self {
-        case .stage: return Theme.accent
-        case .entrance: return Color(red: 0.42, green: 0.82, blue: 0.70)
-        case .gate: return Color(red: 0.55, green: 0.75, blue: 0.98)
-        case .food: return Color(red: 0.45, green: 0.82, blue: 0.45)
-        case .drink: return Color(red: 0.96, green: 0.55, blue: 0.78)
-        case .water: return Color(red: 0.38, green: 0.84, blue: 0.92)
-        case .restroom: return Color(red: 0.66, green: 0.74, blue: 0.86)
-        case .merch: return Color(red: 0.84, green: 0.58, blue: 0.96)
-        case .info: return Color(red: 0.92, green: 0.93, blue: 0.96)
-        case .medical: return Theme.warning
-        case .accessibility: return Color(red: 0.42, green: 0.66, blue: 0.98)
-        case .shade: return Color(red: 0.88, green: 0.76, blue: 0.56)
-        case .services: return Color(red: 0.95, green: 0.82, blue: 0.42)
-        case .camping: return Color(red: 0.72, green: 0.55, blue: 0.96)
-        case .parking: return Color(red: 0.62, green: 0.62, blue: 0.98)
-        case .exit: return Color(red: 0.72, green: 0.78, blue: 0.70)
+        case .stage: return Theme.sodium
+        case .medical: return Theme.signal
+        case .water: return Theme.rain
+        default: return Theme.ink
         }
     }
 }
 
-/// Stage name in its colour, used everywhere a set is listed.
+extension View {
+    /// The festival's maps are bright daytime art. Graded for night — darker, less
+    /// saturated, a `night` wash on top — so pins and labels are the brightest things on
+    /// them.
+    func nightGraded() -> some View {
+        self
+            .brightness(-0.35)
+            .saturation(0.45)
+            .contrast(1.08)
+            .overlay(Theme.night.opacity(0.25))
+    }
+}
+
+/// Stage name in its colour with its shape, used everywhere a set is listed. Set like the
+/// design system's callsigns: uppercase, tracked, no pill behind it.
 struct StageBadge: View {
     let stage: Stage
     var compact = false
 
     var body: some View {
-        HStack(spacing: 4) {
-            Image(systemName: stage.symbol)
-                .appFont(compact ? 9 : 10, weight: .semibold)
-            Text(stage.displayName)
-                .appFont(compact ? 10 : 11, weight: .semibold)
+        HStack(spacing: 5) {
+            StageGlyph(stage: stage, size: compact ? 8 : 10)
+            Text(stage.displayName.uppercased())
+                .appFont(compact ? 10 : 11, weight: .bold)
+                .tracking(1.4)
         }
         .foregroundStyle(stage.color)
-        .padding(.horizontal, compact ? 6 : 8)
-        .padding(.vertical, compact ? 3 : 4)
-        .background(stage.color.opacity(0.14), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(stage.displayName)
     }
 }
 
-/// The one-to-five stars you tap to rate a set you watched.
+/// The one-to-five fireflies you tap to rate a set you watched. Lit ones glow `sodium`,
+/// because the rating is yours; the rest sit `unlit`.
 ///
 /// Deliberately not a `Binding`: `Ratings` decides what a tap means — including that
-/// tapping the star you already gave clears the rating — and a binding would put half of
-/// that rule in the view.
+/// tapping the firefly you already lit clears the rating — and a binding would put half
+/// of that rule in the view.
 struct StarRating: View {
     let stars: Int
     var size: CGFloat = 22
@@ -61,13 +64,14 @@ struct StarRating: View {
     var body: some View {
         HStack(spacing: 2) {
             ForEach(Array(SetRating.scale), id: \.self) { value in
-                let filled = value <= stars
+                let lit = value <= stars
                 Button {
                     onSelect(value)
                 } label: {
-                    Image(systemName: filled ? "star.fill" : "star")
-                        .appFont(size, weight: .medium)
-                        .foregroundStyle(filled ? Theme.accent : Theme.tertiaryText)
+                    Circle()
+                        .fill(lit ? Theme.sodium : Theme.unlit)
+                        .frame(width: size * 0.64, height: size * 0.64)
+                        .shadow(color: lit ? Theme.sodium.opacity(0.7) : .clear, radius: 5)
                         // Comfortable to hit with a drink in the other hand, in the dark.
                         .frame(minWidth: 40, minHeight: 44)
                         .contentShape(Rectangle())
@@ -95,22 +99,23 @@ struct StarRating: View {
     }
 }
 
-/// A rating at a glance, for rows that list a set rather than ask about one.
+/// A rating at a glance, for rows that list a set rather than ask about one: one lit
+/// firefly and the number.
 struct RatingBadge: View {
     let stars: Int
     var compact = false
 
     var body: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "star.fill")
-                .appFont(compact ? 9 : 10, weight: .semibold)
+        HStack(spacing: 4) {
+            Circle()
+                .fill(Theme.sodium)
+                .frame(width: compact ? 6 : 7, height: compact ? 6 : 7)
+                .shadow(color: Theme.sodium.opacity(0.7), radius: 3)
             Text("\(stars)")
-                .appFont(compact ? 10 : 11, weight: .semibold, design: .rounded)
+                .appFont(compact ? 11 : 12, weight: .bold)
+                .monospacedDigit()
         }
-        .foregroundStyle(Theme.accent)
-        .padding(.horizontal, compact ? 6 : 8)
-        .padding(.vertical, compact ? 3 : 4)
-        .background(Theme.accent.opacity(0.14), in: Capsule())
+        .foregroundStyle(Theme.sodium)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenLabel(stars: stars))
     }
@@ -121,24 +126,21 @@ struct RatingBadge: View {
     }
 }
 
-/// What everyone else gave a set. Deliberately not amber and not a filled star: the
-/// accent colour on this screen means *your* rating, and a row that showed both in the
-/// same colour would read as one number.
+/// What everyone else gave a set. Deliberately not `sodium` and not a firefly: those
+/// mean *your* rating, and a row that showed both alike would read as one number.
 struct CrowdBadge: View {
     let rating: CrowdRating
     var compact = false
 
     var body: some View {
-        HStack(spacing: 3) {
+        HStack(spacing: 4) {
             Image(systemName: "person.2.fill")
                 .appFont(compact ? 9 : 10, weight: .semibold)
             Text(Format.rating(rating.average))
-                .appFont(compact ? 10 : 11, weight: .semibold, design: .rounded)
+                .appFont(compact ? 11 : 12, weight: .bold)
+                .monospacedDigit()
         }
         .foregroundStyle(Theme.crowd)
-        .padding(.horizontal, compact ? 6 : 8)
-        .padding(.vertical, compact ? 3 : 4)
-        .background(Theme.crowd.opacity(0.14), in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenLabel(for: rating))
     }
@@ -175,13 +177,13 @@ struct ArtistImage: View {
 
     private var placeholder: some View {
         ZStack {
-            Theme.surfaceRaised
+            Theme.glass
             Text(initials)
                 // Deliberately not scaled: this is lettering inside a fixed-size piece of
                 // artwork, sized as a fraction of that box rather than as text to read.
                 // Growing it with Dynamic Type would just overflow the thumbnail.
-                .font(.system(size: (size ?? 44) * 0.34, weight: .bold, design: .rounded))
-                .foregroundStyle(Theme.tertiaryText)
+                .font(.custom(AppFontFace.marquee, fixedSize: (size ?? 44) * 0.5))
+                .foregroundStyle(Theme.unlit)
         }
     }
 
@@ -191,24 +193,29 @@ struct ArtistImage: View {
     }
 }
 
+/// Dead air: what a screen says when there's nothing on it. A quiet callsign, the title
+/// big and faint, and one sentence saying what will be there or what to do.
 struct EmptyStateView: View {
     let symbol: String
     let title: String
     let message: String
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             Image(systemName: symbol)
-                .appFont(40, weight: .light)
-                .foregroundStyle(Theme.tertiaryText)
+                .appFont(28, weight: .semibold)
+                .foregroundStyle(Theme.unlit)
                 .accessibilityHidden(true)
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.white)
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(Theme.secondaryText)
+            Text(title.uppercased())
+                .marqueeFont(52)
+                .foregroundStyle(Theme.inkFaint)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(message)
+                .appFont(16)
+                .foregroundStyle(Theme.inkMuted)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: 300)
         .padding(32)

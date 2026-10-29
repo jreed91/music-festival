@@ -1,55 +1,40 @@
 #!/usr/bin/env python3
-"""Generate the app icon: a sunset over the amphitheater's rolling Iowa hills."""
-import json, os, sys, math
-from PIL import Image, ImageDraw
+"""Export the app icon, "Yard light", from appicon.svg: one sodium light over black corn
+and three fireflies, from the After Dark design system.
+
+The SVG is the source; this only rasterises it to the 1024px PNG the asset catalog wants,
+flattened onto black because App Store icons may not have an alpha channel. Needs either
+`rsvg-convert` (brew install librsvg) or Python Playwright with Chromium.
+"""
+import io, json, os, shutil, subprocess, sys
+from PIL import Image
 
 CATALOG = sys.argv[1] if len(sys.argv) > 1 else "Hinterland/Resources/Assets.xcassets"
 SIZE = 1024
-S = 4  # supersample factor for clean curves
+SVG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "appicon.svg")
 
-W = SIZE * S
-img = Image.new("RGB", (W, W), (13, 13, 18))
-d = ImageDraw.Draw(img)
 
-# Dusk sky, deep indigo at the top warming toward the horizon.
-horizon = int(W * 0.62)
-top, bottom = (26, 22, 54), (250, 150, 66)
-for y in range(horizon):
-    t = (y / horizon) ** 1.7
-    d.line([(0, y), (W, y)], fill=tuple(round(a + (b - a) * t) for a, b in zip(top, bottom)))
+def render() -> bytes:
+    if shutil.which("rsvg-convert"):
+        return subprocess.run(["rsvg-convert", "-w", str(SIZE), "-h", str(SIZE), SVG],
+                              check=True, capture_output=True).stdout
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": SIZE, "height": SIZE})
+        page.goto("file://" + SVG)
+        png = page.screenshot(clip={"x": 0, "y": 0, "width": SIZE, "height": SIZE})
+        browser.close()
+        return png
 
-# Ground plane, so nothing shows through between the horizon and the first hill crest.
-d.rectangle([0, horizon, W, W], fill=(92, 58, 92))
 
-# Setting sun.
-sun_r, sun_y = int(W * 0.15), int(horizon - W * 0.05)
-for i in range(sun_r, 0, -1):
-    t = i / sun_r
-    d.ellipse([W // 2 - i, sun_y - i, W // 2 + i, sun_y + i],
-              fill=(255, round(214 - 40 * (1 - t)), round(120 - 40 * (1 - t))))
-
-# A few stars in the darkest part of the sky.
-for x, y, r in [(0.17, 0.10, 3.5), (0.31, 0.19, 2.5), (0.72, 0.09, 3.0),
-                (0.85, 0.21, 2.5), (0.55, 0.05, 2.5), (0.09, 0.27, 2.0)]:
-    cx, cy, rr = x * W, y * W, r * S
-    d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=(255, 246, 224))
-
-# Layered hills, receding into haze. Each layer is flooded to the bottom edge, and the
-# farthest one starts above the horizon so no sky shows through the troughs.
-def hill(y_base, amp, phase, color):
-    pts = [(x, y_base + amp * math.sin(x / W * math.pi * 1.6 + phase))
-           for x in range(0, W + 1, 8)]
-    d.polygon([(0, W)] + pts + [(W, W)], fill=color)
-
-hill(horizon + W * 0.055, W * 0.045, 0.4, (92, 58, 92))
-hill(horizon + W * 0.135, W * 0.055, 2.1, (56, 36, 68))
-hill(horizon + W * 0.235, W * 0.050, 3.6, (28, 20, 40))
-
-img = img.resize((SIZE, SIZE), Image.LANCZOS)
+img = Image.open(io.BytesIO(render())).convert("RGBA")
+flat = Image.new("RGB", img.size, (5, 6, 7))
+flat.paste(img, mask=img.split()[3])
 
 out = f"{CATALOG}/AppIcon.appiconset"
 os.makedirs(out, exist_ok=True)
-img.save(f"{out}/AppIcon.png", "PNG")
+flat.save(f"{out}/AppIcon.png", "PNG")
 json.dump({
     "images": [{"filename": "AppIcon.png", "idiom": "universal",
                 "platform": "ios", "size": "1024x1024"}],

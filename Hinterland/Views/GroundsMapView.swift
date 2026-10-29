@@ -1,3 +1,4 @@
+import CoreImage
 import CoreLocation
 import MapKit
 import SwiftUI
@@ -65,7 +66,7 @@ struct GroundsMapView: View {
             }
         }
         .animation(.snappy(duration: 0.22), value: selection)
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle(zoomedIntoConcourse ? "Concourse" : "Grounds")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -94,7 +95,7 @@ struct GroundsMapView: View {
                 .accessibilityLabel("Map options")
             }
         }
-        .tint(Theme.accent)
+        .tint(Theme.ink)
     }
 
     /// Close enough in that a detail layer — the concourse — is what's being read.
@@ -102,36 +103,26 @@ struct GroundsMapView: View {
         map.layers.dropFirst().contains { $0.isVisible(atCameraDistance: cameraDistance) }
     }
 
+    /// Wrapped rather than scrolled sideways, so no category is ever cut off at the edge.
     private var filters: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(map.presentCategories(at: cameraDistance)) { category in
-                    let isOn = categories.contains(category)
-                    Button {
-                        if isOn { categories.remove(category) } else { categories.insert(category) }
-                        if let selection, !categories.contains(selection.poi.category) {
-                            self.selection = nil
-                        }
-                    } label: {
-                        Label(category.label, systemImage: category.symbol)
-                            .appFont(12, weight: .semibold)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 7)
-                            .background(isOn ? category.tint.opacity(0.9) : Theme.surface.opacity(0.9),
-                                        in: Capsule())
-                            .foregroundStyle(isOn ? Color.black.opacity(0.85) : Theme.secondaryText)
+        FlowLayout(spacing: 6, lineSpacing: 6) {
+            ForEach(map.presentCategories(at: cameraDistance)) { category in
+                let isOn = categories.contains(category)
+                FilterChip(title: category.label, systemImage: category.symbol, isOn: isOn) {
+                    if isOn { categories.remove(category) } else { categories.insert(category) }
+                    if let selection, !categories.contains(selection.poi.category) {
+                        self.selection = nil
                     }
-                    .accessibilityLabel(category.spokenName(plural: true))
-                    .accessibilityAddTraits(isOn ? [.isSelected] : [])
-                    .accessibilityHint(isOn ? "Hides these pins" : "Shows these pins")
                 }
+                .accessibilityLabel(category.spokenName(plural: true))
+                .accessibilityHint(isOn ? "Hides these pins" : "Shows these pins")
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
         }
-        // A system material would brighten to match the artwork underneath and take the
-        // chip labels with it. This strip has to stay dark whatever it is sitting on.
-        .background(Theme.background.opacity(0.88))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        // This strip has to stay dark whatever artwork it is sitting on.
+        .background(Theme.night.opacity(0.88))
     }
 
     private var caveat: some View {
@@ -140,13 +131,14 @@ struct GroundsMapView: View {
              + "roughly the width of a beer tent. Zoom out for camping and parking."
              : "Pins are traced off the festival's illustrated maps, so they're accurate "
              + "to roughly a field's width. Zoom in for what's inside the gates.")
-            .appFont(11)
-            .foregroundStyle(Theme.secondaryText)
+            .appFont(12)
+            .foregroundStyle(Theme.inkMuted)
             .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 18)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .background(Theme.background.opacity(0.88))
+            .background(Theme.night.opacity(0.88))
     }
 }
 
@@ -168,6 +160,8 @@ private struct POICard: View {
     let userLocation: CLLocation?
     let dismiss: () -> Void
 
+    @Environment(ScheduleStore.self) private var store
+
     /// Tapping a pin opens this card at the bottom of the screen, nowhere near the pin,
     /// so VoiceOver is moved onto it rather than left on the map.
     @AccessibilityFocusState private var nameFocused: Bool
@@ -177,11 +171,22 @@ private struct POICard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
-                Label(poi.name, systemImage: poi.category.symbol)
-                    .appFont(16, weight: .semibold)
-                    .foregroundStyle(.white)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityFocused($nameFocused)
+                VStack(alignment: .leading, spacing: 6) {
+                    kind
+                    Text(poi.name.uppercased())
+                        .marqueeFont(52)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($nameFocused)
+                    if let onAir {
+                        Text("On air: \(onAir.artist) · till \(Format.time(onAir.end))".uppercased())
+                            .appFont(16, weight: .medium)
+                            .tracking(0.8)
+                            .foregroundStyle(Theme.sodium)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
                 Spacer()
                 Button(action: dismiss) {
                     Image(systemName: "xmark.circle.fill")
@@ -193,16 +198,16 @@ private struct POICard: View {
 
             if let note = poi.note {
                 Text(note)
-                    .appFont(13)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             HStack(spacing: 12) {
                 if let distance {
                     Label(distance, systemImage: "figure.walk")
-                        .appFont(12, weight: .medium)
-                        .foregroundStyle(Theme.accent)
+                        .appFont(13, weight: .bold)
+                        .foregroundStyle(Theme.ink)
                         .accessibilityLabel("\(distance) away")
                 }
                 Spacer()
@@ -213,14 +218,22 @@ private struct POICard: View {
                         [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
                 } label: {
                     Label("Directions", systemImage: "arrow.triangle.turn.up.right.circle")
-                        .appFont(12, weight: .semibold)
+                        .appFont(13, weight: .bold)
+                        .tracking(1.4)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.ink)
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 44)
+                        .overlay(RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(Theme.hairline, lineWidth: 1.5))
                 }
             }
         }
-        .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
-            .stroke(Theme.hairline, lineWidth: 1))
+        .padding(16)
+        .background(Theme.nightSheet)
+        .overlay(alignment: .top) {
+            Rectangle().fill(Theme.hairline).frame(height: 1)
+        }
         // Keyed on the pin so picking a second one while the card is up moves focus too.
         // The pause lets the card finish sliding in, since focus asked for before an
         // element is on screen can be ignored.
@@ -228,6 +241,25 @@ private struct POICard: View {
             try? await Task.sleep(for: .milliseconds(350))
             nameFocused = true
         }
+    }
+
+    /// The stage mark for a stage, the category in a quiet callsign for anything else.
+    @ViewBuilder private var kind: some View {
+        if poi.category == .stage {
+            StageBadge(stage: Stage(name: poi.name))
+        } else {
+            Text(poi.category.label.uppercased())
+                .appFont(11, weight: .bold)
+                .tracking(1.6)
+                .foregroundStyle(poi.category.tint)
+        }
+    }
+
+    /// What's playing on this stage right now, if it's a stage and anything is.
+    private var onAir: Performance? {
+        guard poi.category == .stage else { return nil }
+        let stage = Stage(name: poi.name)
+        return store.liveNow(at: Date()).first { Stage(name: $0.stage) == stage }
     }
 
     /// Straight-line distance — there's no route across a field worth computing.
@@ -258,6 +290,8 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
 
     func makeUIView(context: Context) -> MKMapView {
         let view = MKMapView()
+        // Apple's own tiles at night, so the edges of the site match the artwork.
+        view.overrideUserInterfaceStyle = .dark
         view.delegate = context.coordinator
         view.showsUserLocation = true
         view.showsCompass = true
@@ -340,12 +374,31 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
 
             view.removeOverlays(overlays)
             overlays = wanted.compactMap { layer in
-                guard let image = UIImage(named: layer.asset) else { return nil }
+                guard let image = UIImage(named: layer.asset).map(Self.nightGraded) else {
+                    return nil
+                }
                 return IllustrationOverlay(layerID: layer.id,
                                            georeference: layer.georeference,
                                            image: image)
             }
             view.addOverlays(overlays, level: .aboveRoads)
+        }
+
+        /// The artwork graded for night, the same way the Maps tab's tiles are: darker,
+        /// less saturated, a little more contrast. Done once per layer with Core Image,
+        /// which needs no network.
+        static func nightGraded(_ image: UIImage) -> UIImage {
+            guard let input = CIImage(image: image),
+                  let filter = CIFilter(name: "CIColorControls") else { return image }
+            filter.setValue(input, forKey: kCIInputImageKey)
+            filter.setValue(0.45, forKey: kCIInputSaturationKey)
+            filter.setValue(-0.3, forKey: kCIInputBrightnessKey)
+            filter.setValue(1.08, forKey: kCIInputContrastKey)
+            guard let output = filter.outputImage,
+                  let cgImage = CIContext().createCGImage(output, from: input.extent) else {
+                return image
+            }
+            return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
         }
 
         func setAnnotations(_ placed: [PlacedPOI], on view: MKMapView) {
@@ -515,26 +568,105 @@ private final class POIAnnotation: NSObject, MKAnnotation {
     }
 }
 
-private final class POIAnnotationView: MKMarkerAnnotationView {
+/// A pin as a small square light: stages in their stage shape and colour with the name
+/// under them, everything else a single glyph in cream — the gate's own letter, or the
+/// category's symbol — with medical in `signal` and water in `rain`.
+private final class POIAnnotationView: MKAnnotationView {
     static let reuseID = "poi"
 
     func configure(for poi: MapPOI) {
-        markerTintColor = UIColor(poi.category.tint)
-        glyphImage = UIImage(systemName: poi.category.symbol)
-        glyphTintColor = .black.withAlphaComponent(0.85)
-        titleVisibility = poi.category == .stage ? .visible : .adaptive
+        let rendered = Self.render(poi)
+        image = rendered.image
+        // Keep the square, not the label under it, on the coordinate.
+        centerOffset = CGPoint(x: 0, y: rendered.image.size.height / 2 - rendered.squareCenterY)
         displayPriority = poi.category.displayPriority
+        collisionMode = .rectangle
         canShowCallout = false
 
-        // MapKit reads a marker's title and stops, and plenty of titles lean on the
-        // glyph to say what kind of place they are — "Basecamp", "Art House", "Box
-        // Office". Say the kind too, unless the name already does, and what a tap does,
-        // since the card it opens is at the bottom of the screen, away from the pin.
+        // A pin's title is read and that's all, and plenty of titles lean on the glyph
+        // to say what kind of place they are — "Basecamp", "Art House", "Box Office".
+        // Say the kind too, unless the name already does, and what a tap does, since
+        // the card it opens is at the bottom of the screen, away from the pin.
+        isAccessibilityElement = true
         let kind = poi.category.spokenName(plural: false)
         accessibilityLabel = poi.name.localizedCaseInsensitiveContains(kind)
             ? poi.name
             : "\(poi.name), \(kind)"
         accessibilityHint = "Shows details and walking directions"
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        layer.borderColor = UIColor(Theme.ink).cgColor
+        layer.borderWidth = selected ? 2 : 0
+    }
+
+    private static func render(_ poi: MapPOI) -> (image: UIImage, squareCenterY: CGFloat) {
+        let isStage = poi.category == .stage
+        let side: CGFloat = isStage ? 34 : 24
+        let label = isStage ? poi.name.uppercased() as NSString : nil
+        let labelFont = UIFont(name: AppFontFace.text(.bold), size: 10)
+            ?? .systemFont(ofSize: 10, weight: .bold)
+        let shadow = NSShadow()
+        shadow.shadowColor = UIColor(Theme.night)
+        shadow.shadowBlurRadius = 3
+        let labelAttributes: [NSAttributedString.Key: Any] = [
+            .font: labelFont, .foregroundColor: UIColor(Theme.ink), .kern: 1.4, .shadow: shadow,
+        ]
+        let labelSize = label?.size(withAttributes: labelAttributes) ?? .zero
+        let width = max(side, ceil(labelSize.width) + 8)
+        let height = side + (label == nil ? 0 : 4 + ceil(labelSize.height))
+        let square = CGRect(x: (width - side) / 2, y: 0, width: side, height: side)
+
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
+        let image = renderer.image { _ in
+            UIColor(isStage ? Theme.night : Theme.nightSheet).setFill()
+            UIBezierPath(rect: square).fill()
+            let border = UIBezierPath(rect: square.insetBy(dx: 0.5, dy: 0.5))
+            border.lineWidth = 1
+            (poi.category == .medical ? UIColor(Theme.signal) : UIColor(Theme.hairline)).setStroke()
+            border.stroke()
+
+            if isStage {
+                let stage = Stage(name: poi.name)
+                let shape = StageShape(stage: stage).path(in: square.insetBy(dx: 9, dy: 9))
+                UIColor(stage.color).setFill()
+                UIBezierPath(cgPath: shape.cgPath).fill()
+            } else if let letter = gateLetter(poi) {
+                let font = UIFont(name: AppFontFace.text(.heavy), size: 14)
+                    ?? .systemFont(ofSize: 14, weight: .heavy)
+                let attributes: [NSAttributedString.Key: Any] = [
+                    .font: font, .foregroundColor: UIColor(Theme.ink),
+                ]
+                let size = (letter as NSString).size(withAttributes: attributes)
+                (letter as NSString).draw(at: CGPoint(x: square.midX - size.width / 2,
+                                                      y: square.midY - size.height / 2),
+                                          withAttributes: attributes)
+            } else {
+                let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
+                if let symbol = UIImage(systemName: poi.category.symbol, withConfiguration: config)?
+                    .withTintColor(UIColor(poi.category.tint), renderingMode: .alwaysOriginal) {
+                    symbol.draw(at: CGPoint(x: square.midX - symbol.size.width / 2,
+                                            y: square.midY - symbol.size.height / 2))
+                }
+            }
+
+            if let label {
+                label.draw(at: CGPoint(x: (width - labelSize.width) / 2, y: side + 4),
+                           withAttributes: labelAttributes)
+            }
+        }
+        return (image, square.midY)
+    }
+
+    /// "J" for "Gate J": the letter people look for on the signs.
+    private static func gateLetter(_ poi: MapPOI) -> String? {
+        guard poi.category == .gate else { return nil }
+        let words = poi.name.split(separator: " ")
+        guard words.count == 2, words[0].lowercased() == "gate", words[1].count <= 2 else {
+            return nil
+        }
+        return String(words[1]).uppercased()
     }
 }
 

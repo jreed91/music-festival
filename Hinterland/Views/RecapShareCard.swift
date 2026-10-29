@@ -70,7 +70,7 @@ struct RecapShareCard: View {
         }
     }
 
-    private func stat(_ value: String, _ label: String, tint: Color = .white) -> some View {
+    private func stat(_ value: String, _ label: String, tint: Color = Theme.ink) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(value)
                 .font(.system(size: 27, weight: .black, design: .rounded))
@@ -93,7 +93,7 @@ struct RecapShareCard: View {
                 .foregroundStyle(Theme.accent)
             Text(entry.performance.artist)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
                 .lineLimit(1)
             Spacer(minLength: 0)
         }

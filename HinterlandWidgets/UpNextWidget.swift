@@ -91,8 +91,7 @@ struct UpNextWidgetView: View {
     private var background: some View {
         switch family {
         case .systemSmall, .systemMedium:
-            LinearGradient(colors: [Theme.surface, Theme.background],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            Theme.night
         default:
             // Accessory families are drawn into the system's own material.
             Color.clear
@@ -105,16 +104,18 @@ struct UpNextWidgetView: View {
         VStack(alignment: .leading, spacing: 0) {
             if let headline = entry.focus.headline {
                 SetLabel(focus: entry.focus, performance: headline, at: entry.date)
-                Text(headline.artist)
-                    .appFont(18, weight: .bold)
-                    .foregroundStyle(.white)
+                let live = headline.isLive(at: entry.date)
+                Text(headline.artist.uppercased())
+                    .marqueeFont(52)
+                    .foregroundStyle(live ? Theme.sodium : Theme.ink)
+                    .onAirGlow(live)
+                    // A widget can't grow, so a long name shrinks to fit rather than
+                    // losing its end.
                     .lineLimit(2)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.5)
+                    .padding(.top, 6)
+                WidgetStageLine(stage: Stage(name: headline.stage))
                     .padding(.top, 4)
-                Text(Stage(name: headline.stage).displayName)
-                    .appFont(12, weight: .semibold)
-                    .foregroundStyle(Stage(name: headline.stage).color)
-                    .padding(.top, 2)
                 Spacer(minLength: 4)
                 CountdownLine(performance: headline, at: entry.date)
             } else {
@@ -135,17 +136,17 @@ struct UpNextWidgetView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("THEN")
                         .appFont(10, weight: .heavy)
-                        .foregroundStyle(Theme.tertiaryText)
-                    Text(following.artist)
-                        .appFont(15, weight: .semibold)
-                        .foregroundStyle(.white.opacity(0.9))
+                        .tracking(1.6)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text(following.artist.uppercased())
+                        .marqueeFont(36)
+                        .foregroundStyle(Theme.ink)
                         .lineLimit(2)
-                    Text(Stage(name: following.stage).displayName)
-                        .appFont(11, weight: .medium)
-                        .foregroundStyle(Stage(name: following.stage).color)
+                        .minimumScaleFactor(0.5)
+                    WidgetStageLine(stage: Stage(name: following.stage))
                     Text(Format.time(following.start))
-                        .appFont(12, weight: .medium, design: .rounded)
-                        .foregroundStyle(Theme.secondaryText)
+                        .appFont(13, weight: .bold)
+                        .foregroundStyle(Theme.inkMuted)
                     Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -243,22 +244,16 @@ private struct SetLabel: View {
     let at: Date
 
     var body: some View {
-        HStack(spacing: 4) {
-            Circle()
-                .fill(Theme.accent)
-                .frame(width: 5, height: 5)
-                .opacity(performance.isLive(at: at) ? 1 : 0)
-                .accessibilityHidden(true)
-            Text(label)
-                .appFont(10, weight: .heavy)
-                .foregroundStyle(Theme.accent)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-        }
+        Text(label)
+            .appFont(10, weight: .heavy)
+            .tracking(1.6)
+            .foregroundStyle(performance.isLive(at: at) ? Theme.sodium : Theme.inkFaint)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
     }
 
     private var label: String {
-        if performance.isLive(at: at) { return "ON NOW" }
+        if performance.isLive(at: at) { return "ON AIR" }
         return focus.isPersonal ? "YOUR NEXT SET" : "UP NEXT"
     }
 }
@@ -284,10 +279,27 @@ private struct CountdownLine: View {
                 Text(performance.start, style: .relative)
             }
         }
-        .appFont(12, weight: .medium, design: .rounded)
-        .foregroundStyle(Theme.secondaryText)
+        .appFont(12, weight: .bold)
+        .foregroundStyle(Theme.inkMuted)
         .lineLimit(1)
         .minimumScaleFactor(0.8)
+    }
+}
+
+/// A stage's shape and name, the widget's copy of the app's stage badge.
+private struct WidgetStageLine: View {
+    let stage: Stage
+
+    var body: some View {
+        HStack(spacing: 5) {
+            StageGlyph(stage: stage, size: 8)
+            Text(stage.displayName.uppercased())
+                .appFont(10, weight: .bold)
+                .tracking(1.4)
+                .foregroundStyle(stage.color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
     }
 }
 
@@ -296,11 +308,11 @@ private struct EmptyLineup: View {
         VStack(alignment: .leading, spacing: 4) {
             Image(systemName: "star")
                 .appFont(18)
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.unlit)
                 .accessibilityHidden(true)
-            Text("Nothing starred")
-                .appFont(14, weight: .semibold)
-                .foregroundStyle(.white)
+            Text("DEAD AIR")
+                .marqueeFont(40)
+                .foregroundStyle(Theme.inkFaint)
             Text("Star sets in the app and they show up here.")
                 .appFont(11)
                 .foregroundStyle(Theme.secondaryText)

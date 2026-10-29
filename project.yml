@@ -78,6 +78,15 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen:
           UIColorName: LaunchBackground
+        # The After Dark type, bundled so the app looks the same in airplane mode. The
+        # files are picked up from Hinterland/Resources/Fonts with the rest of the
+        # sources; the names here are file names in the bundle root.
+        UIAppFonts:
+          - SixCaps-Regular.ttf
+          - BarlowCondensed-Medium.ttf
+          - BarlowCondensed-SemiBold.ttf
+          - BarlowCondensed-Bold.ttf
+          - BarlowCondensed-ExtraBold.ttf
         UIUserInterfaceStyle: Dark
         # Without this the Live Activity request fails at runtime with no other clue.
         NSSupportsLiveActivities: true
@@ -118,6 +127,9 @@ targets:
       # The offline fallback, for a phone that has never had signal since installing.
       - path: Data/schedule.json
         buildPhase: resources
+      # The same fonts as the app; an extension can't read the app's bundle.
+      - path: Hinterland/Resources/Fonts
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jreed91.hinterland.widgets
@@ -137,3 +149,9 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        UIAppFonts:
+          - SixCaps-Regular.ttf
+          - BarlowCondensed-Medium.ttf
+          - BarlowCondensed-SemiBold.ttf
+          - BarlowCondensed-Bold.ttf
+          - BarlowCondensed-ExtraBold.ttf
