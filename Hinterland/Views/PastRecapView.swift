@@ -87,7 +87,7 @@ struct PastRecapView: View {
                 .foregroundStyle(Theme.accent)
             Text(title)
                 .appFont(30, weight: .heavy, design: .rounded)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
                 .appFont(12)
@@ -137,8 +137,8 @@ struct PastRecapView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(performance.artist)
                         .appFont(15, weight: .semibold)
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 6) {
                         if let stars {
                             RatingBadge(stars: stars, compact: true)
@@ -231,7 +231,7 @@ struct PastRecapView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(13, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(detail)
                     .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
@@ -258,8 +258,8 @@ struct PastRecapView: View {
                         VStack(alignment: .leading, spacing: 5) {
                             Text(entry.performance.artist)
                                 .appFont(15, weight: .semibold)
-                                .foregroundStyle(.white)
-                                .lineLimit(1)
+                                .foregroundStyle(Theme.ink)
+                                .fixedSize(horizontal: false, vertical: true)
                             HStack(spacing: 6) {
                                 CrowdBadge(rating: entry.rating, compact: true)
                                 Text("\(entry.rating.count) "

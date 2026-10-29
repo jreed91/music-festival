@@ -162,7 +162,7 @@ struct RecapView: View {
                 .foregroundStyle(Theme.accent)
             Text(title)
                 .appFont(30, weight: .heavy, design: .rounded)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
                 .appFont(12)
@@ -256,7 +256,7 @@ struct RecapView: View {
                             Text("\(recap.unrated.count) starred "
                                + "\(recap.unrated.count == 1 ? "set" : "sets") you never rated")
                                 .appFont(13, weight: .semibold)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(Theme.ink)
                             Text("Rate them and they join everyone else's averages.")
                                 .appFont(11)
                                 .foregroundStyle(Theme.tertiaryText)
@@ -314,7 +314,7 @@ struct RecapView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(13, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(detail)
                     .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
@@ -331,7 +331,7 @@ struct RecapView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("You didn't rate anything this year")
                 .appFont(15, weight: .semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
             Text("If you were there, the sets are all still in the schedule — open one and "
                + "give it your stars. They'll show up here, and in everyone's averages.")
                 .appFont(12)
@@ -398,7 +398,7 @@ struct RecapView: View {
             if !community.isSharing {
                 Toggle("Put my ratings in these averages", isOn: $bindable.isSharing)
                     .appFont(13, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                     .tint(Theme.accent)
                     .padding(.top, 2)
             }
@@ -466,7 +466,7 @@ struct RecapView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .appFont(14, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(detail)
                     .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
@@ -519,7 +519,7 @@ struct RecapView: View {
 struct StatTile: View {
     let value: String
     let label: String
-    var tint: Color = .white
+    var tint: Color = Theme.ink
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
@@ -577,8 +577,8 @@ private struct RankedSetRow: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text(performance.artist)
                     .appFont(15, weight: .semibold)
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 6) {
                     switch detail {
                     case .yours(let stars):

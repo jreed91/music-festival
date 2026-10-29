@@ -160,14 +160,14 @@ private struct TrackRow: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(track.title)
                         .appFont(15, weight: .semibold)
-                        .foregroundStyle(.white)
-                        .lineLimit(2)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.leading)
                     if let album = track.albumTitle {
                         Text(album)
                             .appFont(12)
                             .foregroundStyle(Theme.tertiaryText)
-                            .lineLimit(1)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 Spacer(minLength: 0)

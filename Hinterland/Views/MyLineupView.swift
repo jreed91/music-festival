@@ -1,13 +1,19 @@
+import Combine
 import SwiftUI
 import UserNotifications
 
-/// The sets you starred, grouped by day, with overlap warnings and reminder settings.
+/// The sets you starred, day by day on the same hour timeline as the schedule, with
+/// clash markers on sets that overlap and reminder settings.
 struct MyLineupView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
     @Environment(NotificationManager.self) private var notifications
 
     @State private var showingSettings = false
+    @State private var now = Date()
+
+    /// Moves the now line and the on-air row along without a per-second timer.
+    private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
     private var starred: [Performance] { favorites.performances(in: store.data) }
     private var conflicts: [(Performance, Performance)] { favorites.conflicts(in: store.data) }
@@ -30,7 +36,7 @@ struct MyLineupView: View {
                         message: "Tap the star on any set in the Schedule and it shows up here, "
                                + "with a reminder before it starts.")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Theme.background)
+                        .background(Theme.night)
                 } else {
                     list
                 }
@@ -44,14 +50,14 @@ struct MyLineupView: View {
                     NavigationLink(value: RatingsRoute.recap) {
                         Image(systemName: "star.leadinghalf.filled")
                     }
-                    .tint(Theme.accent)
+                    .tint(Theme.ink)
                     .accessibilityLabel("My Ratings")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showingSettings = true } label: {
                         Image(systemName: notifications.isEnabled ? "bell.fill" : "bell.slash")
                     }
-                    .tint(Theme.accent)
+                    .tint(Theme.ink)
                     .accessibilityLabel("Alerts")
                 }
             }
@@ -68,58 +74,78 @@ struct MyLineupView: View {
     }
 
     private var list: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 10) {
+        let clashing = Set(conflicts.flatMap { [$0.0.id, $0.1.id] })
+        return ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("My Lineup · \(starred.count) \(starred.count == 1 ? "set" : "sets")".uppercased())
+                        .appFont(12, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text("YOUR NIGHTS")
+                        .marqueeFont(88)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
+
                 if !conflicts.isEmpty {
                     conflictBanner
                 }
 
                 ForEach(byDay, id: \.day.id) { group in
-                    Text("\(group.day.weekday.uppercased()) · \(Format.dayLabel(group.day))")
-                        .appFont(12, weight: .bold)
-                        .foregroundStyle(Theme.tertiaryText)
-                        .padding(.top, 8)
+                    Text("\(group.day.weekday) · \(Format.dayLabel(group.day))".uppercased())
+                        .appFont(15, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkMuted)
+                        .padding(.top, 28)
+                        .padding(.bottom, 4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .overlay(alignment: .bottom) {
+                            Rectangle().fill(Theme.ink).frame(height: 2)
+                        }
                         .accessibilityLabel("\(group.day.weekday), \(Format.dayLabel(group.day))")
                         .accessibilityAddTraits(.isHeader)
 
-                    ForEach(group.sets) { performance in
-                        NavigationLink(value: performance) {
-                            PerformanceRow(
-                                performance: performance,
-                                showsConflictWarning: favorites.isInConflict(performance,
-                                                                            in: store.data))
-                        }
-                        .buttonStyle(.plain)
-                    }
+                    HourTimeline(performances: group.sets, now: now, clashing: clashing)
                 }
+
+                Horizon()
+                    .padding(.top, 48)
+                    .padding(.horizontal, -22)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
         }
-        .background(Theme.background)
+        .background(Theme.night)
+        .onReceive(ticker) { now = $0 }
+        .onAppear { now = Date() }
     }
 
+    /// Every clash in one place, so none is only findable by scrolling to it.
     private var conflictBanner: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("\(conflicts.count) overlapping \(conflicts.count == 1 ? "set" : "sets")",
-                  systemImage: "exclamationmark.triangle.fill")
-                .appFont(13, weight: .semibold)
-                .foregroundStyle(Theme.warning)
+            Text("\(conflicts.count) \(conflicts.count == 1 ? "clash" : "clashes")".uppercased())
+                .appFont(13, weight: .heavy)
+                .tracking(2)
+                .foregroundStyle(Theme.caution)
 
             ForEach(Array(conflicts.enumerated()), id: \.offset) { _, pair in
                 Text("\(pair.0.artist) and \(pair.1.artist) overlap "
                      + "\(Format.time(max(pair.0.start, pair.1.start)))–"
                      + "\(Format.time(min(pair.0.end, pair.1.end))).")
-                    .appFont(12)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Theme.warning.opacity(0.12),
-                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .padding(.top, 12)
+        .padding(.leading, 14)
+        .padding(.vertical, 4)
+        .overlay(alignment: .leading) {
+            Rectangle().fill(Theme.caution).frame(width: 3)
+        }
+        .padding(.top, 20)
     }
 }
 

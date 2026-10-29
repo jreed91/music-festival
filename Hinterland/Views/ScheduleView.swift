@@ -26,36 +26,34 @@ struct ScheduleView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 16) {
+                title
+
                 // A tornado warning outranks whatever is about to start on the Main
-                // Stage, so it goes above the card that says so.
+                // Stage, so it goes above the block that says so.
                 if let alert = weather.snapshot?.urgentAlert {
                     WeatherAlertBanner(advisory: alert)
                 }
 
                 if let live = store.liveNow(at: now).first ?? store.upNext(after: now).first {
-                    NowCard(performance: live, isLive: live.isLive(at: now))
+                    NowCard(performance: live, isLive: live.isLive(at: now), now: now)
                 }
-                // Under the Now card rather than over it: what's playing is why this
+                // Under the Now block rather than over it: what's playing is why this
                 // screen exists, the weather is the context you read it in.
                 WeatherCard()
-                    .padding(.bottom, 2)
 
                 if let day {
-                    ForEach(store.performances(on: day, stage: stageFilter)) { performance in
-                        NavigationLink(value: performance) {
-                            PerformanceRow(performance: performance)
-                        }
-                        .buttonStyle(.plain)
-                    }
+                    HourTimeline(performances: store.performances(on: day, stage: stageFilter),
+                                 now: now)
                 }
 
                 freshness
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle("Schedule")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .top, spacing: 0) { header }
@@ -67,7 +65,7 @@ struct ScheduleView: View {
                 NavigationLink(value: PastLineupRoute.index) {
                     Image(systemName: "clock.arrow.circlepath")
                 }
-                .tint(Theme.accent)
+                .tint(Theme.ink)
                 .accessibilityLabel("Past lineups")
             }
         }
@@ -100,87 +98,50 @@ struct ScheduleView: View {
         .padding(.top, 10)
     }
 
+    /// The day's name, huge, under where you are.
+    private var title: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("\(store.data.festival.name) · \(store.data.festival.city)".uppercased())
+                .appFont(12, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.inkFaint)
+            Text((day?.weekday ?? "Schedule").uppercased())
+                .marqueeFont(96)
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+        }
+    }
+
     private var header: some View {
-        VStack(spacing: 10) {
-            dayPicker
+        VStack(alignment: .leading, spacing: 10) {
+            DayPresets(days: store.days,
+                       selected: day?.date,
+                       forecast: forecast(for:),
+                       spokenLabel: spokenDay) { selectedDay = $0.date }
             stagePicker
         }
+        .padding(.horizontal, 22)
         .padding(.vertical, 10)
-        .background(Theme.background)
+        .background(Theme.night)
         .overlay(alignment: .bottom) {
-            Rectangle().fill(Theme.hairline).frame(height: 0.5)
+            Rectangle().fill(Theme.hairline).frame(height: 1)
         }
     }
 
-    private var dayPicker: some View {
-        HStack(spacing: 8) {
-            ForEach(store.days) { candidate in
-                let isSelected = candidate.date == (day?.date ?? "")
-                Button {
-                    selectedDay = candidate.date
-                } label: {
-                    VStack(spacing: 2) {
-                        Text(candidate.shortWeekday.uppercased())
-                            .appFont(12, weight: .bold)
-                        Text(Format.dayLabel(candidate))
-                            .appFont(10, weight: .medium)
-                            .opacity(0.75)
-                        if let conditions = forecast(for: candidate) {
-                            HStack(spacing: 3) {
-                                // Multicolour would fight the amber fill on the selected
-                                // day, so the selected one inherits the dark foreground.
-                                Image(systemName: conditions.symbolName)
-                                    .symbolRenderingMode(isSelected ? .monochrome : .multicolor)
-                                    .appFont(9)
-                                Text(Format.temperature(conditions.high))
-                                    .appFont(10, weight: .semibold, design: .rounded)
-                            }
-                            .padding(.top, 1)
-                        }
-                    }
-                    // A quarter of the screen is a quarter of the screen however big the
-                    // type is, and "86°" breaking after the 8 reads as a different number
-                    // entirely. Shrink to fit rather than wrap.
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .foregroundStyle(isSelected ? Theme.background : .white)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(isSelected ? Theme.accent : Theme.surface)
-                    )
-                }
-                .buttonStyle(.plain)
-                // Otherwise read as the picker's abbreviations and bare numbers — "FRI,
-                // Jul 31, 86" — with nothing to say which day was the one showing.
-                .accessibilityLabel(spokenDay(candidate))
-                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-            }
-        }
-        .padding(.horizontal, 16)
-        // Four days always have to be four columns — there's nowhere for a fifth line to
-        // go. Capped like iOS caps its own segmented controls; everything below this
-        // header, which is the part you actually read, scales the whole way.
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-    }
-
+    /// Wrapped rather than scrolled sideways, so no stage is ever off the edge.
     private var stagePicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                chip(title: "All stages", isSelected: stageFilter == nil, tint: .white) {
-                    stageFilter = nil
-                }
-                ForEach(store.data.stageNames, id: \.self) { name in
-                    let stage = Stage(name: name)
-                    chip(title: stage.displayName,
-                         isSelected: stageFilter == name,
-                         tint: stage.color) {
-                        stageFilter = stageFilter == name ? nil : name
-                    }
+        FlowLayout(spacing: 8, lineSpacing: 8) {
+            FilterChip(title: "All stages", isOn: stageFilter == nil) {
+                stageFilter = nil
+            }
+            ForEach(store.data.stageNames, id: \.self) { name in
+                let stage = Stage(name: name)
+                FilterChip(title: stage.displayName, isOn: stageFilter == name,
+                           onColor: stage.color) {
+                    stageFilter = stageFilter == name ? nil : name
                 }
             }
-            .padding(.horizontal, 16)
         }
     }
 
@@ -198,69 +159,60 @@ struct ScheduleView: View {
         weather.snapshot?.day(for: day, in: store.data.timeZone)
     }
 
-    private func chip(title: String, isSelected: Bool, tint: Color,
-                      action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(title)
-                .appFont(12, weight: .semibold)
-                .foregroundStyle(isSelected ? Theme.background : tint)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(isSelected ? tint : tint.opacity(0.14), in: Capsule())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-    }
 }
 
-/// Whatever is happening right now, or the next thing if the stages are dark.
+/// Whatever is happening right now, or the next thing if the stages are dark: the
+/// NowPlaying block of the design system. The on-air name is the one glowing thing on
+/// the screen.
 private struct NowCard: View {
     let performance: Performance
     let isLive: Bool
-
-    @Environment(ScheduleStore.self) private var store
+    let now: Date
 
     var body: some View {
+        let stage = Stage(name: performance.stage)
         NavigationLink(value: performance) {
-            HStack(spacing: 14) {
-                ArtistImage(artist: store.data.artist(id: performance.artistId), size: 64)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(isLive ? "ON NOW" : "UP NEXT")
-                        .appFont(10, weight: .heavy)
-                        .foregroundStyle(Theme.accent)
-                    Text(performance.artist)
-                        .appFont(20, weight: .bold)
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                    HStack(spacing: 6) {
-                        StageBadge(stage: Stage(name: performance.stage), compact: true)
-                        Text(isLive
-                             ? "until \(Format.time(performance.end))"
-                             : Format.relative(performance.start))
-                            .appFont(11, weight: .medium)
-                            .foregroundStyle(Theme.secondaryText)
-                    }
-                }
-                Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("\(isLive ? "Now playing" : "Up next") · \(stage.displayName)".uppercased())
+                    .appFont(13, weight: .bold)
+                    .tracking(2.4)
+                    .foregroundStyle(isLive ? Theme.sodium : Theme.inkFaint)
+                Text(performance.artist.uppercased())
+                    .marqueeFont(isLive ? 120 : 88)
+                    .foregroundStyle(isLive ? Theme.sodium : Theme.ink)
+                    .onAirGlow(isLive)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(readout.uppercased())
+                    .appFont(20, weight: .medium)
+                    .tracking(0.8)
+                    .monospacedDigit()
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(14)
-            .background(
-                LinearGradient(colors: [Theme.accent.opacity(0.22), Theme.surface],
-                               startPoint: .topLeading, endPoint: .bottomTrailing),
-                in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 6)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel(spokenSummary)
         .accessibilityInputLabels([performance.artist])
+    }
+
+    /// "9:30 — 11:00 PM · 48 MIN LEFT", or when the next set starts.
+    private var readout: String {
+        let times = "\(Format.time(performance.start)) — \(Format.time(performance.end))"
+        if isLive {
+            let left = max(0, Int(performance.end.timeIntervalSince(now) / 60))
+            return "\(times) · \(left) min left"
+        }
+        return "\(times) · \(Format.relative(performance.start, from: now))"
     }
 
     private var spokenSummary: String {
         let stage = Stage(name: performance.stage).displayName
         return isLive
-            ? "On now: \(performance.artist), \(stage), until \(Format.time(performance.end))"
-            : "Up next: \(performance.artist), \(stage), \(Format.relative(performance.start))"
+            ? "Now playing: \(performance.artist), \(stage), until \(Format.time(performance.end))"
+            : "Up next: \(performance.artist), \(stage), \(Format.relative(performance.start, from: now))"
     }
 }

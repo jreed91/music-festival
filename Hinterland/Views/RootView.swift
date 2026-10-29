@@ -30,7 +30,7 @@ struct RootView: View {
                 .tabItem { Label("My Lineup", systemImage: "star.fill") }
                 .tag(RootTab.lineup)
             MapsView()
-                .tabItem { Label("Maps", systemImage: "map") }
+                .tabItem { Label("Maps", systemImage: "mappin.and.ellipse") }
                 .tag(RootTab.maps)
             NavigationStack { FoodDrinkView() }
                 .tabItem { Label("Food & Drink", systemImage: "fork.knife") }

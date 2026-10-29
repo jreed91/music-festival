@@ -75,7 +75,7 @@ struct RatingsView: View {
                 ForEach(ranked, id: \.performance.id) { entry in
                     VStack(alignment: .leading, spacing: 0) {
                         NavigationLink(value: entry.performance) {
-                            PerformanceRow(performance: entry.performance)
+                            PerformanceRow(performance: entry.performance, showsFullTime: true)
                         }
                         .buttonStyle(.plain)
 
@@ -117,7 +117,7 @@ struct RatingsView: View {
 
                     ForEach(awaiting) { performance in
                         NavigationLink(value: performance) {
-                            PerformanceRow(performance: performance)
+                            PerformanceRow(performance: performance, showsFullTime: true)
                         }
                         .buttonStyle(.plain)
                     }
@@ -143,7 +143,7 @@ struct RatingsView: View {
         return VStack(alignment: .leading, spacing: 8) {
             Toggle("Share my ratings", isOn: $bindable.isSharing)
                 .appFont(13, weight: .semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
                 .tint(Theme.accent)
 
             Text("Your stars go into the average everyone sees, anonymously. Notes stay on "
@@ -205,7 +205,7 @@ struct RatingsView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(ranked.count)")
                     .appFont(28, weight: .heavy, design: .rounded)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(ranked.count == 1 ? "set rated" : "sets rated")
                     .appFont(11, weight: .semibold)
                     .foregroundStyle(Theme.tertiaryText)

@@ -50,7 +50,7 @@ struct WeatherView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Format.temperature(current.temperature))
                         .appFont(56, weight: .semibold, design: .rounded)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.ink)
                     Text(current.condition)
                         .appFont(15, weight: .medium)
                         .foregroundStyle(Theme.secondaryText)
@@ -116,7 +116,7 @@ struct WeatherView: View {
                                     .frame(height: 22)
                                 Text(Format.temperature(hour.temperature))
                                     .appFont(14, weight: .semibold, design: .rounded)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Theme.ink)
                                 // Only worth the ink once rain is actually plausible, but
                                 // the row still reserves its height so the strip doesn't
                                 // jog up and down between hours.
@@ -169,7 +169,7 @@ struct WeatherView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(day.weekday)
                     .appFont(15, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(Format.dayLabel(day))
                     .appFont(11)
                     .foregroundStyle(Theme.tertiaryText)
@@ -186,7 +186,7 @@ struct WeatherView: View {
                     Text(conditions.condition)
                         .appFont(12)
                         .foregroundStyle(Theme.secondaryText)
-                        .lineLimit(1)
+                        .fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 8) {
                         if conditions.precipitationChance >= 0.1 {
                             Label(Format.percent(conditions.precipitationChance),
@@ -206,7 +206,7 @@ struct WeatherView: View {
 
                 Text(Format.temperature(conditions.high))
                     .appFont(17, weight: .semibold, design: .rounded)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Text(Format.temperature(conditions.low))
                     .appFont(17, weight: .regular, design: .rounded)
                     .foregroundStyle(Theme.tertiaryText)
@@ -340,7 +340,7 @@ private struct WeatherStat: View {
                     .foregroundStyle(Theme.tertiaryText)
                 Text(value)
                     .appFont(13, weight: .medium)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }

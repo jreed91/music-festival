@@ -222,7 +222,7 @@ python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup si
                                     #   including this year's, folded in from schedule.json
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
-python3 appicon.py             # regenerates the app icon
+python3 appicon.py             # re-exports the app icon from appicon.svg
 python3 applemusic.py --write  # Apple Music catalog id per artist -> schedule.json
 ```
 
@@ -681,10 +681,39 @@ never had signal since installing still has the times.
 Tapping either opens `hinterland://lineup`, which `RootView` turns into a jump to the
 My Lineup tab rather than wherever the app was last left.
 
+## Design: After Dark
+
+The app is styled as an Iowa field at night: pitch black, one sodium-orange yard light,
+corn and fireflies. The full system, with every component, its rules and previews, is
+the [After Dark design system](https://claude.ai/artifact/8QKDCfXGDcSqxBbktMBUf2). The
+short version, as it lands in code:
+
+- **Colour** lives in `Theme` (`Hinterland/Shared/Theme.swift`). `night` is the ground,
+  `ink` the text. `sodium` is the only glow and means exactly two things: on air now, or
+  yours (starred, rated). Stages are colour *and* shape so they survive colour
+  blindness: Main is a sodium triangle, Miniland a firefly dot, Campfire a moon diamond
+  (`StageGlyph` in `StageMark.swift`). `signal` red is only the now line and medical.
+- **Type** is two bundled fonts, both SIL Open Font License (licences beside them in
+  `Resources/Fonts`): Six Caps for names and big words through `marqueeFont`, never
+  under 40pt, and Barlow Condensed for everything else through `appFont`. Both are listed
+  under `UIAppFonts` for the app and the widget in `project.yml`.
+- **Schedule and My Lineup** share `HourTimeline` (`Views/Timeline.swift`): a giant hour
+  numeral down the left, that hour's sets beside it, and a red now line above the first
+  set still to come. Overlapping starred sets get the clash bar and a `CLASH · N MIN` tag.
+- **Maps** are night-graded (`nightGraded()`, and a Core Image pass on the MapKit
+  overlay) so the bright festival art doesn't blind you in the dark. The full-screen
+  viewer keeps the original art, because that's where you go to read it.
+- **No clipped text.** Names wrap rather than truncate; anything that has to stay on one
+  line shrinks to fit instead. A new view should do the same.
+- **App icon** is "Yard light", from `scripts/appicon.svg`.
+
+The app is dark only.
+
 ## Accessibility
 
 Text follows the reader's Dynamic Type setting through `appFont`, which anchors each
-size to its nearest system text style. The day picker is the one place that stops
+size to its nearest system text style, and `marqueeFont`, which scales with Large Title
+but stops at 1.3× so a headliner's name still fits across the screen. The day picker is the one place that stops
 growing, at the first accessibility size, because four days have to stay four columns.
 
 For VoiceOver, every set in a list reads as one element, artist first: time, stage,
@@ -771,7 +800,7 @@ above), revisit this: that server would see IP addresses, and anything it logs i
 Hinterland/
   App/         HinterlandApp.swift — entry point, appearance
   Shared/      compiled into the app AND the widget extension — FestivalData, Favorites,
-               Theme (palette + formatting), AppGroup, ScheduleFile, Lineup,
+               Theme (palette, fonts, formatting), StageMark, AppGroup, ScheduleFile, Lineup,
                NowPlayingActivity (the ActivityKit attributes)
   Models/      GuideData, MapData, VendorData, PastLineupData, WeatherData,
                AppleMusicData — Codable mirrors of the JSON and of what's kept from the
@@ -783,8 +812,10 @@ Hinterland/
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
   Views/       Schedule, Recap (+ RecapShareCard, PastRecap), MyLineup, Ratings, Maps,
                FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
-               WeatherCard, Components
-  Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon
+               WeatherCard, Timeline (hour timeline, day presets, filter chips, the
+               corn Horizon), Components
+  Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon; Fonts — Six Caps
+               and Barlow Condensed with their licences
   PrivacyInfo.xcprivacy — the app's privacy manifest
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),

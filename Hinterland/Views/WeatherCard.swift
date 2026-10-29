@@ -37,13 +37,13 @@ struct WeatherCard: View {
                 if let current {
                     Text(Format.temperature(current.temperature))
                         .appFont(22, weight: .semibold, design: .rounded)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.ink)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(current.condition)
                             .appFont(13, weight: .medium)
                             .foregroundStyle(Theme.secondaryText)
-                            .lineLimit(1)
+                            .fixedSize(horizontal: false, vertical: true)
                         if let wetHour {
                             Label("\(Format.percent(wetHour.precipitationChance)) rain by "
                                 + Format.hour(wetHour.date),
@@ -60,7 +60,7 @@ struct WeatherCard: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Forecast")
                             .appFont(15, weight: .semibold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Theme.ink)
                         Text(weather.isRefreshing ? "Loading…" : "Tap to load — needs a signal once")
                             .appFont(11)
                             .foregroundStyle(Theme.tertiaryText)
@@ -157,7 +157,7 @@ struct WeatherAlertCard: View {
 
                 Text(advisory.summary)
                     .appFont(15, weight: .semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -190,7 +190,7 @@ struct SetForecastBadge: View {
                 .appFont(11)
             Text(Format.temperature(hour.temperature))
                 .appFont(11, weight: .semibold)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
             if hour.precipitationChance >= 0.2 {
                 Text(Format.percent(hour.precipitationChance))
                     .appFont(11, weight: .semibold)

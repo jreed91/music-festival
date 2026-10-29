@@ -26,17 +26,35 @@ struct HinterlandApp: App {
         _community = State(initialValue: CommunityRatings(festivalYear: store.data.festival.year))
 
         // The tab bar sits over dark content on every screen; make it opaque so rows
-        // don't ghost through it.
+        // don't ghost through it. One lit tab in sodium, the rest unlit, labels set like
+        // the design system's callsigns.
+        let tabLabel = UIFont(name: AppFontFace.text(.bold), size: 10)
+            ?? .systemFont(ofSize: 10, weight: .bold)
+        let item = UITabBarItemAppearance()
+        item.normal.iconColor = UIColor(Theme.unlit)
+        item.normal.titleTextAttributes = [.foregroundColor: UIColor(Theme.unlit),
+                                           .font: tabLabel, .kern: 1.2]
+        item.selected.iconColor = UIColor(Theme.sodium)
+        item.selected.titleTextAttributes = [.foregroundColor: UIColor(Theme.sodium),
+                                             .font: tabLabel, .kern: 1.2]
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(Theme.surface)
+        appearance.backgroundColor = UIColor(Theme.night)
+        appearance.shadowColor = UIColor(Theme.hairline)
+        appearance.stackedLayoutAppearance = item
+        appearance.inlineLayoutAppearance = item
+        appearance.compactInlineLayoutAppearance = item
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
 
         let navBar = UINavigationBarAppearance()
         navBar.configureWithOpaqueBackground()
-        navBar.backgroundColor = UIColor(Theme.background)
-        navBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navBar.backgroundColor = UIColor(Theme.night)
+        navBar.shadowColor = .clear
+        let navTitle = UIFont(name: AppFontFace.text(.bold), size: 15)
+            ?? .systemFont(ofSize: 15, weight: .bold)
+        navBar.titleTextAttributes = [.foregroundColor: UIColor(Theme.ink),
+                                      .font: navTitle, .kern: 2.4]
         UINavigationBar.appearance().standardAppearance = navBar
         UINavigationBar.appearance().scrollEdgeAppearance = navBar
         UINavigationBar.appearance().compactAppearance = navBar

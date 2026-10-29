@@ -93,7 +93,7 @@ private struct YearRow: View {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(String(year.year))
                     .appFont(17, weight: .bold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.ink)
                 Spacer(minLength: 0)
                 Text("\(year.acts.count) acts")
                     .appFont(11)
@@ -133,7 +133,7 @@ private struct MemoryOnlyRow: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(String(memory.year))
                 .appFont(17, weight: .bold)
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.ink)
             Text("The full bill arrives with the next app update.")
                 .appFont(12)
                 .foregroundStyle(Theme.secondaryText)
@@ -195,7 +195,7 @@ struct PastYearView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Your \(String(memory.year)) recap and ratings")
                         .appFont(14, weight: .semibold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.ink)
                     Text(detail)
                         .appFont(11)
                         .foregroundStyle(Theme.tertiaryText)
@@ -235,7 +235,7 @@ struct PastYearView: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(act.name)
                 .appFont(isHeadliner ? 19 : 15, weight: isHeadliner ? .bold : .regular)
-                .foregroundStyle(.white.opacity(isHeadliner ? 1 : 0.86))
+                .foregroundStyle(Theme.ink.opacity(isHeadliner ? 1 : 0.86))
                 .fixedSize(horizontal: false, vertical: true)
             if let stage = act.stage {
                 StageBadge(stage: Stage(name: stage), compact: true)
