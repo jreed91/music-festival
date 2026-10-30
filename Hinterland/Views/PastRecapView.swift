@@ -121,7 +121,7 @@ struct PastRecapView: View {
             HStack(spacing: 12) {
                 if let rank {
                     Text("\(rank)")
-                        .marqueeFont(48)
+                        .listNameFont()
                         .foregroundStyle(Theme.inkFaint)
                         .fixedSize()
                         .frame(minWidth: 24)
@@ -131,7 +131,7 @@ struct PastRecapView: View {
                     .overlay(Rectangle().strokeBorder(Theme.hairline))
                 VStack(alignment: .leading, spacing: 5) {
                     Text(performance.artist.uppercased())
-                        .marqueeFont(36)
+                        .listNameFont()
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                     // Wraps on a narrow phone or at big type rather than pushing the stage
@@ -159,8 +159,8 @@ struct PastRecapView: View {
             .accessibilityLabel(spokenSet(performance, rank: rank, stars: stars))
             if !note.isEmpty {
                 Text(note)
-                    .appFont(15)
-                    .foregroundStyle(Theme.inkMuted)
+                    .readingFont(15)
+                    .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -251,13 +251,13 @@ struct PastRecapView: View {
                 ForEach(Array(memory.crowdTop.enumerated()), id: \.element.id) { index, entry in
                     HStack(spacing: 12) {
                         Text("\(index + 1)")
-                            .marqueeFont(48)
+                            .listNameFont()
                             .foregroundStyle(Theme.inkFaint)
                             .fixedSize()
                             .frame(minWidth: 24)
                         VStack(alignment: .leading, spacing: 5) {
                             Text(entry.performance.artist.uppercased())
-                                .marqueeFont(36)
+                                .listNameFont()
                                 .foregroundStyle(Theme.ink)
                                 .fixedSize(horizontal: false, vertical: true)
                             FlowLayout(spacing: 8, lineSpacing: 4) {

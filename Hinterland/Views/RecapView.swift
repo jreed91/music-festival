@@ -542,7 +542,7 @@ struct StatTile: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
             Text(label.uppercased())
-                .appFont(11, weight: .bold)
+                .appFont(12, weight: .bold)
                 .tracking(1.4)
                 .foregroundStyle(Theme.inkFaint)
                 .fixedSize(horizontal: false, vertical: true)
@@ -588,7 +588,7 @@ private struct RankedSetRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Text("\(rank)")
-                .marqueeFont(48)
+                .listNameFont()
                 .foregroundStyle(Theme.inkFaint)
                 .fixedSize()
                 .frame(minWidth: 24)
@@ -599,7 +599,7 @@ private struct RankedSetRow: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(performance.artist.uppercased())
-                    .marqueeFont(36)
+                    .listNameFont()
                     .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
                 // Wraps on a narrow phone or at big type rather than pushing the stage
@@ -650,7 +650,7 @@ private struct TrailingIconLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 4) {
             configuration.title
-            configuration.icon.appFont(11, weight: .semibold)
+            configuration.icon.appFont(12, weight: .semibold)
                 .accessibilityHidden(true)
         }
     }

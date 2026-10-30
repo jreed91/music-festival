@@ -97,7 +97,7 @@ private struct HourNumeral: View {
                 .foregroundStyle(color)
                 .fixedSize()
             Text(hour.period)
-                .appFont(10, weight: .bold)
+                .appFont(12, weight: .bold)
                 .tracking(1.6)
                 .foregroundStyle(color)
         }
@@ -131,7 +131,7 @@ struct NowLine: View {
                 .frame(height: 2)
                 .shadow(color: Theme.signal.opacity(0.9), radius: 4)
             Text("NOW \(Format.clock(now))")
-                .appFont(10, weight: .heavy)
+                .appFont(12, weight: .heavy)
                 .tracking(1.4)
                 .monospacedDigit()
                 // The minute rolls over like a clock radio's.
@@ -174,14 +174,14 @@ struct DayPresets: View {
                             .appFont(15, weight: .bold)
                             .tracking(1.8)
                         Text(Format.dayLabel(day))
-                            .appFont(11, weight: .medium)
+                            .appFont(12, weight: .medium)
                             .foregroundStyle(isSelected ? Theme.sodium : Theme.inkFaint)
                         if let conditions = forecast(day) {
                             HStack(spacing: 3) {
                                 Image(systemName: conditions.symbolName)
-                                    .appFont(9)
+                                    .appFont(12)
                                 Text(Format.temperature(conditions.high))
-                                    .appFont(11, weight: .semibold)
+                                    .appFont(12, weight: .semibold)
                             }
                             .foregroundStyle(isSelected ? Theme.sodium : Theme.inkMuted)
                         }
@@ -231,7 +231,7 @@ struct FilterChip: View {
             HStack(spacing: 6) {
                 if let systemImage {
                     Image(systemName: systemImage)
-                        .appFont(11, weight: .semibold)
+                        .appFont(12, weight: .semibold)
                 }
                 Text(title.uppercased())
                     .appFont(12, weight: .bold)

@@ -32,7 +32,7 @@ struct MapsView: View {
                         MapTile(asset: store.map.primaryLayer.asset,
                                 eyebrow: "Live · you are here",
                                 title: "Grounds",
-                                titleSize: 64,
+                                marqueeSize: 64,
                                 height: 190,
                                 isLive: true)
                     }
@@ -46,7 +46,6 @@ struct MapsView: View {
                                 MapTile(asset: map.asset,
                                         eyebrow: map.caption ?? "",
                                         title: map.title,
-                                        titleSize: 40,
                                         height: 150)
                             }
                             .buttonStyle(.plain)
@@ -123,12 +122,14 @@ struct MapsView: View {
 }
 
 /// A map as a tile: the art graded for night behind a gradient to `night`, a callsign
-/// and the title in Six Caps over it. Text wraps; nothing is cut off.
+/// and the title over it. Text wraps; nothing is cut off.
 private struct MapTile: View {
     let asset: String
     let eyebrow: String
     let title: String
-    let titleSize: CGFloat
+    /// Six Caps at this size for the big tile. The small ones, two to a row, are too
+    /// narrow for Six Caps to be read in, so they take the list's heavy Barlow.
+    var marqueeSize: CGFloat?
     let height: CGFloat
     var isLive = false
 
@@ -153,13 +154,12 @@ private struct MapTile: View {
             VStack(alignment: .leading, spacing: 4) {
                 if !eyebrow.isEmpty {
                     Text(eyebrow.uppercased())
-                        .appFont(10, weight: .bold)
+                        .appFont(12, weight: .bold)
                         .tracking(1.6)
                         .foregroundStyle(isLive ? Theme.sodium : Theme.inkMuted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(title.uppercased())
-                    .marqueeFont(titleSize)
+                titleText
                     .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -168,5 +168,16 @@ private struct MapTile: View {
         .frame(minHeight: height)
         .background(Theme.nightRaised)
         .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var titleText: some View {
+        if let marqueeSize {
+            Text(title.uppercased())
+                .marqueeFont(marqueeSize)
+        } else {
+            Text(title.uppercased())
+                .listNameFont()
+        }
     }
 }

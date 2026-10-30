@@ -39,9 +39,9 @@ struct StageBadge: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            StageGlyph(stage: stage, size: compact ? 8 : 10)
+            StageGlyph(stage: stage, size: compact ? 9 : 10)
             Text(stage.displayName.uppercased())
-                .appFont(compact ? 10 : 11, weight: .bold)
+                .appFont(compact ? 12 : 13, weight: .bold)
                 .tracking(1.4)
         }
         .foregroundStyle(stage.color)
@@ -120,7 +120,7 @@ struct RatingBadge: View {
                 .frame(width: compact ? 6 : 7, height: compact ? 6 : 7)
                 .shadow(color: Theme.sodium.opacity(0.7), radius: 3)
             Text("\(stars)")
-                .appFont(compact ? 11 : 12, weight: .bold)
+                .appFont(compact ? 12 : 13, weight: .bold)
                 .monospacedDigit()
         }
         .foregroundStyle(Theme.sodium)
@@ -143,9 +143,9 @@ struct CrowdBadge: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: "person.2.fill")
-                .appFont(compact ? 9 : 10, weight: .semibold)
+                .appFont(compact ? 12 : 13, weight: .semibold)
             Text(Format.rating(rating.average))
-                .appFont(compact ? 11 : 12, weight: .bold)
+                .appFont(compact ? 12 : 13, weight: .bold)
                 .monospacedDigit()
         }
         .foregroundStyle(Theme.crowd)
@@ -226,8 +226,8 @@ struct EmptyStateView: View {
                 // Set dressing: the callsign and the sentence already say it.
                 .accessibilityHidden(true)
             Text(message)
-                .appFont(16)
-                .foregroundStyle(Theme.inkMuted)
+                .readingFont(16)
+                .foregroundStyle(Theme.ink)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -277,7 +277,7 @@ struct SectionHeading: View {
             Spacer(minLength: 8)
             if let detail {
                 Text(detail.uppercased())
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.6)
                     .foregroundStyle(Theme.inkFaint)
                     .multilineTextAlignment(.trailing)

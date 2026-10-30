@@ -271,7 +271,7 @@ private struct POICard: View {
             StageBadge(stage: Stage(name: poi.name))
         } else {
             Text(poi.category.label.uppercased())
-                .appFont(11, weight: .bold)
+                .appFont(12, weight: .bold)
                 .tracking(1.6)
                 .foregroundStyle(poi.category.tint)
         }

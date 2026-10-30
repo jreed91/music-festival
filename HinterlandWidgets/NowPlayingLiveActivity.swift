@@ -23,7 +23,7 @@ struct NowPlayingLiveActivity: Widget {
                     HStack(spacing: 5) {
                         StageGlyph(stage: stage, size: 8)
                         Text(stage.displayName.uppercased())
-                            .appFont(11, weight: .bold)
+                            .appFont(12, weight: .bold)
                             .tracking(1.2)
                             .foregroundStyle(stage.color)
                     }
@@ -35,7 +35,7 @@ struct NowPlayingLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.center) {
                     Text(state.artist.uppercased())
-                        .marqueeFont(34)
+                        .listNameFont()
                         .foregroundStyle(Theme.sodium)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
@@ -82,17 +82,19 @@ private struct LockScreenCard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(festival.uppercased())
-                    .appFont(10, weight: .heavy)
+                    .appFont(12, weight: .heavy)
                     .tracking(1.6)
                     .foregroundStyle(Theme.inkFaint)
                 Spacer(minLength: 8)
                 Text(state.isStarred ? "YOUR LINEUP" : "ON AIR")
-                    .appFont(10, weight: .heavy)
+                    .appFont(12, weight: .heavy)
                     .tracking(1.6)
                     .foregroundStyle(Theme.sodium)
             }
 
             HStack(alignment: .lastTextBaseline, spacing: 10) {
+                // The one place Six Caps goes under 56: a single glowing name on a card
+                // whose height the system fixes, where 56 would push the last line off.
                 Text(state.artist.uppercased())
                     .marqueeFont(52)
                     .foregroundStyle(Theme.sodium)
@@ -109,7 +111,7 @@ private struct LockScreenCard: View {
             HStack(spacing: 6) {
                 StageGlyph(stage: state.stage, size: 8)
                 Text(state.stage.displayName.uppercased())
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.4)
                 Text("·")
                     .foregroundStyle(Theme.inkFaint)
