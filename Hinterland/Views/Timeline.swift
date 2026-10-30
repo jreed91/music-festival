@@ -25,15 +25,16 @@ struct HourTimeline: View {
         return result
     }
 
-    /// The first set that hasn't started yet, if the day is under way.
-    private var nextUp: Performance? {
+    /// The first set that hasn't started yet, if the day is under way: the set the now
+    /// line sits above. Nil when there's no now line to show.
+    static func nextUp(in performances: [Performance], at now: Date) -> Performance? {
         let sorted = performances.sorted { $0.start < $1.start }
         guard let first = sorted.first, first.start <= now else { return nil }
         return sorted.first { $0.start > now }
     }
 
     var body: some View {
-        let next = nextUp
+        let next = Self.nextUp(in: performances, at: now)
         VStack(alignment: .leading, spacing: 0) {
             ForEach(groups) { group in
                 HStack(alignment: .top, spacing: 8) {
@@ -43,6 +44,7 @@ struct HourTimeline: View {
                         ForEach(group.sets) { performance in
                             if performance.id == next?.id {
                                 NowLine(now: now)
+                                    .id(NowLine.scrollID)
                             }
                             NavigationLink(value: performance) {
                                 PerformanceRow(performance: performance,
@@ -114,8 +116,12 @@ private struct HourNumeral: View {
     }
 }
 
-/// The 2pt `signal` line across the list at the current time, with its NOW tag.
+/// The 2pt `signal` line across the list at the current time, with its NOW tag. It moves
+/// with the clock and never on its own: no pulse, no glow that breathes.
 struct NowLine: View {
+    /// What the schedule scrolls to when it opens on a day that's under way.
+    static let scrollID = "now-line"
+
     let now: Date
 
     var body: some View {
@@ -128,6 +134,8 @@ struct NowLine: View {
                 .appFont(10, weight: .heavy)
                 .tracking(1.4)
                 .monospacedDigit()
+                // The minute rolls over like a clock radio's.
+                .contentTransition(.numericText())
                 .foregroundStyle(Theme.night)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 3)
@@ -149,12 +157,17 @@ struct DayPresets: View {
     var spokenLabel: (FestivalDay) -> String = { "\($0.weekday), \(Format.dayLabel($0))" }
     let onSelect: (FestivalDay) -> Void
 
+    /// Counts presses, for the haptic: the day also changes on its own at midnight, and
+    /// that shouldn't tick.
+    @State private var presses = 0
+
     var body: some View {
         HStack(spacing: 8) {
             ForEach(days) { day in
                 let isSelected = day.date == selected
                 Button {
                     onSelect(day)
+                    presses += 1
                 } label: {
                     VStack(spacing: 3) {
                         Text(day.shortWeekday.uppercased())
@@ -187,12 +200,15 @@ struct DayPresets: View {
                             .strokeBorder(isSelected ? Theme.sodium : Theme.hairline, lineWidth: 1)
                     )
                     .shadow(color: isSelected ? Theme.sodium.opacity(0.6) : .clear, radius: 6)
+                    // The preset you press lights the way a car radio's does.
+                    .lampStrike(isSelected)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(spokenLabel(day))
                 .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
+        .sensoryFeedback(.selection, trigger: presses)
         // Four days always have to be four columns — there's nowhere for a fifth line to
         // go. Capped like iOS caps its own segmented controls; everything below, which
         // is the part you actually read, scales the whole way.
@@ -228,15 +244,17 @@ struct FilterChip: View {
             .overlay(Rectangle().strokeBorder(isOn ? onColor : Theme.hairline, lineWidth: 1))
             .frame(minHeight: 44)
             .contentShape(Rectangle())
+            // A quick fade rather than a strike: a filter isn't yours or on air.
+            .animation(.easeOut(duration: 0.15), value: isOn)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? [.isSelected] : [])
     }
 }
 
-/// Black corn against a faint warm glow, with a few fireflies blinking over it. Sits at
-/// the foot of every scroll view, the recap and empty states. Drawn in code so it's sharp
-/// at every size and costs nothing offline; still with Reduce Motion on.
+/// Black corn against a faint warm glow, with a few fireflies blinking and drifting over
+/// it. Sits at the foot of every scroll view, the recap and empty states. Drawn in code so
+/// it's sharp at every size and costs nothing offline; still with Reduce Motion on.
 struct Horizon: View {
     var height: CGFloat = 110
     var fireflies = 7
@@ -262,8 +280,9 @@ struct Horizon: View {
     }
 }
 
-/// The corn and fireflies themselves. `time` drives the blink; nil holds every firefly
-/// at 60%, the design system's still pose.
+/// The corn and fireflies themselves. `time` drives the blink, on the design system's
+/// 3.2-second loop, and a slow wander a few points either way; nil holds every firefly
+/// where it is at 60%, the still pose.
 private struct HorizonArt: View {
     let fireflies: Int
     let time: Double?
@@ -278,13 +297,18 @@ private struct HorizonArt: View {
 
             var generator = SeededRandom(seed: 11)
             for _ in 0..<fireflies {
-                let x = CGFloat(0.06 + generator.next() * 0.88) * size.width
-                let y = CGFloat(0.08 + generator.next() * 0.45) * size.height
+                var x = CGFloat(0.06 + generator.next() * 0.88) * size.width
+                var y = CGFloat(0.08 + generator.next() * 0.45) * size.height
                 let phase = generator.next() * 3.2
+                let heading = generator.next() * Double.pi * 2
                 let level: Double
                 if let time {
                     let wave = sin((time + phase) * Double.pi * 2 / 3.2)
                     level = 0.15 + 0.85 * (0.5 + 0.5 * wave)
+                    // Slower than the blink and out of step with it, so no two fireflies
+                    // move together and none of them goes anywhere.
+                    x += CGFloat(sin(time / 3.1 + heading)) * 6
+                    y += CGFloat(cos(time / 4.3 + heading)) * 4
                 } else {
                     level = 0.6
                 }

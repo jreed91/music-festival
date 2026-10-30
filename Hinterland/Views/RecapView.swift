@@ -518,16 +518,23 @@ struct RecapView: View {
 
 // MARK: - Pieces
 
-/// One big number and what it counts. Shared with `PastRecapView`.
+/// One big number and what it counts. Shared with `PastRecapView` and My Ratings.
+///
+/// The first time a tile is on screen its number rolls up from zero, digit by digit, like
+/// a readout settling on a station. Once only: coming back to the screen doesn't replay it.
 struct StatTile: View {
     let value: String
     let label: String
     var tint: Color = Theme.ink
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var hasRolled = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(value)
+            Text(hasRolled || reduceMotion ? value : Self.zeroed(value))
                 .marqueeFont(64)
+                .contentTransition(.numericText())
                 .foregroundStyle(tint)
                 .onAirGlow(tint == Theme.sodium)
                 // A third of the screen is all a tile gets, so a long number shrinks
@@ -543,8 +550,19 @@ struct StatTile: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(Theme.nightRaised, in: Rectangle())
-        // "4, sets seen" as one stop rather than a number and, a swipe later, what it counts.
-        .accessibilityElement(children: .combine)
+        .onAppear {
+            guard !hasRolled, !reduceMotion else { return }
+            withAnimation(.smooth(duration: 0.9).delay(0.2)) { hasRolled = true }
+        }
+        // "4 sets seen" as one stop rather than a number and, a swipe later, what it
+        // counts. Written out so VoiceOver never catches the zeros on their way up.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(value) \(label)")
+    }
+
+    /// Where a number rolls up from: "12" from "00", "4.3" from "0.0".
+    private static func zeroed(_ value: String) -> String {
+        String(value.map { $0.isNumber ? "0" : $0 })
     }
 }
 

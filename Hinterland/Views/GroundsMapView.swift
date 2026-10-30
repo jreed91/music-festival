@@ -25,6 +25,7 @@ struct GroundsMapView: View {
     @State private var cameraDistance: Double = 3_000
     @State private var focus: MapFocus?
     @State private var now = Date()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Moves the on-air glow from stage to stage as sets change over.
     private let ticker = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
@@ -71,7 +72,10 @@ struct GroundsMapView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    // Rises from the bottom; with Reduce Motion it fades in where it is.
+                    .transition(reduceMotion
+                        ? AnyTransition.opacity
+                        : AnyTransition.move(edge: .bottom).combined(with: .opacity))
                 } else {
                     caveat
                 }
@@ -631,8 +635,8 @@ private final class POIAnnotation: NSObject, MKAnnotation {
 /// A pin as a small square light: stages in their stage shape and colour with the name
 /// under them, everything else a single glyph in cream — the gate's own letter, or the
 /// category's symbol — with medical in `signal` and water in `rain`. A stage with a set
-/// on gets a `sodium` edge and glow and reads `MAIN · LORDE`; the selected pin gets a
-/// 2pt `ink` outline a few points out from its square.
+/// on gets a `sodium` edge and a glow that breathes, and reads `MAIN · LORDE`; the
+/// selected pin gets a 2pt `ink` outline a few points out from its square.
 private final class POIAnnotationView: MKAnnotationView {
     static let reuseID = "poi"
 
@@ -671,15 +675,50 @@ private final class POIAnnotationView: MKAnnotationView {
         let rendered = Self.render(poi, onAirArtist: onAirArtist, selected: isSelected)
         image = rendered.image
         // Keep the square, not the label under it, on the coordinate.
-        centerOffset = CGPoint(x: 0, y: rendered.image.size.height / 2 - rendered.squareCenterY)
+        centerOffset = CGPoint(x: 0, y: rendered.image.size.height / 2 - rendered.square.midY)
+        setGlow(on: poi.category == .stage && onAirArtist != nil, around: rendered.square)
     }
 
-    /// Room around the square for the glow and the selection outline, kept whether or not
-    /// either is showing so the pin doesn't jump when it's tapped.
+    /// The on-air glow, cast by the square on the view's own layer rather than drawn into
+    /// the picture, so Core Animation can breathe it between 70% and 100% over four
+    /// seconds without redrawing anything. Steady with Reduce Motion on.
+    private func setGlow(on isOn: Bool, around square: CGRect) {
+        guard isOn else {
+            layer.removeAnimation(forKey: Self.breathKey)
+            layer.shadowOpacity = 0
+            return
+        }
+        layer.shadowColor = UIColor(Theme.sodium).cgColor
+        layer.shadowOffset = .zero
+        layer.shadowRadius = 8
+        layer.shadowPath = UIBezierPath(rect: square).cgPath
+        layer.shadowOpacity = Self.glowOpacity
+
+        if UIAccessibility.isReduceMotionEnabled {
+            layer.removeAnimation(forKey: Self.breathKey)
+        } else if layer.animation(forKey: Self.breathKey) == nil {
+            let breath = CABasicAnimation(keyPath: "shadowOpacity")
+            breath.fromValue = Self.glowOpacity * 0.7
+            breath.toValue = Self.glowOpacity
+            breath.duration = 2
+            breath.autoreverses = true
+            breath.repeatCount = .infinity
+            breath.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            // Kept through a trip to the background, which otherwise strips it.
+            breath.isRemovedOnCompletion = false
+            layer.add(breath, forKey: Self.breathKey)
+        }
+    }
+
+    private static let breathKey = "breath"
+    private static let glowOpacity: Float = 0.7
+
+    /// Room around the square for the selection outline, kept whether or not it's showing
+    /// so the pin doesn't jump when it's tapped. The glow needs none: the layer casts it.
     private static let margin: CGFloat = 8
 
     private static func render(_ poi: MapPOI, onAirArtist: String?,
-                               selected: Bool) -> (image: UIImage, squareCenterY: CGFloat) {
+                               selected: Bool) -> (image: UIImage, square: CGRect) {
         let isStage = poi.category == .stage
         let isOnAir = isStage && onAirArtist != nil
         let side: CGFloat = isStage ? 34 : 24
@@ -707,19 +746,7 @@ private final class POIAnnotationView: MKAnnotationView {
         let square = CGRect(x: (width - side) / 2, y: margin, width: side, height: side)
 
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
-        let image = renderer.image { context in
-            let cg = context.cgContext
-
-            // The glow first, cast by the square itself, so it sits behind everything.
-            if isOnAir {
-                cg.saveGState()
-                cg.setShadow(offset: .zero, blur: 8,
-                             color: UIColor(Theme.sodium).withAlphaComponent(0.7).cgColor)
-                UIColor(Theme.night).setFill()
-                UIBezierPath(rect: square).fill()
-                cg.restoreGState()
-            }
-
+        let image = renderer.image { _ in
             UIColor(isStage ? Theme.night : Theme.nightSheet).setFill()
             UIBezierPath(rect: square).fill()
             let border = UIBezierPath(rect: square.insetBy(dx: 0.75, dy: 0.75))
@@ -766,7 +793,7 @@ private final class POIAnnotationView: MKAnnotationView {
                            withAttributes: labelAttributes)
             }
         }
-        return (image, square.midY)
+        return (image, square)
     }
 
     /// "J" for "Gate J": the letter people look for on the signs.

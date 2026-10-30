@@ -61,17 +61,24 @@ struct StarRating: View {
     var size: CGFloat = 22
     let onSelect: (Int) -> Void
 
+    /// Counts taps, for the haptic tick.
+    @State private var taps = 0
+
     var body: some View {
         HStack(spacing: 2) {
             ForEach(Array(SetRating.scale), id: \.self) { value in
                 let lit = value <= stars
                 Button {
                     onSelect(value)
+                    taps += 1
                 } label: {
                     Circle()
                         .fill(lit ? Theme.sodium : Theme.unlit)
                         .frame(width: size * 0.64, height: size * 0.64)
                         .shadow(color: lit ? Theme.sodium.opacity(0.7) : .clear, radius: 5)
+                        // Lit one after another from the left, like fireflies coming on
+                        // down a row of beans.
+                        .lampStrike(lit, delay: Double(value - 1) * 0.06)
                         // Comfortable to hit with a drink in the other hand, in the dark.
                         .frame(minWidth: 40, minHeight: 44)
                         .contentShape(Rectangle())
@@ -83,6 +90,7 @@ struct StarRating: View {
         // with nothing saying which one is lit: swipe up or down to change it, the way a
         // slider works. Swiping down from one star is the same as tapping the star you
         // gave, so it clears the rating under the same rule.
+        .sensoryFeedback(.selection, trigger: taps)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Your rating")
         .accessibilityValue(stars == 0 ? "Not rated" : "\(stars) of 5 stars")
@@ -214,6 +222,7 @@ struct EmptyStateView: View {
                 .foregroundStyle(Theme.inkFaint)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+                .signalDropout()
                 // Set dressing: the callsign and the sentence already say it.
                 .accessibilityHidden(true)
             Text(message)
@@ -319,6 +328,12 @@ struct GlowButtonStyle: ButtonStyle {
             .shadow(color: kind == .quiet ? .clear : Theme.sodium.opacity(0.7), radius: 5)
             .opacity(kind == .quiet && configuration.isPressed ? 0.6 : 1)
             .contentShape(RoundedRectangle(cornerRadius: 6))
+            // Lights fast and lets go a little slower, like the real button.
+            .animation(configuration.isPressed ? Animation.easeOut(duration: 0.08)
+                                               : Animation.easeOut(duration: 0.2),
+                       value: configuration.isPressed)
+            // Turning on (Add to my lineup becoming In my lineup) strikes it on.
+            .lampStrike(kind == .on)
     }
 
     private func isLit(pressed: Bool) -> Bool {
@@ -360,6 +375,7 @@ struct GlowToggleStyle: ToggleStyle {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .sensoryFeedback(.selection, trigger: configuration.isOn)
         .accessibilityRepresentation {
             Toggle(isOn: configuration.$isOn) {
                 configuration.label
@@ -372,6 +388,8 @@ struct GlowToggleStyle: ToggleStyle {
 private struct GlowSwitch: View {
     let isOn: Bool
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ZStack(alignment: isOn ? .trailing : .leading) {
             RoundedRectangle(cornerRadius: 6)
@@ -380,12 +398,14 @@ private struct GlowSwitch: View {
                 .fill(isOn ? Theme.sodium : Theme.unlit)
                 .frame(width: 22, height: 22)
                 .shadow(color: isOn ? Theme.sodium.opacity(0.7) : .clear, radius: 5)
+                .lampStrike(isOn)
                 .padding(4)
         }
         .frame(width: 58, height: 30)
         .overlay(RoundedRectangle(cornerRadius: 6)
             .strokeBorder(isOn ? Theme.sodium : Theme.hairline, lineWidth: 1.5))
-        .animation(.snappy(duration: 0.18), value: isOn)
+        // The key slides across, then strikes on; with Reduce Motion it's just there.
+        .animation(reduceMotion ? nil : Animation.snappy(duration: 0.18), value: isOn)
     }
 }
 
