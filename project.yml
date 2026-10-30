@@ -91,6 +91,8 @@ targets:
           - BarlowCondensed-SemiBold.ttf
           - BarlowCondensed-Bold.ttf
           - BarlowCondensed-ExtraBold.ttf
+          - BarlowSemiCondensed-Medium.ttf
+          - BarlowSemiCondensed-SemiBold.ttf
         UIUserInterfaceStyle: Dark
         # Keeps iOS 26 from swapping in its floating Liquid Glass tab bar, which ignores
         # the opaque appearance set in HinterlandApp and lenses the rows scrolling under
@@ -165,3 +167,5 @@ targets:
           - BarlowCondensed-SemiBold.ttf
           - BarlowCondensed-Bold.ttf
           - BarlowCondensed-ExtraBold.ttf
+          - BarlowSemiCondensed-Medium.ttf
+          - BarlowSemiCondensed-SemiBold.ttf

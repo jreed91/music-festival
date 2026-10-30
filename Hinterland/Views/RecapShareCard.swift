@@ -23,7 +23,7 @@ struct RecapShareCard: View {
                 if !recap.rated.isEmpty {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("MY BEST SETS")
-                            .font(Self.text(.bold, 11))
+                            .font(Self.text(.bold, 13))
                             .tracking(2.2)
                             .foregroundStyle(Theme.inkFaint)
                             .padding(.bottom, 6)
@@ -52,7 +52,7 @@ struct RecapShareCard: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("MY \(recap.festival.name.uppercased())")
-                .font(Self.text(.heavy, 12))
+                .font(Self.text(.heavy, 13))
                 .tracking(2.4)
                 .foregroundStyle(Theme.sodium)
             Text(String(recap.festival.year))
@@ -60,7 +60,7 @@ struct RecapShareCard: View {
                 .foregroundStyle(Theme.ink)
             if let range = Format.dateRange(recap.festival.startDate, recap.festival.endDate) {
                 Text("\(range) · \(recap.festival.city)".uppercased())
-                    .font(Self.text(.bold, 11))
+                    .font(Self.text(.bold, 13))
                     .tracking(1.6)
                     .foregroundStyle(Theme.inkFaint)
                     .fixedSize(horizontal: false, vertical: true)
@@ -86,7 +86,7 @@ struct RecapShareCard: View {
                 .foregroundStyle(tint)
                 .shadow(color: tint == Theme.sodium ? Theme.sodiumGlow : .clear, radius: 12)
             Text(label.uppercased())
-                .font(Self.text(.bold, 10))
+                .font(Self.text(.bold, 13))
                 .tracking(1.4)
                 .foregroundStyle(Theme.inkFaint)
         }
@@ -97,12 +97,15 @@ struct RecapShareCard: View {
 
     private func row(_ entry: Recap.RatedSet, rank: Int) -> some View {
         HStack(alignment: .center, spacing: 12) {
+            // The same heavy Barlow as names in the app's lists: Six Caps this small
+            // turns to hairlines, more so once a social app has recompressed the picture.
             Text("\(rank)")
-                .font(.custom(AppFontFace.marquee, fixedSize: 40))
+                .font(Self.text(.heavy, 24))
                 .foregroundStyle(Theme.inkFaint)
                 .frame(minWidth: 18, alignment: .leading)
             Text(entry.performance.artist.uppercased())
-                .font(.custom(AppFontFace.marquee, fixedSize: 34))
+                .font(Self.text(.heavy, 24))
+                .tracking(0.5)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
@@ -133,7 +136,7 @@ struct RecapShareCard: View {
                 Text("+\(recap.ratedCount - 5) MORE")
             }
         }
-        .font(Self.text(.bold, 10))
+        .font(Self.text(.bold, 13))
         .tracking(1.4)
         .foregroundStyle(Theme.inkFaint)
     }

@@ -107,8 +107,8 @@ struct RatingsView: View {
 
                         if !entry.rating.note.isEmpty {
                             Text(entry.rating.note)
-                                .appFont(15)
-                                .foregroundStyle(Theme.inkMuted)
+                                .readingFont(15)
+                                .foregroundStyle(Theme.ink)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .padding(.top, 8)
                         }
@@ -158,8 +158,8 @@ struct RatingsView: View {
 
             Text("Your ratings go into the average the valley sees, anonymously. Notes stay "
                + "on this phone.")
-                .appFont(15)
-                .foregroundStyle(Theme.inkMuted)
+                .readingFont(15)
+                .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
 
             // Whatever the service last had to say comes first, because "nothing is
@@ -285,7 +285,7 @@ struct SetNoteView: View {
                               prompt: Text("Sunset, and they opened with the one everyone came for.")
                                 .foregroundStyle(Theme.inkFaint),
                               axis: .vertical)
-                        .appFont(17)
+                        .readingFont(17)
                         .foregroundStyle(Theme.ink)
                         .lineLimit(3...8)
                         .focused($isFocused)

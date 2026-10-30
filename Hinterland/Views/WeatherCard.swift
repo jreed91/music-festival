@@ -124,7 +124,7 @@ struct WeatherAlertBanner: View {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("\(advisory.severity.label) · \(advisory.source)".uppercased())
-                        .appFont(11, weight: .heavy)
+                        .appFont(12, weight: .heavy)
                         .tracking(1.6)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(advisory.summary)
@@ -168,7 +168,7 @@ struct WeatherAlertCard: View {
                         .tracking(2)
                     Spacer(minLength: 0)
                     Image(systemName: "arrow.up.right")
-                        .appFont(11, weight: .semibold)
+                        .appFont(12, weight: .semibold)
                         .accessibilityHidden(true)
                 }
                 .foregroundStyle(advisory.severity.tint)
@@ -204,7 +204,7 @@ struct SetForecastBadge: View {
         HStack(spacing: 5) {
             Image(systemName: hour.symbolName)
                 .symbolRenderingMode(.hierarchical)
-                .appFont(11, weight: .semibold)
+                .appFont(12, weight: .semibold)
                 .foregroundStyle(Theme.inkMuted)
             Text(Format.temperature(hour.temperature))
                 .appFont(12, weight: .bold)
@@ -249,7 +249,7 @@ struct WeatherAttributionView: View {
                             textMark(attribution.serviceName)
                         }
                         Text(attribution.legalText)
-                            .appFont(11)
+                            .appFont(12)
                             .foregroundStyle(Theme.inkFaint)
                             .multilineTextAlignment(.center)
                     }
@@ -267,7 +267,7 @@ struct WeatherAttributionView: View {
             Image(systemName: "apple.logo")
             Text(name)
         }
-        .appFont(11, weight: .medium)
+        .appFont(12, weight: .medium)
         .foregroundStyle(Theme.inkMuted)
     }
 }

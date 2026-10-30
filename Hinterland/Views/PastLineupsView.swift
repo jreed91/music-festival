@@ -118,7 +118,7 @@ private struct YearRow: View {
                     .foregroundStyle(Theme.ink)
                 Spacer(minLength: 8)
                 Text("\(year.acts.count) acts".uppercased())
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.6)
                     .foregroundStyle(Theme.inkFaint)
                     .fixedSize()
@@ -312,10 +312,20 @@ struct PastYearView: View {
     /// through: it's a list of names, and most of them have no page anywhere in the app.
     private func actRow(_ act: PastAct, isHeadliner: Bool) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text(act.name.uppercased())
-                .marqueeFont(isHeadliner ? 56 : 40)
-                .foregroundStyle(isHeadliner ? Theme.ink : Theme.inkMuted)
-                .fixedSize(horizontal: false, vertical: true)
+            // Headliners in Six Caps, like the top of a poster; everyone under them in the
+            // list's heavy Barlow, which is the size a name can still be read at.
+            Group {
+                if isHeadliner {
+                    Text(act.name.uppercased())
+                        .marqueeFont(56)
+                        .foregroundStyle(Theme.ink)
+                } else {
+                    Text(act.name.uppercased())
+                        .listNameFont()
+                        .foregroundStyle(Theme.inkMuted)
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
             if let stage = act.stage {
                 StageBadge(stage: Stage(name: stage), compact: true)

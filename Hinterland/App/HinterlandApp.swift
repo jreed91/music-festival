@@ -26,13 +26,14 @@ struct HinterlandApp: App {
         _community = State(initialValue: CommunityRatings(festivalYear: store.data.festival.year))
 
         // The tab bar sits over dark content on every screen; make it opaque so rows
-        // don't ghost through it. One lit tab in sodium, the rest unlit, labels set like
-        // the design system's callsigns.
-        let tabLabel = UIFont(name: AppFontFace.text(.bold), size: 10)
-            ?? .systemFont(ofSize: 10, weight: .bold)
+        // don't ghost through it. One lit tab in sodium, the rest in ink-faint, labels set
+        // like the design system's callsigns. 12pt, because condensed type at the 10pt
+        // iOS uses for SF is a third narrower and was the hardest text in the app to read.
+        let tabLabel = UIFont(name: AppFontFace.text(.bold), size: 12)
+            ?? .systemFont(ofSize: 12, weight: .bold)
         let item = UITabBarItemAppearance()
-        item.normal.iconColor = UIColor(Theme.unlit)
-        item.normal.titleTextAttributes = [.foregroundColor: UIColor(Theme.unlit),
+        item.normal.iconColor = UIColor(Theme.inkFaint)
+        item.normal.titleTextAttributes = [.foregroundColor: UIColor(Theme.inkFaint),
                                            .font: tabLabel, .kern: 1.2]
         item.selected.iconColor = UIColor(Theme.sodium)
         item.selected.titleTextAttributes = [.foregroundColor: UIColor(Theme.sodium),

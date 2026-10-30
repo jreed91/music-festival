@@ -145,11 +145,11 @@ struct UpNextWidgetView: View {
                 Rectangle().fill(Theme.hairline).frame(width: 1)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("THEN")
-                        .appFont(10, weight: .heavy)
+                        .appFont(12, weight: .heavy)
                         .tracking(1.6)
                         .foregroundStyle(Theme.inkFaint)
                     Text(following.artist.uppercased())
-                        .marqueeFont(36)
+                        .listNameFont()
                         .foregroundStyle(Theme.ink)
                         .lineLimit(2)
                         .minimumScaleFactor(0.5)
@@ -186,7 +186,7 @@ struct UpNextWidgetView: View {
         VStack(alignment: .leading, spacing: 1) {
             if let headline = entry.focus.headline {
                 Text(headline.isLive(at: entry.date) ? "ON AIR" : "UP NEXT")
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.4)
                     .widgetAccentable()
                 // Three lines is all the Lock Screen gives this, so a long name shrinks to
@@ -202,7 +202,7 @@ struct UpNextWidgetView: View {
                     .minimumScaleFactor(0.7)
             } else {
                 Text("DEAD AIR")
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.4)
                     .widgetAccentable()
                 Text("Star a set to see it here")
@@ -236,7 +236,7 @@ struct UpNextWidgetView: View {
                 Image(systemName: Stage(name: headline.stage).symbol)
                     .appFont(12)
                 Text(headline.start, style: .time)
-                    .appFont(11, weight: .medium)
+                    .appFont(12, weight: .medium)
             }
             .widgetAccentable()
             .accessibilityElement(children: .ignore)
@@ -262,7 +262,7 @@ private struct SetLabel: View {
 
     var body: some View {
         Text(label)
-            .appFont(10, weight: .heavy)
+            .appFont(12, weight: .heavy)
             .tracking(1.6)
             .foregroundStyle(performance.isLive(at: at) ? Theme.sodium : Theme.inkFaint)
             .lineLimit(1)
@@ -311,7 +311,7 @@ private struct WidgetStageLine: View {
         HStack(spacing: 5) {
             StageGlyph(stage: stage, size: 8)
             Text(stage.displayName.uppercased())
-                .appFont(10, weight: .bold)
+                .appFont(12, weight: .bold)
                 .tracking(1.4)
                 .foregroundStyle(stage.color)
                 .lineLimit(1)
@@ -325,11 +325,14 @@ private struct EmptyLineup: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("NO SETS STARRED")
-                .appFont(10, weight: .heavy)
+                .appFont(12, weight: .heavy)
                 .tracking(1.6)
                 .foregroundStyle(Theme.inkFaint)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+            // Under the 56pt Six Caps floor because the widget can't grow, and allowed
+            // because it's a picture of dead air rather than words to read: the lines
+            // either side say it, and VoiceOver skips it.
             Text("DEAD AIR")
                 .marqueeFont(48)
                 .foregroundStyle(Theme.inkFaint)

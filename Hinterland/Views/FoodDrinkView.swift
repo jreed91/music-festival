@@ -86,7 +86,7 @@ struct FoodDrinkView: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
             Text(count.uppercased())
-                .appFont(11, weight: .bold)
+                .appFont(12, weight: .bold)
                 .tracking(1.6)
                 .foregroundStyle(Theme.inkFaint)
                 .multilineTextAlignment(.trailing)
@@ -142,8 +142,8 @@ struct FoodDrinkView: View {
                + "stand has an option that fits, not a whole menu — ask when you order. "
                + "Special dietary accommodation can be arranged in advance through "
                + "access@hinterlandiowa.com.")
-                .appFont(14)
-                .foregroundStyle(Theme.inkMuted)
+                .readingFont(14)
+                .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             if let source = store.vendors.source, let url = URL(string: source) {
                 Link(destination: url) {
@@ -185,14 +185,14 @@ struct VendorCard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(vendor.name.uppercased())
-                    .marqueeFont(36)
+                    .listNameFont()
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 if let hometown = vendor.hometown {
                     Text(hometown.uppercased())
-                        .appFont(11, weight: .bold)
+                        .appFont(12, weight: .bold)
                         .tracking(1.4)
                         .foregroundStyle(Theme.inkFaint)
                         .multilineTextAlignment(.trailing)
@@ -202,8 +202,8 @@ struct VendorCard: View {
 
             if !vendor.offerings.isEmpty {
                 Text(vendor.offerings)
-                    .appFont(15)
-                    .foregroundStyle(Theme.inkMuted)
+                    .readingFont(15)
+                    .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -256,7 +256,7 @@ struct DietaryBadge: View {
 
     var body: some View {
         Text((isOption ? "\(tag.label) option" : tag.label).uppercased())
-            .appFont(11, weight: .bold)
+            .appFont(12, weight: .bold)
             .tracking(1.2)
             .foregroundStyle(isOption ? Theme.inkMuted : Theme.firefly)
             .padding(.horizontal, 7)

@@ -128,7 +128,7 @@ struct WeatherView: View {
                         ForEach(hours) { hour in
                             VStack(spacing: 6) {
                                 Text(Format.hour(hour.date).uppercased())
-                                    .appFont(11, weight: .bold)
+                                    .appFont(12, weight: .bold)
                                     .tracking(1.2)
                                     .foregroundStyle(Theme.inkFaint)
                                     .fixedSize()
@@ -197,11 +197,11 @@ struct WeatherView: View {
             HStack(alignment: .lastTextBaseline, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(day.weekday.uppercased())
-                        .marqueeFont(40)
+                        .listNameFont()
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(Format.dayLabel(day).uppercased())
-                        .appFont(11, weight: .bold)
+                        .appFont(12, weight: .bold)
                         .tracking(1.4)
                         .foregroundStyle(Theme.inkFaint)
                 }
@@ -359,7 +359,7 @@ private struct WeatherStat: View {
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(label.uppercased())
-                    .appFont(11, weight: .bold)
+                    .appFont(12, weight: .bold)
                     .tracking(1.4)
                     .foregroundStyle(Theme.inkFaint)
                 Text(value)

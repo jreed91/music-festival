@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// One set in a list: start time, the artist in Six Caps, stage and rating, and the star
-/// that drives My Lineup. The SetRow of the After Dark design system.
+/// One set in a list: start time, the artist in heavy Barlow, stage and rating, and the
+/// star that drives My Lineup. The SetRow of the After Dark design system.
 ///
 /// The set on air is the one full-bleed `sodium` fill in a list; a starred set's time
 /// and star are `sodium`; a set that's over fades to `inkFaint`. Names wrap rather than
@@ -36,29 +36,31 @@ struct PerformanceRow: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(performance.artist.uppercased())
-                    .marqueeFont(38)
+                    .listNameFont()
                     .foregroundStyle(isLive ? Theme.onSodium : (isOver ? Theme.inkFaint : Theme.ink))
                     .fixedSize(horizontal: false, vertical: true)
 
                 FlowLayout(spacing: 10, lineSpacing: 6) {
                     if isLive {
                         Text("ON AIR")
-                            .appFont(11, weight: .heavy)
+                            .appFont(12, weight: .heavy)
                             .tracking(1.6)
                             .foregroundStyle(Theme.onSodium)
                     }
                     if isLive {
                         Text(Stage(name: performance.stage).displayName.uppercased())
-                            .appFont(10, weight: .bold)
+                            .appFont(12, weight: .bold)
                             .tracking(1.4)
                             .foregroundStyle(Theme.onSodium)
                     } else {
                         StageBadge(stage: Stage(name: performance.stage), compact: true)
                     }
+                    // How long it runs is part of deciding whether to go, so it's
+                    // muted rather than faint, until the set is over.
                     Text(Format.minutes(performance.duration))
-                        .appFont(10, weight: .bold)
+                        .appFont(12, weight: .bold)
                         .tracking(1.4)
-                        .foregroundStyle(isLive ? Theme.onSodium : Theme.inkFaint)
+                        .foregroundStyle(lengthColor)
                     // One number per row: yours if you gave one, the crowd's if you
                     // didn't. Both at this size is a row nobody can read at a glance.
                     if !isLive {
@@ -72,7 +74,7 @@ struct PerformanceRow: View {
 
                 if showsConflictWarning, let minutes = clashMinutes {
                     Text("CLASH · \(minutes) MIN")
-                        .appFont(11, weight: .heavy)
+                        .appFont(12, weight: .heavy)
                         .tracking(1.4)
                         .foregroundStyle(Theme.onCaution)
                         .padding(.horizontal, 7)
@@ -131,6 +133,11 @@ struct PerformanceRow: View {
         if isLive { return Theme.onSodium }
         if isOver { return Theme.inkFaint }
         return isStarred ? Theme.sodium : Theme.inkMuted
+    }
+
+    private var lengthColor: Color {
+        if isLive { return Theme.onSodium }
+        return isOver ? Theme.inkFaint : Theme.inkMuted
     }
 
     private var starColor: Color {

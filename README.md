@@ -697,10 +697,27 @@ short version, as it lands in code:
   yours (starred, rated). Stages are colour *and* shape so they survive colour
   blindness: Main is a sodium triangle, Miniland a firefly dot, Campfire a moon diamond
   (`StageGlyph` in `StageMark.swift`). `signal` red is only the now line and medical.
-- **Type** is two bundled fonts, both SIL Open Font License (licences beside them in
-  `Resources/Fonts`): Six Caps for names and big words through `marqueeFont`, never
-  under 40pt, and Barlow Condensed for everything else through `appFont`. Both are listed
-  under `UIAppFonts` for the app and the widget in `project.yml`.
+- **Greys** decide whether the app can be read, so each has one job. `ink` is names and
+  paragraphs. `inkMuted` (#C7C1B5) is second lines and anything small you need to read,
+  like a set's length or the day on a set card. `inkFaint` (#A8A093) is only for things
+  you can skip: past sets, section labels, footnotes. `unlit` is for marks, never words.
+  All three brighten a step with Increase Contrast.
+- **Type** is three bundled fonts, all SIL Open Font License (licences beside them in
+  `Resources/Fonts`), listed under `UIAppFonts` for the app and the widget in
+  `project.yml`:
+  - Six Caps through `marqueeFont`, for the big words only: the on-air name, day names,
+    the artist page, screen titles, hour numerals, Dead air. **56pt and up.** Its strokes
+    are 7% of the letter's height, which is glorious at 96pt and unreadable at 38. The
+    two exceptions are fixed-size surfaces: the Lock Screen Live Activity's on-air name
+    (52) and the widget's DEAD AIR (48, decoration VoiceOver skips).
+  - Barlow Condensed through `appFont` for everything else, and through `listNameFont`
+    (ExtraBold, 22pt, uppercase) for any name in a list: set rows, recap and ratings
+    rows, food stands, past lineups, forecast days, the widget's next set.
+  - Barlow Semi Condensed through `readingFont`, in `ink`, for paragraphs: bios, notes,
+    a stand's menu, the sentence in an empty state, explanations under a setting. A
+    condensed face slows you down across a paragraph.
+  - Nothing is under 12pt (13 on screen once `appFont` nudges it): `appFont` clamps
+    anything smaller.
 - **Schedule and My Lineup** share `HourTimeline` (`Views/Timeline.swift`): a giant hour
   numeral down the left, that hour's sets beside it, and a red now line above the first
   set still to come. Overlapping starred sets get the clash bar and a `CLASH · N MIN` tag.
@@ -753,10 +770,18 @@ opt-out in a later iOS, so the tab bar needs a native treatment before then.
 
 ## Accessibility
 
-Text follows the reader's Dynamic Type setting through `appFont`, which anchors each
-size to its nearest system text style, and `marqueeFont`, which scales with Large Title
-but stops at 1.3× so a headliner's name still fits across the screen. The day picker is the one place that stops
-growing, at the first accessibility size, because four days have to stay four columns.
+Text follows the reader's Dynamic Type setting through `appFont` (and `readingFont` and
+`listNameFont`, which are built on it), which anchors each size to its nearest system
+text style, and `marqueeFont`, which scales with Large Title but stops at 1.3× so a
+headliner's name still fits across the screen. The day picker is the one place that
+stops growing, at the first accessibility size, because four days have to stay four
+columns.
+
+iOS doesn't apply **Bold Text** to a bundled font, so `appFont` does it: every Barlow
+weight steps up one. Six Caps comes in one weight, which is part of why it's kept to
+56pt and up. **Increase Contrast** brightens the three greys a step
+(`Color(hex:increasedContrast:)` in `Theme`), resolved by UIKit so the screen changes the
+moment the setting does.
 
 For VoiceOver, every set in a list reads as one element, artist first: time, stage,
 whether it's on now, whether it's in My Lineup, and your rating or the crowd's.
@@ -861,8 +886,8 @@ Hinterland/
                FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
                WeatherCard, Timeline (hour timeline, day presets, filter chips, the
                corn Horizon), Components, Motion (glow, lamp strike, dead air)
-  Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon; Fonts — Six Caps
-               and Barlow Condensed with their licences
+  Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon; Fonts — Six Caps,
+               Barlow Condensed and Barlow Semi Condensed with their licences
   PrivacyInfo.xcprivacy — the app's privacy manifest
 HinterlandWidgets/
                the widget extension — UpNextWidget (Home and Lock Screen),

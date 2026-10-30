@@ -134,8 +134,8 @@ struct MyLineupView: View {
                 Text("\(pair.0.artist) and \(pair.1.artist) overlap "
                      + "\(Format.time(max(pair.0.start, pair.1.start)))–"
                      + "\(Format.time(min(pair.0.end, pair.1.end))).")
-                    .appFont(15)
-                    .foregroundStyle(Theme.inkMuted)
+                    .readingFont(15)
+                    .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -283,8 +283,8 @@ struct AlertSettingsView: View {
 
     private func note(_ text: String) -> some View {
         Text(text)
-            .appFont(15)
-            .foregroundStyle(Theme.inkMuted)
+            .readingFont(15)
+            .foregroundStyle(Theme.ink)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.top, 8)
     }
