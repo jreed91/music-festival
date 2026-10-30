@@ -55,6 +55,20 @@ struct HinterlandApp: App {
             ?? .systemFont(ofSize: 15, weight: .bold)
         navBar.titleTextAttributes = [.foregroundColor: UIColor(Theme.ink),
                                       .font: navTitle, .kern: 2.4]
+        // Back, Cancel, Save and Done in Barlow too, so the bar never drops into the
+        // system face. Their colour still comes from the tint, which is `ink`: a bar
+        // button is neither on air nor yours.
+        let barButtonFont = UIFont(name: AppFontFace.text(.semibold), size: 17)
+            ?? .systemFont(ofSize: 17, weight: .semibold)
+        let barButton = UIBarButtonItemAppearance(style: .plain)
+        barButton.normal.titleTextAttributes = [.font: barButtonFont]
+        navBar.buttonAppearance = barButton
+        navBar.backButtonAppearance = barButton
+        let doneFont = UIFont(name: AppFontFace.text(.heavy), size: 17)
+            ?? .systemFont(ofSize: 17, weight: .heavy)
+        let doneButton = UIBarButtonItemAppearance(style: .done)
+        doneButton.normal.titleTextAttributes = [.font: doneFont]
+        navBar.doneButtonAppearance = doneButton
         UINavigationBar.appearance().standardAppearance = navBar
         UINavigationBar.appearance().scrollEdgeAppearance = navBar
         UINavigationBar.appearance().compactAppearance = navBar

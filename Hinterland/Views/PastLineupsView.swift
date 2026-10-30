@@ -18,37 +18,59 @@ struct PastLineupsView: View {
     private var archive: PastLineupData { store.pastLineups }
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("THE ARCHIVE")
+                        .appFont(12, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text("PAST LINEUPS")
+                        .marqueeFont(88)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
+                .padding(.bottom, 8)
+                .overlay(alignment: .bottom) {
+                    Rectangle().fill(Theme.ink).frame(height: 2)
+                }
+
                 ForEach(yearsOnlyYouHave, id: \.year) { memory in
                     NavigationLink(value: PastLineupRoute.yours(memory.year)) {
                         MemoryOnlyRow(memory: memory)
                     }
+                    .buttonStyle(.plain)
                 }
                 ForEach(archive.years) { year in
                     NavigationLink(value: PastLineupRoute.year(year.year)) {
                         YearRow(year: year, memory: memories.memory(for: year.year))
                     }
+                    .buttonStyle(.plain)
                 }
-            } footer: {
-                Text(footer).appFont(11)
-            }
-            .listRowBackground(Theme.surface)
 
-            if let source = archive.source, let url = URL(string: source) {
-                Section {
+                Text(footer)
+                    .appFont(13)
+                    .foregroundStyle(Theme.inkFaint)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 16)
+
+                if let source = archive.source, let url = URL(string: source) {
                     Link(destination: url) {
                         Label("Past lineups on hinterlandiowa.com", systemImage: "arrow.up.right")
-                            .appFont(13)
-                            .foregroundStyle(Theme.accent)
                     }
+                    .buttonStyle(GlowButtonStyle(.quiet))
+                    .padding(.top, 16)
                 }
-                .listRowBackground(Theme.surface)
+
+                Horizon()
+                    .padding(.top, 48)
+                    .padding(.horizontal, -22)
             }
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle("Past Lineups")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -89,29 +111,28 @@ private struct YearRow: View {
     let memory: FestivalMemory?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
+        ArchiveRow {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(String(year.year))
-                    .appFont(17, weight: .bold)
+                    .marqueeFont(56)
                     .foregroundStyle(Theme.ink)
-                Spacer(minLength: 0)
-                Text("\(year.acts.count) acts")
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                Spacer(minLength: 8)
+                Text("\(year.acts.count) acts".uppercased())
+                    .appFont(11, weight: .bold)
+                    .tracking(1.6)
+                    .foregroundStyle(Theme.inkFaint)
+                    .fixedSize()
             }
             // The headliners are what anyone is scanning this list for; the rest of the
             // bill is one tap away.
             Text(year.headliners.joined(separator: " · "))
-                .appFont(12)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(15)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
             if let memory {
-                Label(yourLine(memory), systemImage: "star.fill")
-                    .appFont(11, weight: .semibold)
-                    .foregroundStyle(Theme.accent)
+                YoursLine(text: yourLine(memory))
             }
         }
-        .padding(.vertical, 3)
     }
 
     private func yourLine(_ memory: FestivalMemory) -> String {
@@ -130,19 +151,16 @@ private struct MemoryOnlyRow: View {
     let memory: FestivalMemory
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        ArchiveRow {
             Text(String(memory.year))
-                .appFont(17, weight: .bold)
+                .marqueeFont(56)
                 .foregroundStyle(Theme.ink)
             Text("The full bill arrives with the next app update.")
-                .appFont(12)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(15)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
-            Label(yourLine, systemImage: "star.fill")
-                .appFont(11, weight: .semibold)
-                .foregroundStyle(Theme.accent)
+            YoursLine(text: yourLine)
         }
-        .padding(.vertical, 3)
     }
 
     private var yourLine: String {
@@ -151,9 +169,45 @@ private struct MemoryOnlyRow: View {
     }
 }
 
+/// A year in the archive list: its lines, a chevron, and the hairline under it.
+private struct ArchiveRow<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                content
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right")
+                .appFont(12, weight: .semibold)
+                .foregroundStyle(Theme.inkFaint)
+                .accessibilityHidden(true)
+        }
+        .padding(.vertical, 14)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.hairline).frame(height: 1)
+        }
+        .contentShape(Rectangle())
+    }
+}
+
+/// "You were there": the one `sodium` line in the archive, because it's yours.
+private struct YoursLine: View {
+    let text: String
+
+    var body: some View {
+        Label(text.uppercased(), systemImage: "star.fill")
+            .appFont(12, weight: .bold)
+            .tracking(1.4)
+            .foregroundStyle(Theme.sodium)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
 // MARK: - One year
 
-/// A year's whole bill, day by day, headliner first.
+/// A year's whole bill, day by day, headliner first, set like a festival poster.
 struct PastYearView: View {
     let year: PastLineupYear
 
@@ -162,18 +216,38 @@ struct PastYearView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(store.data.festival.name) · the bill".uppercased())
+                        .appFont(12, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text(String(year.year))
+                        .marqueeFont(96)
+                        .foregroundStyle(Theme.ink)
+                        .accessibilityAddTraits(.isHeader)
+                }
+
                 if let memory = memories.memory(for: year.year) {
                     yourYear(memory)
+                        .padding(.top, 16)
                 }
+
                 ForEach(year.days) { day in
-                    dayCard(day)
+                    dayBlock(day)
                 }
-                footer.padding(.top, 6)
+
+                footer
+                    .padding(.top, 24)
+
+                Horizon()
+                    .padding(.top, 48)
+                    .padding(.horizontal, -22)
             }
-            .padding(20)
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle(String(year.year))
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -187,79 +261,83 @@ struct PastYearView: View {
             detail += " · \(recap.ratedCount) rated · \(Format.rating(average)) average"
         }
         return NavigationLink(value: PastLineupRoute.yours(memory.year)) {
-            HStack(spacing: 10) {
-                Image(systemName: "star.leadinghalf.filled")
-                    .appFont(18)
-                    .foregroundStyle(Theme.accent)
-                    .frame(width: 26)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Your \(String(memory.year)) recap and ratings")
-                        .appFont(14, weight: .semibold)
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("YOUR \(String(memory.year))")
+                        .appFont(13, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.sodium)
+                    Text("Your recap and ratings")
+                        .appFont(17, weight: .semibold)
                         .foregroundStyle(Theme.ink)
                     Text(detail)
-                        .appFont(11)
-                        .foregroundStyle(Theme.tertiaryText)
+                        .appFont(13)
+                        .foregroundStyle(Theme.inkFaint)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .appFont(12, weight: .semibold)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .foregroundStyle(Theme.inkFaint)
+                    .accessibilityHidden(true)
             }
             .padding(14)
-            .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Theme.nightRaised)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
 
-    private func dayCard(_ day: PastLineupDay) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+    /// One night of the bill: the headliner in `title` over the 2pt rule, then everyone
+    /// else in `list-name`, the way the poster stacks them.
+    private func dayBlock(_ day: PastLineupDay) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
             actRow(PastAct(name: day.headliner), isHeadliner: true)
-            if !day.support.isEmpty {
-                Divider().overlay(Theme.hairline)
-                VStack(alignment: .leading, spacing: 9) {
-                    ForEach(day.support) { support in
-                        actRow(support, isHeadliner: false)
-                    }
+                .padding(.top, 28)
+                .padding(.bottom, 6)
+                .overlay(alignment: .bottom) {
+                    Rectangle().fill(Theme.ink).frame(height: 2)
                 }
+            ForEach(day.support) { support in
+                actRow(support, isHeadliner: false)
+                    .padding(.vertical, 8)
+                    .overlay(alignment: .bottom) {
+                        Rectangle().fill(Theme.hairline).frame(height: 1)
+                    }
             }
         }
-        .padding(14)
-        .background(Theme.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     /// One name on the bill, with the side stage the archive gives it. Nothing here taps
     /// through: it's a list of names, and most of them have no page anywhere in the app.
     private func actRow(_ act: PastAct, isHeadliner: Bool) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(act.name)
-                .appFont(isHeadliner ? 19 : 15, weight: isHeadliner ? .bold : .regular)
-                .foregroundStyle(Theme.ink.opacity(isHeadliner ? 1 : 0.86))
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(act.name.uppercased())
+                .marqueeFont(isHeadliner ? 56 : 40)
+                .foregroundStyle(isHeadliner ? Theme.ink : Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 8)
             if let stage = act.stage {
                 StageBadge(stage: Stage(name: stage), compact: true)
             }
-            Spacer(minLength: 0)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isHeadliner ? [.isHeader] : [])
     }
 
     private var footer: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 16) {
             Text("The festival lists each day by its headliner and doesn't say which day of "
                + "the weekend it was, so neither does this.")
-                .appFont(11)
-                .foregroundStyle(Theme.tertiaryText)
+                .appFont(13)
+                .foregroundStyle(Theme.inkFaint)
+                .fixedSize(horizontal: false, vertical: true)
             if let source = store.pastLineups.source, let url = URL(string: source) {
                 Link(destination: url) {
                     Label("Past lineups on hinterlandiowa.com", systemImage: "arrow.up.right")
-                        .appFont(12)
-                        .foregroundStyle(Theme.accent)
                 }
+                .buttonStyle(GlowButtonStyle(.quiet))
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
     }
 }

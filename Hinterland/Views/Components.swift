@@ -193,24 +193,29 @@ struct ArtistImage: View {
     }
 }
 
-/// Dead air: what a screen says when there's nothing on it. A quiet callsign, the title
-/// big and faint, and one sentence saying what will be there or what to do.
+/// Dead air: what a screen says when there's nothing on it. A quiet callsign saying what's
+/// missing, DEAD AIR big and faint, and one sentence saying what will be there or what to do.
 struct EmptyStateView: View {
-    let symbol: String
     let title: String
     let message: String
+    /// The big words. Dead air, unless something is on its way.
+    var headline = "Dead air"
 
     var body: some View {
         VStack(spacing: 10) {
-            Image(systemName: symbol)
-                .appFont(28, weight: .semibold)
-                .foregroundStyle(Theme.unlit)
-                .accessibilityHidden(true)
             Text(title.uppercased())
-                .marqueeFont(52)
+                .appFont(13, weight: .bold)
+                .tracking(2.4)
                 .foregroundStyle(Theme.inkFaint)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+            Text(headline.uppercased())
+                .marqueeFont(56)
+                .foregroundStyle(Theme.inkFaint)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                // Set dressing: the callsign and the sentence already say it.
+                .accessibilityHidden(true)
             Text(message)
                 .appFont(16)
                 .foregroundStyle(Theme.inkMuted)
@@ -220,6 +225,219 @@ struct EmptyStateView: View {
         .frame(maxWidth: 300)
         .padding(32)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// An empty state that is the whole screen: dead air in the middle and the corn along the
+/// foot. It scrolls, so at the largest text sizes the sentence runs on rather than being
+/// cut off at the bottom.
+struct DeadAirScreen: View {
+    let title: String
+    let message: String
+    var headline = "Dead air"
+
+    var body: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 0) {
+                    Spacer(minLength: 48)
+                    EmptyStateView(title: title, message: message, headline: headline)
+                    Spacer(minLength: 48)
+                    Horizon()
+                }
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+        }
+        .background(Theme.night)
+    }
+}
+
+/// How a section opens on a screen with more than one: a quiet callsign over a 2pt `ink`
+/// rule, with an optional count on the right ("3 OF 9 STANDS").
+struct SectionHeading: View {
+    let title: String
+    var detail: String?
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Text(title.uppercased())
+                .appFont(13, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.inkFaint)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 8)
+            if let detail {
+                Text(detail.uppercased())
+                    .appFont(11, weight: .bold)
+                    .tracking(1.6)
+                    .foregroundStyle(Theme.inkFaint)
+                    .multilineTextAlignment(.trailing)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.top, 24)
+        .padding(.bottom, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.ink).frame(height: 2)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Buttons shaped like a car radio's lit buttons: the GlowButton of the design system.
+///
+/// `.primary` is the one `sodium`-outlined button a screen gets, and lights solid while
+/// it's pressed, the way the hardware does. `.on` is a toggle that's on (In my lineup).
+/// `.quiet` is everything else: Directions, Apple Maps, Refresh. Works on `Link` and
+/// `ShareLink` as well as `Button`. Labels wrap rather than truncate.
+struct GlowButtonStyle: ButtonStyle {
+    enum Kind { case primary, on, quiet }
+
+    var kind: Kind
+
+    init(_ kind: Kind = .primary) {
+        self.kind = kind
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .appFont(15, weight: .bold)
+            .tracking(2)
+            .textCase(.uppercase)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundStyle(textColor(pressed: configuration.isPressed))
+            .padding(.horizontal, 18)
+            .padding(.vertical, 10)
+            .frame(minHeight: 48)
+            .background(fill(pressed: configuration.isPressed),
+                        in: RoundedRectangle(cornerRadius: 6))
+            .overlay(RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(kind == .quiet ? Theme.hairline : Theme.sodium, lineWidth: 1.5))
+            .shadow(color: kind == .quiet ? .clear : Theme.sodium.opacity(0.7), radius: 5)
+            .opacity(kind == .quiet && configuration.isPressed ? 0.6 : 1)
+            .contentShape(RoundedRectangle(cornerRadius: 6))
+    }
+
+    private func isLit(pressed: Bool) -> Bool {
+        kind == .on || (kind == .primary && pressed)
+    }
+
+    private func textColor(pressed: Bool) -> Color {
+        if isLit(pressed: pressed) { return Theme.onSodium }
+        return kind == .quiet ? Theme.ink : Theme.sodium
+    }
+
+    private func fill(pressed: Bool) -> Color {
+        if isLit(pressed: pressed) { return Theme.sodium }
+        return kind == .quiet ? Color.clear : Theme.glass
+    }
+}
+
+/// A switch drawn as a lit hardware rocker: a `glass` slot whose square key slides across
+/// and lights `sodium` when the setting is on, since a setting you turned on is yours.
+/// The label sits to its left in `ink` and wraps.
+///
+/// VoiceOver gets a plain system switch in its place, so it's read and flipped exactly as
+/// every other switch on the phone.
+struct GlowToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            HStack(alignment: .center, spacing: 14) {
+                configuration.label
+                    .appFont(17, weight: .semibold)
+                    .foregroundStyle(Theme.ink)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                GlowSwitch(isOn: configuration.isOn)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityRepresentation {
+            Toggle(isOn: configuration.$isOn) {
+                configuration.label
+            }
+            .toggleStyle(.switch)
+        }
+    }
+}
+
+private struct GlowSwitch: View {
+    let isOn: Bool
+
+    var body: some View {
+        ZStack(alignment: isOn ? .trailing : .leading) {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Theme.glass)
+            RoundedRectangle(cornerRadius: 3)
+                .fill(isOn ? Theme.sodium : Theme.unlit)
+                .frame(width: 22, height: 22)
+                .shadow(color: isOn ? Theme.sodium.opacity(0.7) : .clear, radius: 5)
+                .padding(4)
+        }
+        .frame(width: 58, height: 30)
+        .overlay(RoundedRectangle(cornerRadius: 6)
+            .strokeBorder(isOn ? Theme.sodium : Theme.hairline, lineWidth: 1.5))
+        .animation(.snappy(duration: 0.18), value: isOn)
+    }
+}
+
+/// The search box, set into the page under the title rather than up in the navigation
+/// bar, where iOS draws its own rounded grey field: a square `nightRaised` field with a
+/// hairline edge that turns `ink` while you type.
+struct SearchField: View {
+    let prompt: String
+    @Binding var text: String
+
+    @FocusState private var isFocused: Bool
+
+    /// Written out because the private focus state would otherwise leave the synthesized
+    /// initializer private to this file.
+    init(prompt: String, text: Binding<String>) {
+        self.prompt = prompt
+        _text = text
+    }
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .appFont(15, weight: .semibold)
+                .foregroundStyle(Theme.inkFaint)
+                .accessibilityHidden(true)
+            TextField(prompt, text: $text,
+                      prompt: Text(prompt).foregroundStyle(Theme.inkFaint))
+                .appFont(17)
+                .foregroundStyle(Theme.ink)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+                .focused($isFocused)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark")
+                        .appFont(13, weight: .bold)
+                        .foregroundStyle(Theme.inkMuted)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Clear search")
+            }
+        }
+        .padding(.leading, 12)
+        .frame(minHeight: 44)
+        .background(Theme.nightRaised)
+        .overlay(Rectangle().strokeBorder(isFocused ? Theme.ink : Theme.hairline, lineWidth: 1))
     }
 }
 

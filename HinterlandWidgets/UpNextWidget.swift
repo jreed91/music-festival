@@ -101,12 +101,18 @@ struct UpNextWidgetView: View {
     // MARK: Home Screen
 
     private var small: some View {
+        headlineColumn(showsProgress: false)
+    }
+
+    /// The headline set: callsign, the artist in Six Caps, its stage, and when. The medium
+    /// widget adds the bar that fills across a set that's on.
+    private func headlineColumn(showsProgress: Bool) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if let headline = entry.focus.headline {
                 SetLabel(focus: entry.focus, performance: headline, at: entry.date)
                 let live = headline.isLive(at: entry.date)
                 Text(headline.artist.uppercased())
-                    .marqueeFont(52)
+                    .marqueeFont(56)
                     .foregroundStyle(live ? Theme.sodium : Theme.ink)
                     .onAirGlow(live)
                     // A widget can't grow, so a long name shrinks to fit rather than
@@ -118,6 +124,10 @@ struct UpNextWidgetView: View {
                     .padding(.top, 4)
                 Spacer(minLength: 4)
                 CountdownLine(performance: headline, at: entry.date)
+                if showsProgress, live {
+                    SetProgressBar(start: headline.start, end: headline.end)
+                        .padding(.top, 6)
+                }
             } else {
                 EmptyLineup()
             }
@@ -130,9 +140,9 @@ struct UpNextWidgetView: View {
 
     private var medium: some View {
         HStack(alignment: .top, spacing: 14) {
-            small
+            headlineColumn(showsProgress: true)
             if let following = followingSet {
-                Divider().overlay(Theme.hairline)
+                Rectangle().fill(Theme.hairline).frame(width: 1)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("THEN")
                         .appFont(10, weight: .heavy)
@@ -175,23 +185,30 @@ struct UpNextWidgetView: View {
     private var rectangular: some View {
         VStack(alignment: .leading, spacing: 1) {
             if let headline = entry.focus.headline {
-                Text(headline.isLive(at: entry.date) ? "ON NOW" : "UP NEXT")
+                Text(headline.isLive(at: entry.date) ? "ON AIR" : "UP NEXT")
                     .appFont(11, weight: .bold)
+                    .tracking(1.4)
                     .widgetAccentable()
-                Text(headline.artist)
-                    .appFont(15, weight: .semibold)
+                // Three lines is all the Lock Screen gives this, so a long name shrinks to
+                // fit rather than losing its end.
+                Text(headline.artist.uppercased())
+                    .appFont(16, weight: .bold)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 Text("\(Stage(name: headline.stage).displayName) · \(Format.time(headline.start))")
                     .appFont(12)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             } else {
-                Text("Hinterland")
-                    .appFont(12, weight: .semibold)
+                Text("DEAD AIR")
+                    .appFont(11, weight: .bold)
+                    .tracking(1.4)
                     .widgetAccentable()
                 Text("Star a set to see it here")
                     .appFont(12)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -303,19 +320,42 @@ private struct WidgetStageLine: View {
     }
 }
 
+/// The design system's dead air, at widget size: what's missing, DEAD AIR, and what to do.
 private struct EmptyLineup: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Image(systemName: "star")
-                .appFont(18)
-                .foregroundStyle(Theme.unlit)
-                .accessibilityHidden(true)
-            Text("DEAD AIR")
-                .marqueeFont(40)
+            Text("NO SETS STARRED")
+                .appFont(10, weight: .heavy)
+                .tracking(1.6)
                 .foregroundStyle(Theme.inkFaint)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Text("DEAD AIR")
+                .marqueeFont(48)
+                .foregroundStyle(Theme.inkFaint)
+                .accessibilityHidden(true)
             Text("Star sets in the app and they show up here.")
-                .appFont(11)
-                .foregroundStyle(Theme.secondaryText)
+                .appFont(12)
+                .foregroundStyle(Theme.inkMuted)
+                .minimumScaleFactor(0.8)
         }
+    }
+}
+
+/// A set's progress as the design system draws it: a 3pt `sodium` bar on an `unlit`
+/// track that fills on its own as the set plays, so the widget never needs waking for it.
+private struct SetProgressBar: View {
+    let start: Date
+    let end: Date
+
+    var body: some View {
+        ProgressView(timerInterval: start...end, countsDown: false) {
+            EmptyView()
+        } currentValueLabel: {
+            EmptyView()
+        }
+        .progressViewStyle(.linear)
+        .tint(Theme.sodium)
+        .accessibilityHidden(true)
     }
 }

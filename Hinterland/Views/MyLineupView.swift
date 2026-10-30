@@ -30,13 +30,10 @@ struct MyLineupView: View {
         NavigationStack {
             Group {
                 if starred.isEmpty {
-                    EmptyStateView(
-                        symbol: "star",
+                    DeadAirScreen(
                         title: "No sets starred yet",
-                        message: "Tap the star on any set in the Schedule and it shows up here, "
-                               + "with a reminder before it starts.")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Theme.night)
+                        message: "Star a set on the Schedule and it shows up here, with a "
+                               + "reminder before it starts.")
                 } else {
                     list
                 }
@@ -167,77 +164,78 @@ struct AlertSettingsView: View {
         @Bindable var activity = liveActivity
 
         NavigationStack {
-            Form {
-                Section {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("MY LINEUP")
+                        .appFont(12, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("ALERTS")
+                        .marqueeFont(88)
+                        .foregroundStyle(Theme.ink)
+                        .accessibilityAddTraits(.isHeader)
+
+                    SectionHeading(title: "Reminders")
                     Toggle("Remind me before my sets", isOn: $bindable.isEnabled)
-                        .tint(Theme.accent)
-                } footer: {
-                    Text("Reminders are scheduled on your phone, so they still fire with no "
+                        .toggleStyle(GlowToggleStyle())
+                        .padding(.top, 12)
+                    note("Reminders are scheduled on your phone, so they still fire with no "
                        + "signal or in airplane mode.")
-                }
 
-                if notifications.isEnabled {
-                    Section("How much warning") {
-                        Picker("Lead time", selection: $bindable.leadMinutes) {
-                            ForEach(leadOptions, id: \.self) { minutes in
-                                Text("\(minutes) minutes before").tag(minutes)
-                            }
-                        }
-                        .pickerStyle(.inline)
-                        .labelsHidden()
+                    if notifications.isEnabled {
+                        SectionHeading(title: "How much warning")
+                        leadPresets(selection: $bindable.leadMinutes)
+                            .padding(.top, 14)
                     }
-                }
 
-                if notifications.authorization == .denied {
-                    Section {
-                        Label("Notifications are turned off for Hinterland in iOS Settings.",
-                              systemImage: "exclamationmark.circle")
-                            .foregroundStyle(Theme.warning)
+                    if notifications.authorization == .denied {
+                        problem("Notifications are turned off for Hinterland in iOS Settings.")
                     }
-                }
 
-                Section {
+                    SectionHeading(title: "On the Lock Screen")
                     Toggle("Live Activity", isOn: $activity.isEnabled)
-                        .tint(Theme.accent)
+                        .toggleStyle(GlowToggleStyle())
+                        .padding(.top, 12)
 
                     if !liveActivity.isPermittedBySystem {
-                        Label("Live Activities are turned off for Hinterland in iOS Settings.",
-                              systemImage: "exclamationmark.circle")
-                            .foregroundStyle(Theme.warning)
+                        problem("Live Activities are turned off for Hinterland in iOS Settings.")
                     } else if let reason = liveActivity.failureReason {
                         // Otherwise a card that never appears looks like a bug in the
                         // schedule rather than something iOS declined.
-                        Label(reason, systemImage: "exclamationmark.circle")
-                            .foregroundStyle(Theme.warning)
+                        problem(reason)
                     }
-                } header: {
-                    Text("On the Lock Screen")
-                } footer: {
-                    Text("Puts the starred set you're watching on the Lock Screen and in the "
+
+                    note("Puts the starred set you're watching on the Lock Screen and in the "
                        + "Dynamic Island, from 90 minutes before it starts until it ends. It "
                        + "counts down on its own, so it keeps working with no signal.")
-                }
 
-                // Only ever true on a build whose App ID is missing the app group, which
-                // is a signing problem rather than anything the user did — but it's worth
-                // saying, because the symptom is a widget that sits there empty.
-                if !AppGroup.isAvailable {
-                    Section {
-                        Label("The Home Screen widget can't read your lineup on this build "
-                            + "— its app group isn't set up.",
-                              systemImage: "square.grid.2x2")
-                            .foregroundStyle(Theme.warning)
+                    // Only ever true on a build whose App ID is missing the app group, which
+                    // is a signing problem rather than anything the user did — but it's worth
+                    // saying, because the symptom is a widget that sits there empty.
+                    if !AppGroup.isAvailable {
+                        problem("The Home Screen widget can't read your lineup on this build "
+                              + "— its app group isn't set up.",
+                                symbol: "square.grid.2x2")
                     }
                 }
+                .padding(.horizontal, 22)
+                .padding(.top, 8)
+                .padding(.bottom, 32)
             }
+            .background(Theme.nightSheet)
             .navigationTitle("Alerts")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Theme.nightSheet, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }.tint(Theme.accent)
+                    Button("Done") { dismiss() }
                 }
             }
         }
+        .tint(Theme.ink)
+        .presentationBackground(Theme.nightSheet)
         .task { await notifications.refreshAuthorization() }
         .onChange(of: notifications.isEnabled) { _, enabled in
             Task {
@@ -250,6 +248,52 @@ struct AlertSettingsView: View {
             }
         }
         .onChange(of: notifications.leadMinutes) { _, _ in applyReminders() }
+    }
+
+    /// The lead times as preset buttons, the same hardware as the day picker: the one
+    /// you picked is lit.
+    private func leadPresets(selection: Binding<Int>) -> some View {
+        FlowLayout(spacing: 8, lineSpacing: 8) {
+            ForEach(leadOptions, id: \.self) { minutes in
+                let isSelected = selection.wrappedValue == minutes
+                Button {
+                    selection.wrappedValue = minutes
+                } label: {
+                    Text("\(minutes) MIN")
+                        .appFont(15, weight: .bold)
+                        .tracking(1.8)
+                        .monospacedDigit()
+                        .foregroundStyle(isSelected ? Theme.sodium : Theme.inkMuted)
+                        .padding(.horizontal, 14)
+                        .frame(minWidth: 72, minHeight: 44)
+                        .background(Theme.glass, in: RoundedRectangle(cornerRadius: 6))
+                        .overlay(RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(isSelected ? Theme.sodium : Theme.hairline, lineWidth: 1))
+                        .shadow(color: isSelected ? Theme.sodium.opacity(0.6) : .clear, radius: 6)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(minutes) minutes before")
+                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+            }
+        }
+    }
+
+    private func note(_ text: String) -> some View {
+        Text(text)
+            .appFont(15)
+            .foregroundStyle(Theme.inkMuted)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.top, 8)
+    }
+
+    /// Something iOS or the build is refusing, in `signal`: it's the reason a switch
+    /// above it does nothing.
+    private func problem(_ text: String, symbol: String = "exclamationmark.circle") -> some View {
+        Label(text, systemImage: symbol)
+            .appFont(15, weight: .semibold)
+            .foregroundStyle(Theme.signal)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.top, 12)
     }
 
     private func applyReminders() {

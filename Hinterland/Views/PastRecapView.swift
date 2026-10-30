@@ -34,7 +34,7 @@ struct PastRecapView: View {
                              label: "hours of music")
                     if let average = recap.average {
                         StatTile(value: Format.rating(average), label: "your average",
-                                 tint: Theme.accent)
+                                 tint: Theme.sodium)
                     } else {
                         StatTile(value: "\(recap.ratedCount)", label: "sets rated")
                     }
@@ -42,7 +42,7 @@ struct PastRecapView: View {
                 .padding(.top, 4)
 
                 if !recap.rated.isEmpty {
-                    sectionHeading("YOUR SETS")
+                    SectionHeading(title: "Your sets")
                     ForEach(Array(recap.rated.enumerated()), id: \.element.id) { index, entry in
                         setRow(entry.performance, rank: index + 1, stars: entry.rating.stars,
                                note: entry.rating.note)
@@ -50,7 +50,7 @@ struct PastRecapView: View {
                 }
 
                 if !alsoSeen.isEmpty {
-                    sectionHeading("STARRED, NEVER RATED")
+                    SectionHeading(title: "Starred, never rated")
                     ForEach(alsoSeen) { performance in
                         setRow(performance, rank: nil, stars: nil, note: "")
                     }
@@ -58,9 +58,12 @@ struct PastRecapView: View {
 
                 superlatives
                 crowdSection
+
+                Horizon()
+                    .padding(.top, 40)
+                    .padding(.horizontal, -22)
             }
             .padding(.horizontal, 22)
-            .padding(.bottom, 24)
         }
         .background(Theme.night)
         .navigationTitle("Your " + String(memory.year))
@@ -71,7 +74,6 @@ struct PastRecapView: View {
                     ShareLink(item: recap.shareText) {
                         Image(systemName: "square.and.arrow.up")
                     }
-                    .tint(Theme.accent)
                     .accessibilityLabel("Share this recap")
                 }
             }
@@ -119,19 +121,22 @@ struct PastRecapView: View {
             HStack(spacing: 12) {
                 if let rank {
                     Text("\(rank)")
-                        .appFont(20, weight: .heavy)
-                        .foregroundStyle(Theme.tertiaryText)
-                        .frame(width: 18)
+                        .marqueeFont(48)
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize()
+                        .frame(minWidth: 24)
                 }
-                ArtistImage(artist: memory.schedule.artist(id: performance.artistId), size: 44)
+                ArtistImage(artist: memory.schedule.artist(id: performance.artistId), size: 48)
                     .clipShape(Rectangle())
                     .overlay(Rectangle().strokeBorder(Theme.hairline))
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(performance.artist)
-                        .appFont(15, weight: .semibold)
+                    Text(performance.artist.uppercased())
+                        .marqueeFont(36)
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
-                    HStack(spacing: 6) {
+                    // Wraps on a narrow phone or at big type rather than pushing the stage
+                    // off the edge.
+                    FlowLayout(spacing: 8, lineSpacing: 4) {
                         if let stars {
                             RatingBadge(stars: stars, compact: true)
                         }
@@ -140,9 +145,11 @@ struct PastRecapView: View {
                         }
                         StageBadge(stage: Stage(name: performance.stage), compact: true)
                     }
-                    Text(when(performance))
-                        .appFont(10)
-                        .foregroundStyle(Theme.tertiaryText)
+                    Text(when(performance).uppercased())
+                        .appFont(12, weight: .bold)
+                        .tracking(1.2)
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
             }
@@ -152,8 +159,8 @@ struct PastRecapView: View {
             .accessibilityLabel(spokenSet(performance, rank: rank, stars: stars))
             if !note.isEmpty {
                 Text(note)
-                    .appFont(12)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -216,17 +223,17 @@ struct PastRecapView: View {
     private func factRow(symbol: String, title: String, detail: String) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: symbol)
-                .appFont(14)
-                .foregroundStyle(Theme.accent)
-                .frame(width: 20)
+                .appFont(16)
+                .foregroundStyle(Theme.inkMuted)
+                .frame(width: 22)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .appFont(13, weight: .semibold)
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(Theme.ink)
                 Text(detail)
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(14)
+                    .foregroundStyle(Theme.inkMuted)
             }
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
@@ -240,24 +247,25 @@ struct PastRecapView: View {
     private var crowdSection: some View {
         Group {
             if !memory.crowdTop.isEmpty {
-                sectionHeading("THE FESTIVAL'S BEST")
+                SectionHeading(title: "The festival's best")
                 ForEach(Array(memory.crowdTop.enumerated()), id: \.element.id) { index, entry in
                     HStack(spacing: 12) {
                         Text("\(index + 1)")
-                            .appFont(20, weight: .heavy)
-                            .foregroundStyle(Theme.tertiaryText)
-                            .frame(width: 18)
+                            .marqueeFont(48)
+                            .foregroundStyle(Theme.inkFaint)
+                            .fixedSize()
+                            .frame(minWidth: 24)
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(entry.performance.artist)
-                                .appFont(15, weight: .semibold)
+                            Text(entry.performance.artist.uppercased())
+                                .marqueeFont(36)
                                 .foregroundStyle(Theme.ink)
                                 .fixedSize(horizontal: false, vertical: true)
-                            HStack(spacing: 6) {
+                            FlowLayout(spacing: 8, lineSpacing: 4) {
                                 CrowdBadge(rating: entry.rating, compact: true)
                                 Text("\(entry.rating.count) "
                                    + "\(entry.rating.count == 1 ? "rating" : "ratings")")
-                                    .appFont(10)
-                                    .foregroundStyle(Theme.tertiaryText)
+                                    .appFont(12)
+                                    .foregroundStyle(Theme.inkFaint)
                                 StageBadge(stage: Stage(name: entry.performance.stage),
                                            compact: true)
                             }
@@ -274,22 +282,13 @@ struct PastRecapView: View {
                                       + Stage(name: entry.performance.stage).displayName)
                 }
                 if let fetchedAt = memory.crowdFetchedAt {
-                    Text("Everyone's ratings as of "
+                    Text("The valley's ratings as of "
                        + fetchedAt.formatted(date: .abbreviated, time: .omitted) + ".")
-                        .appFont(11)
-                        .foregroundStyle(Theme.tertiaryText)
-                        .padding(.horizontal, 4)
+                        .appFont(13)
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
-    }
-
-    private func sectionHeading(_ text: String) -> some View {
-        Text(text)
-            .appFont(12, weight: .bold)
-            .foregroundStyle(Theme.tertiaryText)
-            .padding(.top, 12)
-            .padding(.horizontal, 4)
-            .accessibilityAddTraits(.isHeader)
     }
 }

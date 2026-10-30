@@ -9,28 +9,6 @@ enum MapRoute: Hashable {
     case image(String)
 }
 
-/// A map row's thumbnail — bundled artwork, so it draws with no network.
-struct MapThumbnail: View {
-    let asset: String
-
-    var body: some View {
-        Group {
-            if UIImage(named: asset) != nil {
-                Image(asset).resizable().scaledToFill()
-            } else {
-                ZStack {
-                    Theme.surfaceRaised
-                    Image(systemName: "map")
-                        .appFont(18)
-                        .foregroundStyle(Theme.tertiaryText)
-                }
-            }
-        }
-        .frame(width: 64, height: 64)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-    }
-}
-
 // MARK: - Full-screen map image
 
 /// A bundled map, pinch-zoomable. `UIScrollView` rather than SwiftUI gestures so that
@@ -40,8 +18,9 @@ struct MapImageView: View {
     let map: FestivalMap
 
     var body: some View {
+        // The original daytime art, not night-graded: this is where you come to read it.
         ZoomableImage(imageName: map.asset, title: map.title)
-            .background(Theme.background)
+            .background(Theme.night)
             .navigationTitle(map.title)
             .navigationBarTitleDisplayMode(.inline)
             .ignoresSafeArea(edges: .bottom)

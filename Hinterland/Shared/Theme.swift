@@ -5,9 +5,8 @@ import SwiftUI
 /// glowing, and `sodium` means only two things — on air right now, or yours.
 ///
 /// The names and values come from the After Dark design system, which is where the
-/// rules for using them live. The older names further down (`background`, `accent`…)
-/// map onto the new ones so screens that haven't been restyled still land in the
-/// right place.
+/// rules for using them live. They are the only colours: every screen, the widget and the
+/// Live Activity are built from these, and there are no older aliases left to fall back on.
 ///
 /// Lives in `Shared` because the widget and the Live Activity draw the same festival in
 /// the same colours, and a second copy of these numbers would drift the first time one
@@ -50,17 +49,6 @@ enum Theme {
     static let caution = Color(hex: 0xF5C400)
     static let onCaution = Color(hex: 0x141414)
 
-    // MARK: Older names
-
-    static let background = night
-    static let surface = nightRaised
-    static let surfaceRaised = nightSheet
-    static let accent = sodium
-    static let secondaryText = inkMuted
-    static let tertiaryText = inkFaint
-    static let warning = signal
-    /// Dietary tags on the food vendors.
-    static let dietary = firefly
     /// Everyone else's ratings. Never `sodium` — that colour is your rating — and never
     /// fireflies, so the two numbers can't be mistaken for each other.
     static let crowd = inkMuted
@@ -100,11 +88,8 @@ extension View {
     /// A fixed size ignores Dynamic Type completely, which for an app read at arm's
     /// length in a field, in the sun, by a crowd of every age is the wrong default. This
     /// keeps each hand-tuned size exactly as it is at the default setting and scales from
-    /// there. `design` is accepted for the callers written before the custom face, and
-    /// ignored: Barlow has no rounded cut.
-    func appFont(_ size: CGFloat,
-                 weight: Font.Weight = .regular,
-                 design: Font.Design = .default) -> some View {
+    /// there.
+    func appFont(_ size: CGFloat, weight: Font.Weight = .regular) -> some View {
         modifier(ScaledFont(size: size, weight: weight))
     }
 

@@ -48,10 +48,13 @@ struct ScheduleView: View {
                 }
 
                 freshness
+
+                Horizon()
+                    .padding(.top, 32)
+                    .padding(.horizontal, -22)
             }
             .padding(.horizontal, 22)
             .padding(.top, 8)
-            .padding(.bottom, 32)
         }
         .background(Theme.night)
         .navigationTitle("Schedule")
@@ -85,15 +88,16 @@ struct ScheduleView: View {
     private var freshness: some View {
         VStack(spacing: 4) {
             if let error = store.refreshError {
-                Text(error).foregroundStyle(Theme.warning)
+                Text(error).foregroundStyle(Theme.signal)
             }
             Text("Set times last updated "
                + store.data.generatedAt.formatted(date: .abbreviated, time: .shortened)
                + ". Pull down to check for updates.")
-                .foregroundStyle(Theme.tertiaryText)
+                .foregroundStyle(Theme.inkFaint)
         }
-        .appFont(11)
+        .appFont(13)
         .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
         .padding(.top, 10)
     }

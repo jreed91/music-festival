@@ -30,14 +30,11 @@ struct RatingsView: View {
     var body: some View {
         Group {
             if ranked.isEmpty && awaiting.isEmpty {
-                EmptyStateView(
-                    symbol: "star.leadinghalf.filled",
+                DeadAirScreen(
                     title: "Nothing rated yet",
-                    message: "Once a set is under way, open the artist and give it one to five "
-                           + "stars. They show up here, ranked, next to what everyone else "
-                           + "thought of the same set.")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Theme.background)
+                    message: "Once a set is under way, open the artist and rate it from one "
+                           + "to five. Your ratings show up here, ranked, next to what the "
+                           + "valley thought of the same set.")
             } else {
                 list
             }
@@ -50,7 +47,6 @@ struct RatingsView: View {
                     ShareLink(item: recapText) {
                         Image(systemName: "square.and.arrow.up")
                     }
-                    .tint(Theme.accent)
                     .accessibilityLabel("Share my ratings")
                 }
             }
@@ -67,7 +63,19 @@ struct RatingsView: View {
 
     private var list: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(store.data.festival.name) \(String(store.data.festival.year))".uppercased())
+                        .appFont(12, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text("YOUR RATINGS")
+                        .marqueeFont(88)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
+
                 if !ranked.isEmpty {
                     summary
                 }
@@ -79,18 +87,18 @@ struct RatingsView: View {
                         }
                         .buttonStyle(.plain)
 
-                        // The row itself shows your stars, so what's worth adding here is
-                        // the other number: whether the rest of the field agreed with you.
+                        // The row itself shows your rating, so what's worth adding here is
+                        // the other number: whether the rest of the valley agreed with you.
                         if let crowd = community.rating(for: entry.performance) {
-                            HStack(spacing: 6) {
+                            HStack(spacing: 8) {
                                 CrowdBadge(rating: crowd, compact: true)
-                                Text("everyone · \(crowd.count) "
-                                   + "\(crowd.count == 1 ? "rating" : "ratings")")
-                                    .appFont(11)
-                                    .foregroundStyle(Theme.tertiaryText)
+                                Text("from \(crowd.count) "
+                                   + "\(crowd.count == 1 ? "person" : "people") in the valley")
+                                    .appFont(13)
+                                    .foregroundStyle(Theme.inkFaint)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            .padding(.horizontal, 14)
-                            .padding(.top, 8)
+                            .padding(.top, 10)
                             // The badge already says how many people; the text beside it
                             // would only say it again.
                             .accessibilityElement(children: .ignore)
@@ -99,21 +107,18 @@ struct RatingsView: View {
 
                         if !entry.rating.note.isEmpty {
                             Text(entry.rating.note)
-                                .appFont(12)
-                                .foregroundStyle(Theme.secondaryText)
+                                .appFont(15)
+                                .foregroundStyle(Theme.inkMuted)
                                 .fixedSize(horizontal: false, vertical: true)
-                                .padding(.horizontal, 14)
                                 .padding(.top, 8)
                         }
                     }
+                    .padding(.bottom, 12)
                 }
 
                 if !awaiting.isEmpty {
-                    Text("NOT RATED YET")
-                        .appFont(12, weight: .bold)
-                        .foregroundStyle(Theme.tertiaryText)
-                        .padding(.top, 14)
-                        .accessibilityAddTraits(.isHeader)
+                    SectionHeading(title: "Starred, not rated yet",
+                                   detail: "\(awaiting.count) \(awaiting.count == 1 ? "set" : "sets")")
 
                     ForEach(awaiting) { performance in
                         NavigationLink(value: performance) {
@@ -124,11 +129,15 @@ struct RatingsView: View {
                 }
 
                 sharing
+
+                Horizon()
+                    .padding(.top, 48)
+                    .padding(.horizontal, -22)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .refreshable { await community.refresh(force: true) }
     }
 
@@ -140,16 +149,17 @@ struct RatingsView: View {
     private var sharing: some View {
         @Bindable var bindable = community
 
-        return VStack(alignment: .leading, spacing: 8) {
-            Toggle("Share my ratings", isOn: $bindable.isSharing)
-                .appFont(13, weight: .semibold)
-                .foregroundStyle(Theme.ink)
-                .tint(Theme.accent)
+        return VStack(alignment: .leading, spacing: 10) {
+            SectionHeading(title: "Sharing")
 
-            Text("Your stars go into the average everyone sees, anonymously. Notes stay on "
-               + "this phone.")
-                .appFont(11)
-                .foregroundStyle(Theme.tertiaryText)
+            Toggle("Share my ratings", isOn: $bindable.isSharing)
+                .toggleStyle(GlowToggleStyle())
+                .padding(.top, 4)
+
+            Text("Your ratings go into the average the valley sees, anonymously. Notes stay "
+               + "on this phone.")
+                .appFont(15)
+                .foregroundStyle(Theme.inkMuted)
                 .fixedSize(horizontal: false, vertical: true)
 
             // Whatever the service last had to say comes first, because "nothing is
@@ -157,86 +167,60 @@ struct RatingsView: View {
             if let error = community.lastError {
                 statusLine(error,
                            symbol: community.isBlocked ? "icloud.slash" : "exclamationmark.circle",
-                           tint: Theme.warning)
+                           tint: Theme.signal)
             } else if community.hasPendingUploads {
                 // Not an error: the ratings are on the phone, and this is a festival in a
                 // valley with no signal. They go up when there's something to go up over.
-                statusLine("Saved on your phone — uploading when there's signal.",
-                           symbol: "arrow.up.circle", tint: Theme.secondaryText)
+                statusLine("Saved on your phone. Uploading when there's signal.",
+                           symbol: "arrow.up.circle", tint: Theme.inkMuted)
             } else if let uploadedAt = community.lastUploadedAt {
                 statusLine("Your ratings uploaded "
                          + uploadedAt.formatted(date: .omitted, time: .shortened) + ".",
-                           symbol: "checkmark.icloud", tint: Theme.secondaryText)
+                           symbol: "checkmark.icloud", tint: Theme.inkMuted)
             }
 
             // Rare enough to be worth saying plainly rather than quietly rounding: the
             // sweep hit its cap, so these averages are counted off a sample.
             if community.crowd?.isPartial == true {
-                statusLine("More ratings than this app counts in one pass — the averages "
-                         + "below are from a sample of them.",
-                           symbol: "square.stack.3d.up", tint: Theme.secondaryText)
+                statusLine("More ratings than this app counts in one pass, so the averages "
+                         + "above are from a sample of them.",
+                           symbol: "square.stack.3d.up", tint: Theme.inkMuted)
             }
 
             if let fetchedAt = community.fetchedAt {
-                Text("Everyone's ratings as of "
+                Text("The valley's ratings as of "
                    + fetchedAt.formatted(date: .abbreviated, time: .shortened)
                    + ". Pull down to check for more.")
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(13)
+                    .foregroundStyle(Theme.inkFaint)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Theme.surface,
-                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .padding(.top, 18)
+        .padding(.top, 16)
     }
 
     private func statusLine(_ message: String, symbol: String, tint: Color) -> some View {
         Label(message, systemImage: symbol)
-            .appFont(11, weight: .medium)
+            .appFont(13, weight: .semibold)
             .foregroundStyle(tint)
             .fixedSize(horizontal: false, vertical: true)
     }
 
+    /// How many and how good, as the recap's big Six Caps numbers. Your average is yours,
+    /// so it's the one that glows.
     private var summary: some View {
-        HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(ranked.count)")
-                    .appFont(28, weight: .heavy, design: .rounded)
-                    .foregroundStyle(Theme.ink)
-                Text(ranked.count == 1 ? "set rated" : "sets rated")
-                    .appFont(11, weight: .semibold)
-                    .foregroundStyle(Theme.tertiaryText)
-            }
-
+        HStack(spacing: 10) {
+            StatTile(value: "\(ranked.count)",
+                     label: ranked.count == 1 ? "set rated" : "sets rated")
             if let average = ratings.average(in: store.data) {
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 4) {
-                        Text(Format.rating(average))
-                            .appFont(28, weight: .heavy, design: .rounded)
-                            .foregroundStyle(Theme.accent)
-                        Image(systemName: "star.fill")
-                            .appFont(14)
-                            .foregroundStyle(Theme.accent)
-                    }
-                    Text("average")
-                        .appFont(11, weight: .semibold)
-                        .foregroundStyle(Theme.tertiaryText)
-                }
+                StatTile(value: Format.rating(average), label: "your average", tint: Theme.sodium)
             }
-            Spacer(minLength: 0)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(summaryLabel)
-        .padding(16)
-        .background(
-            LinearGradient(colors: [Theme.accent.opacity(0.22), Theme.surface],
-                           startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-        )
-        .padding(.top, 12)
+        .padding(.top, 16)
+        .padding(.bottom, 4)
     }
 
     private var summaryLabel: String {
@@ -284,41 +268,71 @@ struct SetNoteView: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    TextField("Sunset, and they opened with the one everyone came for.",
-                              text: $text, axis: .vertical)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("YOUR NOTE ON")
+                        .appFont(13, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text(performance.artist.uppercased())
+                        .marqueeFont(56)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                        .padding(.top, 4)
+
+                    TextField("Your note", text: $text,
+                              prompt: Text("Sunset, and they opened with the one everyone came for.")
+                                .foregroundStyle(Theme.inkFaint),
+                              axis: .vertical)
+                        .appFont(17)
+                        .foregroundStyle(Theme.ink)
                         .lineLimit(3...8)
                         .focused($isFocused)
-                } header: {
-                    Text(performance.artist)
-                } footer: {
-                    Text("Notes stay on your phone — only the stars are shared, and only "
-                       + "as a number in everyone's average.")
-                }
+                        .padding(12)
+                        .background(Theme.night)
+                        .overlay(Rectangle()
+                            .strokeBorder(isFocused ? Theme.ink : Theme.hairline, lineWidth: 1))
+                        .padding(.top, 20)
 
-                Section {
-                    Button("Remove rating", role: .destructive) {
+                    Text("Notes stay on your phone. Only your rating is shared, and only as a "
+                       + "number in the valley's average.")
+                        .appFont(13)
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 10)
+
+                    Button {
                         ratings.clear(performance)
                         dismiss()
+                    } label: {
+                        Text("Remove rating")
                     }
+                    .buttonStyle(GlowButtonStyle(.quiet))
+                    .padding(.top, 32)
                 }
+                .padding(.horizontal, 22)
+                .padding(.vertical, 16)
             }
+            .background(Theme.nightSheet)
             .navigationTitle("Note")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Theme.nightSheet, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }.tint(Theme.accent)
+                    Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         ratings.setNote(text, for: performance)
                         dismiss()
                     }
-                    .tint(Theme.accent)
                 }
             }
             .onAppear { isFocused = true }
         }
+        .tint(Theme.ink)
+        .presentationBackground(Theme.nightSheet)
     }
 }

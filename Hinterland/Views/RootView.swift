@@ -24,19 +24,26 @@ struct RootView: View {
             // The schedule while the festival is on, the recap once it's over — the tab
             // keeps its name either way, because "Schedule" is still what's behind it.
             FestivalHomeView()
+                .tint(Theme.ink)
                 .tabItem { Label("Schedule", systemImage: "calendar") }
                 .tag(RootTab.schedule)
             MyLineupView()
+                .tint(Theme.ink)
                 .tabItem { Label("My Lineup", systemImage: "star.fill") }
                 .tag(RootTab.lineup)
             MapsView()
-                .tabItem { Label("Maps", systemImage: "mappin.and.ellipse") }
+                .tint(Theme.ink)
+                .tabItem { Label("Maps", systemImage: "mappin") }
                 .tag(RootTab.maps)
             NavigationStack { FoodDrinkView() }
+                .tint(Theme.ink)
                 .tabItem { Label("Food & Drink", systemImage: "fork.knife") }
                 .tag(RootTab.food)
         }
-        .tint(Theme.accent)
+        // The selected tab is the one `sodium` thing on the bar. Inside each tab the tint
+        // is `ink`, so back buttons, toolbar icons and text cursors stay quiet and the
+        // screen's one glow is whatever is on air or yours.
+        .tint(Theme.sodium)
         .preferredColorScheme(.dark)
         .task {
             // Before the refresh, which is the one thing here that can swap the year out

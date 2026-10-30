@@ -211,7 +211,7 @@ struct RecapView: View {
     private var topSets: some View {
         Group {
             if !recap.rated.isEmpty {
-                sectionHeading("YOUR BEST SETS")
+                SectionHeading(title: "Your best sets")
 
                 ForEach(Array(recap.best(limit: 5).enumerated()), id: \.element.id) { index, entry in
                     NavigationLink(value: entry.performance) {
@@ -245,17 +245,23 @@ struct RecapView: View {
         Group {
             if !recap.unrated.isEmpty {
                 NavigationLink(value: RatingsRoute.recap) {
-                    HStack(spacing: 10) {
-                        Image(systemName: "star.leadinghalf.filled")
-                            .appFont(18)
+                    HStack(spacing: 12) {
+                        // The count in Six Caps and `sodium`: these are your sets, and
+                        // the one thing on this screen still waiting on you.
+                        Text("\(recap.unrated.count)")
+                            .marqueeFont(64)
                             .foregroundStyle(Theme.sodium)
-                            .accessibilityHidden(true)
+                            .fixedSize()
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("\(recap.unrated.count) starred "
-                               + "\(recap.unrated.count == 1 ? "set" : "sets") you never rated")
+                            Text("STILL TO RATE")
+                                .appFont(13, weight: .bold)
+                                .tracking(2.4)
+                                .foregroundStyle(Theme.sodium)
+                            Text("\(recap.unrated.count == 1 ? "Starred set" : "Starred sets") "
+                               + "you never rated")
                                 .appFont(17, weight: .semibold)
                                 .foregroundStyle(Theme.ink)
-                            Text("Rate them and they join everyone else's averages.")
+                            Text("Rate them and they join the valley's averages.")
                                 .appFont(14)
                                 .foregroundStyle(Theme.inkMuted)
                         }
@@ -268,11 +274,12 @@ struct RecapView: View {
                     }
                     .padding(14)
                     .background(Theme.nightRaised)
-                    .overlay(alignment: .leading) {
-                        Rectangle().fill(Theme.sodium).frame(width: 3)
-                    }
                     .contentShape(Rectangle())
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(recap.unrated.count) starred "
+                                  + "\(recap.unrated.count == 1 ? "set" : "sets") you never rated. "
+                                  + "Rate them and they join the valley's averages.")
                 .buttonStyle(.plain)
                 .padding(.top, 4)
             }
@@ -331,7 +338,7 @@ struct RecapView: View {
     /// festival rather than about them — but the way in is still one tap from here.
     private var nothingOfYourOwn: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("You didn't rate anything this year")
+            Text("You didn't rate anything this year.")
                 .appFont(17, weight: .semibold)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
@@ -367,7 +374,7 @@ struct RecapView: View {
         @Bindable var bindable = community
 
         return VStack(alignment: .leading, spacing: 10) {
-            sectionHeading("THE FESTIVAL'S BEST")
+            SectionHeading(title: "The festival's best")
 
             if crowdTop.isEmpty {
                 Text(community.emptyRankingMessage(minimum: Self.crowdMinimum))
@@ -375,7 +382,7 @@ struct RecapView: View {
                     .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
-                Text("Every set with at least \(Self.crowdMinimum) ratings, best first.")
+                Text("Every set the valley rated at least \(Self.crowdMinimum) times, best first.")
                     .appFont(14)
                     .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
@@ -404,10 +411,8 @@ struct RecapView: View {
             // what gets uploaded stays on My Ratings, which is where you turn it off.
             if !community.isSharing {
                 Toggle("Put my ratings in these averages", isOn: $bindable.isSharing)
-                    .appFont(15, weight: .semibold)
-                    .foregroundStyle(Theme.ink)
-                    .tint(Theme.sodium)
-                    .padding(.top, 2)
+                    .toggleStyle(GlowToggleStyle())
+                    .padding(.top, 6)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -425,7 +430,7 @@ struct RecapView: View {
 
     private var archive: some View {
         VStack(alignment: .leading, spacing: 0) {
-            sectionHeading("THE BILL")
+            SectionHeading(title: "The bill")
 
             VStack(spacing: 0) {
                 // The archive is bundled and the schedule isn't: when next year's weekend
@@ -439,7 +444,7 @@ struct RecapView: View {
                     }
                     .buttonStyle(.plain)
 
-                    Divider().overlay(Theme.hairline).padding(.leading, 46)
+                    Rectangle().fill(Theme.hairline).frame(height: 1).padding(.leading, 50)
                 }
 
                 NavigationLink(value: RecapRoute.schedule) {
@@ -449,7 +454,7 @@ struct RecapView: View {
                 }
                 .buttonStyle(.plain)
 
-                Divider().overlay(Theme.hairline).padding(.leading, 46)
+                Rectangle().fill(Theme.hairline).frame(height: 1).padding(.leading, 50)
 
                 NavigationLink(value: PastLineupRoute.index) {
                     linkRow(symbol: "clock.arrow.circlepath",
@@ -489,20 +494,6 @@ struct RecapView: View {
         .contentShape(Rectangle())
     }
 
-    private func sectionHeading(_ text: String) -> some View {
-        Text(text)
-            .appFont(13, weight: .bold)
-            .tracking(2.4)
-            .foregroundStyle(Theme.inkFaint)
-            .padding(.top, 24)
-            .padding(.bottom, 4)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .overlay(alignment: .bottom) {
-                Rectangle().fill(Theme.ink).frame(height: 2)
-            }
-            .accessibilityAddTraits(.isHeader)
-    }
-
     // MARK: Sharing
 
     /// Draws the share card off-screen and keeps it until something it says changes.
@@ -517,8 +508,8 @@ struct RecapView: View {
             share = nil
             return
         }
-        // Nothing in the card reads the environment, so it renders correctly outside the
-        // view hierarchy — which is where `ImageRenderer` puts it.
+        // Nothing in the card reads the app's environment objects, so it renders correctly
+        // outside the view hierarchy — which is where `ImageRenderer` puts it.
         let renderer = ImageRenderer(content: RecapShareCard(recap: snapshot))
         renderer.scale = 3
         share = RecapShare(text: snapshot.shareText, image: renderer.uiImage?.pngData())

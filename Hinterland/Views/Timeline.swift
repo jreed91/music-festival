@@ -235,43 +235,69 @@ struct FilterChip: View {
 }
 
 /// Black corn against a faint warm glow, with a few fireflies blinking over it. Sits at
-/// the foot of Now Playing, My Lineup, the recap and empty states. Drawn in code so it's
-/// sharp at every size and costs nothing offline; still with Reduce Motion on.
+/// the foot of every scroll view, the recap and empty states. Drawn in code so it's sharp
+/// at every size and costs nothing offline; still with Reduce Motion on.
 struct Horizon: View {
     var height: CGFloat = 110
     var fireflies = 7
+    /// Drawn once with the fireflies held still, for pictures rendered off-screen like the
+    /// share card, where there is no clock to blink them by.
+    var isStill = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 15, paused: reduceMotion)) { context in
-            Canvas { canvas, size in
-                let glow = Gradient(colors: [Theme.glass, Theme.night])
-                canvas.fill(Path(CGRect(origin: .zero, size: size)),
-                            with: .radialGradient(glow,
-                                                  center: CGPoint(x: size.width / 2, y: size.height * 1.3),
-                                                  startRadius: 0, endRadius: size.width * 0.8))
-
-                var generator = SeededRandom(seed: 11)
-                let t = context.date.timeIntervalSinceReferenceDate
-                for _ in 0..<fireflies {
-                    let x = CGFloat(0.06 + generator.next() * 0.88) * size.width
-                    let y = CGFloat(0.08 + generator.next() * 0.45) * size.height
-                    let phase = generator.next() * 3.2
-                    let level: Double = reduceMotion ? 0.6 : 0.15 + 0.85 * (0.5 + 0.5 * sin((t + phase) * .pi * 2 / 3.2))
-                    let dot = CGRect(x: x - 2, y: y - 2, width: 4, height: 4)
-                    var halo = canvas
-                    halo.addFilter(.blur(radius: 4))
-                    halo.fill(Path(ellipseIn: dot.insetBy(dx: -2, dy: -2)),
-                              with: .color(Theme.firefly.opacity(0.7 * level)))
-                    canvas.fill(Path(ellipseIn: dot), with: .color(Theme.firefly.opacity(level)))
+        Group {
+            if isStill {
+                HorizonArt(fireflies: fireflies, time: nil)
+            } else {
+                TimelineView(.animation(minimumInterval: 1 / 15, paused: reduceMotion)) { context in
+                    HorizonArt(fireflies: fireflies,
+                               time: reduceMotion ? nil : context.date.timeIntervalSinceReferenceDate)
                 }
-
-                canvas.fill(Self.corn(in: size, seed: 7), with: .color(.black))
             }
         }
         .frame(height: height)
         .accessibilityHidden(true)
+    }
+}
+
+/// The corn and fireflies themselves. `time` drives the blink; nil holds every firefly
+/// at 60%, the design system's still pose.
+private struct HorizonArt: View {
+    let fireflies: Int
+    let time: Double?
+
+    var body: some View {
+        Canvas { canvas, size in
+            let glow = Gradient(colors: [Theme.glass, Theme.night])
+            canvas.fill(Path(CGRect(origin: .zero, size: size)),
+                        with: .radialGradient(glow,
+                                              center: CGPoint(x: size.width / 2, y: size.height * 1.3),
+                                              startRadius: 0, endRadius: size.width * 0.8))
+
+            var generator = SeededRandom(seed: 11)
+            for _ in 0..<fireflies {
+                let x = CGFloat(0.06 + generator.next() * 0.88) * size.width
+                let y = CGFloat(0.08 + generator.next() * 0.45) * size.height
+                let phase = generator.next() * 3.2
+                let level: Double
+                if let time {
+                    let wave = sin((time + phase) * Double.pi * 2 / 3.2)
+                    level = 0.15 + 0.85 * (0.5 + 0.5 * wave)
+                } else {
+                    level = 0.6
+                }
+                let dot = CGRect(x: x - 2, y: y - 2, width: 4, height: 4)
+                var halo = canvas
+                halo.addFilter(.blur(radius: 4))
+                halo.fill(Path(ellipseIn: dot.insetBy(dx: -2, dy: -2)),
+                          with: .color(Theme.firefly.opacity(0.7 * level)))
+                canvas.fill(Path(ellipseIn: dot), with: .color(Theme.firefly.opacity(level)))
+            }
+
+            canvas.fill(Self.corn(in: size, seed: 7), with: .color(.black))
+        }
     }
 
     /// Stalks with alternating leaves, the same every time for a given seed.

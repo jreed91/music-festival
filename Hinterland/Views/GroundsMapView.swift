@@ -1,3 +1,4 @@
+import Combine
 import CoreImage
 import CoreLocation
 import MapKit
@@ -23,8 +24,18 @@ struct GroundsMapView: View {
     @State private var userLocation: CLLocation?
     @State private var cameraDistance: Double = 3_000
     @State private var focus: MapFocus?
+    @State private var now = Date()
+
+    /// Moves the on-air glow from stage to stage as sets change over.
+    private let ticker = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
     private var map: MapData { store.map }
+
+    /// Who's on each stage right now, for the stage pins that glow while a set is on.
+    private var onAir: [Stage: String] {
+        Dictionary(store.liveNow(at: now).map { (Stage(name: $0.stage), $0.artist) },
+                   uniquingKeysWith: { first, _ in first })
+    }
 
     private var visible: [PlacedPOI] {
         map.placedPOIs(in: categories, cameraDistance: cameraDistance)
@@ -35,6 +46,7 @@ struct GroundsMapView: View {
             GroundsMapRepresentable(
                 map: map,
                 visible: visible,
+                onAir: onAir,
                 showsIllustration: showsIllustration,
                 usesSatellite: usesSatellite,
                 focus: focus,
@@ -67,6 +79,8 @@ struct GroundsMapView: View {
         }
         .animation(.snappy(duration: 0.22), value: selection)
         .background(Theme.night)
+        .onReceive(ticker) { now = $0 }
+        .onAppear { now = Date() }
         .navigationTitle(zoomedIntoConcourse ? "Concourse" : "Grounds")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -174,7 +188,7 @@ private struct POICard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     kind
                     Text(poi.name.uppercased())
-                        .marqueeFont(52)
+                        .marqueeFont(56)
                         .foregroundStyle(Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
@@ -185,14 +199,23 @@ private struct POICard: View {
                             .tracking(0.8)
                             .foregroundStyle(Theme.sodium)
                             .fixedSize(horizontal: false, vertical: true)
+                    } else if let upNext {
+                        Text("Up next: \(upNext.artist) · \(upNextWhen(upNext))".uppercased())
+                            .appFont(16, weight: .medium)
+                            .tracking(0.8)
+                            .foregroundStyle(Theme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                Spacer()
+                Spacer(minLength: 8)
                 Button(action: dismiss) {
-                    Image(systemName: "xmark.circle.fill")
-                        .appFont(18)
-                        .foregroundStyle(Theme.tertiaryText)
+                    Image(systemName: "xmark")
+                        .appFont(15, weight: .bold)
+                        .foregroundStyle(Theme.inkMuted)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 .accessibilityLabel("Close")
             }
 
@@ -205,28 +228,23 @@ private struct POICard: View {
 
             HStack(spacing: 12) {
                 if let distance {
-                    Label(distance, systemImage: "figure.walk")
+                    Label(distance.uppercased(), systemImage: "figure.walk")
                         .appFont(13, weight: .bold)
+                        .tracking(1.2)
                         .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel("\(distance) away")
                 }
-                Spacer()
+                Spacer(minLength: 8)
                 Button {
                     let item = MKMapItem(placemark: MKPlacemark(coordinate: placed.coordinate))
                     item.name = poi.name
                     item.openInMaps(launchOptions:
                         [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
                 } label: {
-                    Label("Directions", systemImage: "arrow.triangle.turn.up.right.circle")
-                        .appFont(13, weight: .bold)
-                        .tracking(1.4)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Theme.ink)
-                        .padding(.horizontal, 14)
-                        .frame(minHeight: 44)
-                        .overlay(RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Theme.hairline, lineWidth: 1.5))
+                    Label("Directions", systemImage: "arrow.triangle.turn.up.right.diamond")
                 }
+                .buttonStyle(GlowButtonStyle(.quiet))
             }
         }
         .padding(16)
@@ -262,6 +280,26 @@ private struct POICard: View {
         return store.liveNow(at: Date()).first { Stage(name: $0.stage) == stage }
     }
 
+    /// The next set on this stage when nothing is on it, so a dark stage still says
+    /// something useful.
+    private var upNext: Performance? {
+        guard poi.category == .stage else { return nil }
+        let stage = Stage(name: poi.name)
+        let now = Date()
+        return store.data.allPerformances
+            .filter { Stage(name: $0.stage) == stage && $0.start > now }
+            .min { $0.start < $1.start }
+    }
+
+    /// "Fri 9:30pm": the day as well as the time, since the next set on a stage can be
+    /// tomorrow, or next summer.
+    private func upNextWhen(_ performance: Performance) -> String {
+        guard let day = store.data.day(containing: performance) else {
+            return Format.time(performance.start)
+        }
+        return "\(day.shortWeekday) \(Format.time(performance.start))"
+    }
+
     /// Straight-line distance — there's no route across a field worth computing.
     private var distance: String? {
         guard let userLocation else { return nil }
@@ -281,6 +319,7 @@ private struct POICard: View {
 private struct GroundsMapRepresentable: UIViewRepresentable {
     let map: MapData
     let visible: [PlacedPOI]
+    let onAir: [Stage: String]
     let showsIllustration: Bool
     let usesSatellite: Bool
     let focus: MapFocus?
@@ -330,6 +369,8 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
 
         context.coordinator.setIllustrations(showsIllustration, cameraDistance: cameraDistance,
                                              on: view, map: map)
+        // Before the annotations, so a stage pin added in this pass is drawn lit.
+        context.coordinator.setOnAir(onAir, on: view)
         context.coordinator.setAnnotations(visible, on: view)
         context.coordinator.syncSelection(selection, on: view)
         context.coordinator.applyFocus(focus, on: view, map: map)
@@ -343,6 +384,7 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
         private var overlays: [IllustrationOverlay] = []
         private var shownIDs: Set<String> = []
         private var lastFocusToken = 0
+        private var onAir: [Stage: String] = [:]
 
         init(parent: GroundsMapRepresentable) {
             self.parent = parent
@@ -414,6 +456,23 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
             view.addAnnotations(placed.filter { !existing.contains($0.id) }.map(POIAnnotation.init))
         }
 
+        /// Relights the stage pins already on the map when a set starts or ends. Pins
+        /// added later pick the same state up in `viewFor`.
+        func setOnAir(_ onAir: [Stage: String], on view: MKMapView) {
+            guard onAir != self.onAir else { return }
+            self.onAir = onAir
+            for annotation in view.annotations.compactMap({ $0 as? POIAnnotation })
+            where annotation.placed.poi.category == .stage {
+                (view.view(for: annotation) as? POIAnnotationView)?
+                    .configure(for: annotation.placed.poi,
+                               onAirArtist: onAirArtist(for: annotation.placed.poi))
+            }
+        }
+
+        private func onAirArtist(for poi: MapPOI) -> String? {
+            poi.category == .stage ? onAir[Stage(name: poi.name)] : nil
+        }
+
         func syncSelection(_ placed: PlacedPOI?, on view: MKMapView) {
             guard placed == nil else { return }
             for annotation in view.selectedAnnotations {
@@ -456,7 +515,8 @@ private struct GroundsMapRepresentable: UIViewRepresentable {
             guard let poi = annotation as? POIAnnotation else { return nil }
             let view = mapView.dequeueReusableAnnotationView(
                 withIdentifier: POIAnnotationView.reuseID, for: poi)
-            (view as? POIAnnotationView)?.configure(for: poi.placed.poi)
+            (view as? POIAnnotationView)?.configure(for: poi.placed.poi,
+                                                    onAirArtist: onAirArtist(for: poi.placed.poi))
             return view
         }
 
@@ -570,15 +630,19 @@ private final class POIAnnotation: NSObject, MKAnnotation {
 
 /// A pin as a small square light: stages in their stage shape and colour with the name
 /// under them, everything else a single glyph in cream — the gate's own letter, or the
-/// category's symbol — with medical in `signal` and water in `rain`.
+/// category's symbol — with medical in `signal` and water in `rain`. A stage with a set
+/// on gets a `sodium` edge and glow and reads `MAIN · LORDE`; the selected pin gets a
+/// 2pt `ink` outline a few points out from its square.
 private final class POIAnnotationView: MKAnnotationView {
     static let reuseID = "poi"
 
-    func configure(for poi: MapPOI) {
-        let rendered = Self.render(poi)
-        image = rendered.image
-        // Keep the square, not the label under it, on the coordinate.
-        centerOffset = CGPoint(x: 0, y: rendered.image.size.height / 2 - rendered.squareCenterY)
+    private var poi: MapPOI?
+    private var onAirArtist: String?
+
+    func configure(for poi: MapPOI, onAirArtist: String?) {
+        self.poi = poi
+        self.onAirArtist = onAirArtist
+        redraw()
         displayPriority = poi.category.displayPriority
         collisionMode = .rectangle
         canShowCallout = false
@@ -589,42 +653,80 @@ private final class POIAnnotationView: MKAnnotationView {
         // the card it opens is at the bottom of the screen, away from the pin.
         isAccessibilityElement = true
         let kind = poi.category.spokenName(plural: false)
-        accessibilityLabel = poi.name.localizedCaseInsensitiveContains(kind)
+        var label = poi.name.localizedCaseInsensitiveContains(kind)
             ? poi.name
             : "\(poi.name), \(kind)"
+        if let onAirArtist { label += ", on air: \(onAirArtist)" }
+        accessibilityLabel = label
         accessibilityHint = "Shows details and walking directions"
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        layer.borderColor = UIColor(Theme.ink).cgColor
-        layer.borderWidth = selected ? 2 : 0
+        redraw()
     }
 
-    private static func render(_ poi: MapPOI) -> (image: UIImage, squareCenterY: CGFloat) {
+    private func redraw() {
+        guard let poi else { return }
+        let rendered = Self.render(poi, onAirArtist: onAirArtist, selected: isSelected)
+        image = rendered.image
+        // Keep the square, not the label under it, on the coordinate.
+        centerOffset = CGPoint(x: 0, y: rendered.image.size.height / 2 - rendered.squareCenterY)
+    }
+
+    /// Room around the square for the glow and the selection outline, kept whether or not
+    /// either is showing so the pin doesn't jump when it's tapped.
+    private static let margin: CGFloat = 8
+
+    private static func render(_ poi: MapPOI, onAirArtist: String?,
+                               selected: Bool) -> (image: UIImage, squareCenterY: CGFloat) {
         let isStage = poi.category == .stage
+        let isOnAir = isStage && onAirArtist != nil
         let side: CGFloat = isStage ? 34 : 24
-        let label = isStage ? poi.name.uppercased() as NSString : nil
+        let label: NSString? = {
+            guard isStage else { return nil }
+            guard let onAirArtist else { return poi.name.uppercased() as NSString }
+            let stage = Stage(name: poi.name).displayName
+            let short = stage.split(separator: " ").first.map(String.init) ?? stage
+            return "\(short) · \(onAirArtist)".uppercased() as NSString
+        }()
         let labelFont = UIFont(name: AppFontFace.text(.bold), size: 10)
             ?? .systemFont(ofSize: 10, weight: .bold)
         let shadow = NSShadow()
         shadow.shadowColor = UIColor(Theme.night)
         shadow.shadowBlurRadius = 3
         let labelAttributes: [NSAttributedString.Key: Any] = [
-            .font: labelFont, .foregroundColor: UIColor(Theme.ink), .kern: 1.4, .shadow: shadow,
+            .font: labelFont,
+            .foregroundColor: UIColor(isOnAir ? Theme.sodium : Theme.ink),
+            .kern: 1.4,
+            .shadow: shadow,
         ]
         let labelSize = label?.size(withAttributes: labelAttributes) ?? .zero
-        let width = max(side, ceil(labelSize.width) + 8)
-        let height = side + (label == nil ? 0 : 4 + ceil(labelSize.height))
-        let square = CGRect(x: (width - side) / 2, y: 0, width: side, height: side)
+        let width = max(side + margin * 2, ceil(labelSize.width) + 8)
+        let height = side + margin * 2 + (label == nil ? 0 : ceil(labelSize.height))
+        let square = CGRect(x: (width - side) / 2, y: margin, width: side, height: side)
 
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: height))
-        let image = renderer.image { _ in
+        let image = renderer.image { context in
+            let cg = context.cgContext
+
+            // The glow first, cast by the square itself, so it sits behind everything.
+            if isOnAir {
+                cg.saveGState()
+                cg.setShadow(offset: .zero, blur: 8,
+                             color: UIColor(Theme.sodium).withAlphaComponent(0.7).cgColor)
+                UIColor(Theme.night).setFill()
+                UIBezierPath(rect: square).fill()
+                cg.restoreGState()
+            }
+
             UIColor(isStage ? Theme.night : Theme.nightSheet).setFill()
             UIBezierPath(rect: square).fill()
-            let border = UIBezierPath(rect: square.insetBy(dx: 0.5, dy: 0.5))
-            border.lineWidth = 1
-            (poi.category == .medical ? UIColor(Theme.signal) : UIColor(Theme.hairline)).setStroke()
+            let border = UIBezierPath(rect: square.insetBy(dx: 0.75, dy: 0.75))
+            border.lineWidth = isOnAir ? 1.5 : 1
+            let borderColor: Color = isOnAir ? Theme.sodium
+                : (poi.category == .medical ? Theme.signal : Theme.hairline)
+            UIColor(borderColor).setStroke()
             border.stroke()
 
             if isStage {
@@ -651,8 +753,16 @@ private final class POIAnnotationView: MKAnnotationView {
                 }
             }
 
+            // 2pt `ink`, 3pt clear of the square, as the design system marks a selection.
+            if selected {
+                let outline = UIBezierPath(rect: square.insetBy(dx: -4, dy: -4))
+                outline.lineWidth = 2
+                UIColor(Theme.ink).setStroke()
+                outline.stroke()
+            }
+
             if let label {
-                label.draw(at: CGPoint(x: (width - labelSize.width) / 2, y: side + 4),
+                label.draw(at: CGPoint(x: (width - labelSize.width) / 2, y: side + margin * 2),
                            withAttributes: labelAttributes)
             }
         }
