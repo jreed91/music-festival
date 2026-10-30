@@ -8,6 +8,7 @@ struct MyLineupView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(Favorites.self) private var favorites
     @Environment(NotificationManager.self) private var notifications
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var showingSettings = false
     @State private var now = Date()
@@ -115,7 +116,9 @@ struct MyLineupView: View {
             .padding(.top, 8)
         }
         .background(Theme.night)
-        .onReceive(ticker) { now = $0 }
+        .onReceive(ticker) { date in
+            withAnimation(reduceMotion ? nil : Motion.tick) { now = date }
+        }
         .onAppear { now = Date() }
     }
 

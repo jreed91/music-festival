@@ -724,6 +724,21 @@ short version, as it lands in code:
     one sentence on what to do. `DeadAirScreen` fills a screen and ends in the corn.
   - `Horizon` — the corn and fireflies that end every scroll view; `isStill` draws it once
     for pictures like the share card.
+- **Motion** lives in `Views/Motion.swift`, and only where something is alive. The
+  on-air glow breathes between 70% and 100% every four seconds (`breathingGlow`; the map
+  pins do the same on their layer). Something that has just become yours, or a set that
+  has just gone on air, strikes on like a sodium lamp, a quick flicker and then steady
+  (`lampStrike`): a starred set, the Add to my lineup button, a rating's fireflies one
+  after another, the day preset you pressed, a switch you turned on. Readouts roll to the
+  new minute like a clock radio (`Motion.tick` with `.numericText()`), the recap's numbers
+  roll up from zero the first time you see them, a new day tunes in through a blur, dead
+  air drops out every few seconds (`signalDropout`), and the fireflies over the corn
+  wander a few points as they blink. Schedule opens with the now line a third of the way
+  down on a day that's under way. Presses on stars, ratings, presets and switches give a
+  light haptic tick. Widgets and the Live Activity are still pictures and don't move.
+  With **Reduce Motion** on, all of it holds still: the glow at full, fireflies at 60%,
+  and every change lands at once. A new animation should go through `Motion.swift` and do
+  the same.
 - **Tint** is `sodium` only on the tab bar. Inside each tab it's `ink`, so back buttons,
   toolbar icons and cursors stay quiet, and the `AccentColor` asset is `ink` too, for the
   menus and share sheet SwiftUI's tint never reaches. The old colour names (`accent`,
@@ -755,6 +770,11 @@ things.
 
 These labels are written by hand, so a new row or badge needs its own. Check it with
 VoiceOver on a device or the Accessibility Inspector in the simulator.
+
+With Reduce Motion on, nothing moves on its own: the on-air glow and fireflies hold
+still, nothing flickers, and changes land at once instead of rolling, sliding or fading
+through a blur (see Motion under Design). The recap's numbers are read as their final
+values even while they roll up on screen.
 
 ## Privacy
 
@@ -840,7 +860,7 @@ Hinterland/
   Views/       Schedule, Recap (+ RecapShareCard, PastRecap), MyLineup, Ratings, Maps,
                FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
                WeatherCard, Timeline (hour timeline, day presets, filter chips, the
-               corn Horizon), Components
+               corn Horizon), Components, Motion (glow, lamp strike, dead air)
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon; Fonts — Six Caps
                and Barlow Condensed with their licences
   PrivacyInfo.xcprivacy — the app's privacy manifest

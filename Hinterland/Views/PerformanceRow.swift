@@ -17,6 +17,10 @@ struct PerformanceRow: View {
     @Environment(Ratings.self) private var ratings
     @Environment(CommunityRatings.self) private var community
 
+    /// Counts taps on this row's star, for the haptic: keyed to the tap rather than to
+    /// whether the set is starred, so starring it elsewhere doesn't tick every list it's in.
+    @State private var starTaps = 0
+
     private var isStarred: Bool { favorites.contains(performance) }
     private var isLive: Bool { performance.isLive(at: Date()) }
     private var isOver: Bool { performance.end <= Date() }
@@ -81,14 +85,17 @@ struct PerformanceRow: View {
 
             Button {
                 favorites.toggle(performance)
+                starTaps += 1
             } label: {
                 Image(systemName: "star.fill")
                     .appFont(18)
                     .foregroundStyle(starColor)
+                    .lampStrike(isStarred)
                     .frame(width: 44, height: 44)   // keep a comfortable tap target
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .sensoryFeedback(.impact(weight: .light), trigger: starTaps)
         }
         .padding(.vertical, 12)
         .padding(.horizontal, isLive ? 12 : 0)
@@ -104,6 +111,8 @@ struct PerformanceRow: View {
                 Rectangle().fill(Theme.hairline).frame(height: 1)
             }
         }
+        // A set starting while you watch the list strikes its row on.
+        .lampStrike(isLive)
         .contentShape(Rectangle())
         // One stop per set for VoiceOver, artist first. Left to itself VoiceOver builds
         // the row's label from its pieces in drawing order — "8:00pm – 9:15pm, NOW",

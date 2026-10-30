@@ -9,10 +9,14 @@ import SwiftUI
 struct ScheduleView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(WeatherStore.self) private var weather
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var selectedDay: String?
     @State private var stageFilter: String?
     @State private var now = Date()
+    /// Set the first time the screen appears, so it opens at now once and coming back
+    /// from an artist leaves you wherever you'd scrolled to.
+    @State private var hasOpened = false
 
     /// Keeps the NOW badge and the Now-playing card honest without a per-second timer.
     private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
@@ -25,6 +29,45 @@ struct ScheduleView: View {
     }
 
     var body: some View {
+        ScrollViewReader { proxy in
+            schedule
+                .onAppear {
+                    guard !hasOpened else { return }
+                    hasOpened = true
+                    showNow(with: proxy, animated: false)
+                }
+                // Picking today again brings you back to now; another day stays put.
+                .onChange(of: selectedDay) { showNow(with: proxy, animated: true) }
+        }
+        .background(Theme.night)
+        .navigationTitle("Schedule")
+        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top, spacing: 0) { header }
+        // The lineup is what this tab is, so the ten before it belong behind it
+        // rather than in a fifth tab — which is also where the festival's own site
+        // files them, under Lineup.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink(value: PastLineupRoute.index) {
+                    Image(systemName: "clock.arrow.circlepath")
+                }
+                .tint(Theme.ink)
+                .accessibilityLabel("Past lineups")
+            }
+        }
+        .refreshable {
+            await store.refresh()
+            await weather.refresh(force: true)
+        }
+        .onReceive(ticker) { date in
+            withAnimation(reduceMotion ? nil : Motion.tick) { now = date }
+        }
+        // The ticker doesn't run while the app is backgrounded, so catch up on the
+        // way back in rather than showing yesterday for up to half a minute.
+        .onAppear { now = Date() }
+    }
+
+    private var schedule: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 title
@@ -56,30 +99,22 @@ struct ScheduleView: View {
             .padding(.horizontal, 22)
             .padding(.top, 8)
         }
-        .background(Theme.night)
-        .navigationTitle("Schedule")
-        .navigationBarTitleDisplayMode(.inline)
-        .safeAreaInset(edge: .top, spacing: 0) { header }
-        // The lineup is what this tab is, so the ten before it belong behind it
-        // rather than in a fifth tab — which is also where the festival's own site
-        // files them, under Lineup.
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink(value: PastLineupRoute.index) {
-                    Image(systemName: "clock.arrow.circlepath")
-                }
-                .tint(Theme.ink)
-                .accessibilityLabel("Past lineups")
+    }
+
+    /// Brings the now line a third of the way down the screen, where the design system
+    /// puts it: the set on air just above, the rest of the night below. Only on a day
+    /// that's under way; any other day is left where it is.
+    private func showNow(with proxy: ScrollViewProxy, animated: Bool) {
+        guard let day,
+              HourTimeline.nextUp(in: store.performances(on: day, stage: stageFilter),
+                                  at: Date()) != nil
+        else { return }
+        // On the next pass, once the line has been laid out and there's somewhere to go.
+        DispatchQueue.main.async {
+            withAnimation(animated && !reduceMotion ? Motion.tune : nil) {
+                proxy.scrollTo(NowLine.scrollID, anchor: UnitPoint(x: 0.5, y: 1.0 / 3))
             }
         }
-        .refreshable {
-            await store.refresh()
-            await weather.refresh(force: true)
-        }
-        .onReceive(ticker) { now = $0 }
-        // The ticker doesn't run while the app is backgrounded, so catch up on the
-        // way back in rather than showing yesterday for up to half a minute.
-        .onAppear { now = Date() }
     }
 
     /// Where the set times came from and when. The Info tab used to carry this alongside
@@ -102,18 +137,26 @@ struct ScheduleView: View {
         .padding(.top, 10)
     }
 
-    /// The day's name, huge, under where you are.
+    /// The day's name, huge, under where you are. A new day tunes in through static,
+    /// the old name blurring out as the new one comes clear.
     private var title: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("\(store.data.festival.name) · \(store.data.festival.city)".uppercased())
                 .appFont(12, weight: .bold)
                 .tracking(2.4)
                 .foregroundStyle(Theme.inkFaint)
-            Text((day?.weekday ?? "Schedule").uppercased())
-                .marqueeFont(96)
-                .foregroundStyle(Theme.ink)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
+            // Stacked rather than in the column, so the names cross over in one place.
+            ZStack(alignment: .topLeading) {
+                Text((day?.weekday ?? "Schedule").uppercased())
+                    .marqueeFont(96)
+                    .foregroundStyle(Theme.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+                    .id(day?.date)
+                    .transition(.blurReplace)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .animation(reduceMotion ? nil : Motion.tune, value: day?.date)
         }
     }
 
@@ -184,12 +227,15 @@ private struct NowCard: View {
                 Text(performance.artist.uppercased())
                     .marqueeFont(isLive ? 120 : 88)
                     .foregroundStyle(isLive ? Theme.sodium : Theme.ink)
-                    .onAirGlow(isLive)
                     .fixedSize(horizontal: false, vertical: true)
+                    .breathingGlow(isLive)
+                    // Outside the glow, so the set going on air strikes it on.
+                    .lampStrike(isLive)
                 Text(readout.uppercased())
                     .appFont(20, weight: .medium)
                     .tracking(0.8)
                     .monospacedDigit()
+                    .contentTransition(.numericText(countsDown: isLive))
                     .foregroundStyle(Theme.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }

@@ -17,6 +17,8 @@ struct ArtistDetailView: View {
     @State private var now = Date()
     /// The set whose note is being written, which is what the sheet is presenting.
     @State private var noteTarget: Performance?
+    /// Counts presses of the lineup buttons, for their haptic.
+    @State private var lineupTaps = 0
 
     /// So the rating control appears the moment the band goes on, rather than the next
     /// time this page is opened. Same 30s cadence as the NOW badge on the schedule.
@@ -103,13 +105,16 @@ struct ArtistDetailView: View {
                         .shadow(color: Theme.night, radius: 6)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                // On air, the name is the screen's one glow, the way the NowPlaying block
-                // draws it on the schedule.
+                // On air, the name is the screen's one glow, breathing the way the
+                // NowPlaying block's does on the schedule. Off air, a `night` shadow keeps
+                // it readable over the artwork.
                 Text((artist?.name ?? "").uppercased())
                     .marqueeFont(96)
                     .foregroundStyle(live ? Theme.sodium : Theme.ink)
-                    .shadow(color: live ? Theme.sodiumGlow : Theme.night, radius: live ? 15 : 12)
+                    .shadow(color: live ? .clear : Theme.night, radius: 12)
                     .fixedSize(horizontal: false, vertical: true)
+                    .breathingGlow(live)
+                    .lampStrike(live)
                     .accessibilityAddTraits(.isHeader)
             }
             .padding(.horizontal, 22)
@@ -176,11 +181,13 @@ struct ArtistDetailView: View {
 
             Button {
                 favorites.toggle(performance)
+                lineupTaps += 1
             } label: {
                 Label(starred ? "In my lineup" : "Add to my lineup", systemImage: "star.fill")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(GlowButtonStyle(starred ? .on : .primary))
+            .sensoryFeedback(.impact(weight: .light), trigger: lineupTaps)
             // "Starred" reads as a state and "Star" as a noun; say what the tap does.
             .accessibilityLabel(starred ? "Remove from My Lineup" : "Add to My Lineup")
         }
