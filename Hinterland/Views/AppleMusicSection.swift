@@ -20,8 +20,8 @@ struct AppleMusicSection: View {
             content
             if let error = preview.lastError {
                 Text(error)
-                    .appFont(12)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(13)
+                    .foregroundStyle(Theme.inkMuted)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -31,18 +31,22 @@ struct AppleMusicSection: View {
     }
 
     private var header: some View {
-        HStack(spacing: 8) {
-            Text("Top songs")
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text("ON THE RADIO")
                 .appFont(13, weight: .bold)
-                .foregroundStyle(Theme.tertiaryText)
-            Spacer(minLength: 0)
+                .tracking(2.4)
+                .foregroundStyle(Theme.inkFaint)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 8)
             // Apple asks for the service to be named wherever its content appears, and
             // it doubles as the way out to the full catalog.
             if let url = music.artistURL(for: artist) {
                 Link(destination: url) {
+                    // In Apple's own casing, not the callsign capitals beside it.
                     Label("Apple Music", systemImage: "music.note")
-                        .appFont(12, weight: .semibold)
-                        .foregroundStyle(Theme.accent)
+                        .appFont(15, weight: .bold)
+                        .foregroundStyle(Theme.ink)
+                        .frame(minHeight: 44)
                 }
             }
         }
@@ -75,14 +79,9 @@ struct AppleMusicSection: View {
                     await music.load(artist)
                 }
             } label: {
-                Label("Turn on previews", systemImage: "play.circle.fill")
-                    .appFont(14, weight: .semibold)
-                    .foregroundStyle(Theme.background)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 11)
-                    .background(Theme.accent, in: Capsule())
+                Label("Turn on previews", systemImage: "play.fill")
             }
-            .buttonStyle(.plain)
+            .buttonStyle(GlowButtonStyle(.quiet))
         }
     }
 
@@ -93,14 +92,13 @@ struct AppleMusicSection: View {
         if let entry, !entry.topSongs.isEmpty {
             VStack(spacing: 0) {
                 ForEach(Array(entry.topSongs.enumerated()), id: \.element.id) { index, track in
-                    if index > 0 { Divider().overlay(Theme.hairline) }
+                    if index > 0 { Rectangle().fill(Theme.hairline).frame(height: 1) }
                     TrackRow(track: track,
                              isPlaying: preview.isPlaying(track),
                              onToggle: { preview.toggle(track) })
                 }
             }
-            .background(Theme.surface,
-                        in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Theme.nightRaised)
             // Said out loud, because a list of songs that hasn't changed in a week looks
             // exactly like a list that just loaded.
             if entry.isStale() {
@@ -108,10 +106,11 @@ struct AppleMusicSection: View {
             }
         } else if music.isLoading(artist) {
             HStack(spacing: 10) {
-                ProgressView().tint(Theme.tertiaryText)
-                Text("Looking them up on Apple Music…")
-                    .appFont(13)
-                    .foregroundStyle(Theme.secondaryText)
+                ProgressView().tint(Theme.inkFaint)
+                Text("Tuning in to Apple Music…")
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkMuted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.vertical, 4)
         } else if let failure = music.failure(for: artist) {
@@ -131,23 +130,22 @@ struct AppleMusicSection: View {
             UIApplication.shared.open(url)
         } label: {
             Label("Open Settings", systemImage: "gear")
-                .appFont(13, weight: .semibold)
-                .foregroundStyle(Theme.accent)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(GlowButtonStyle(.quiet))
     }
 
     private func note(_ text: String) -> some View {
         Text(text)
-            .appFont(13)
-            .foregroundStyle(Theme.secondaryText)
+            .appFont(15)
+            .foregroundStyle(Theme.inkMuted)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 /// One song. The whole row is the play button — a 30-second preview is not something to
-/// aim at a 20pt target for, in the dark, in a crowd.
+/// aim at a 20pt target for, in the dark, in a crowd. While it plays it's on air, so the
+/// title and the control light `sodium`.
 private struct TrackRow: View {
     let track: CatalogTrack
     let isPlaying: Bool
@@ -158,24 +156,29 @@ private struct TrackRow: View {
             HStack(spacing: 12) {
                 artwork
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(track.title)
-                        .appFont(15, weight: .semibold)
-                        .foregroundStyle(Theme.ink)
+                    Text(track.title.uppercased())
+                        .appFont(17, weight: .semibold)
+                        .tracking(0.6)
+                        .foregroundStyle(isPlaying ? Theme.sodium : Theme.ink)
                         .fixedSize(horizontal: false, vertical: true)
                         .multilineTextAlignment(.leading)
                     if let album = track.albumTitle {
                         Text(album)
-                            .appFont(12)
-                            .foregroundStyle(Theme.tertiaryText)
+                            .appFont(13)
+                            .foregroundStyle(Theme.inkFaint)
                             .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
                     }
                 }
                 Spacer(minLength: 0)
-                Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                    .appFont(26)
-                    .foregroundStyle(Theme.accent)
+                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                    .appFont(17, weight: .bold)
+                    .foregroundStyle(isPlaying ? Theme.sodium : Theme.ink)
+                    .shadow(color: isPlaying ? Theme.sodium.opacity(0.7) : .clear, radius: 5)
+                    .frame(width: 44, height: 44)
             }
-            .padding(12)
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -191,14 +194,16 @@ private struct TrackRow: View {
                 AsyncImage(url: url) { image in
                     image.resizable().scaledToFill()
                 } placeholder: {
-                    Theme.surfaceRaised
+                    Theme.glass
                 }
             } else {
-                Theme.surfaceRaised
+                Theme.glass
             }
         }
         // Deliberately not scaled with Dynamic Type: it's a piece of album art, not text.
+        // Square, like every other picture in the app.
         .frame(width: 44, height: 44)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .clipped()
+        .accessibilityHidden(true)
     }
 }

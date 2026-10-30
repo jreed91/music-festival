@@ -1,10 +1,12 @@
 import SwiftUI
 
-/// The picture that comes out of the share button: your weekend on one card.
+/// The picture that comes out of the share button: your weekend on one card, set like the
+/// app — the year in Six Caps on `night`, your ratings as fireflies, the corn along the foot.
 ///
 /// Rendered by `ImageRenderer`, which draws it outside the view hierarchy — so nothing in
-/// here reads the environment, and nothing in here is `appFont`. Type in a picture doesn't
-/// scale with the reader's settings, and the reader of this one is whoever it gets sent to.
+/// here reads the app's environment objects, and nothing in here is `appFont`. Type in a
+/// picture doesn't scale with the reader's settings, and the reader of this one is whoever
+/// it gets sent to. Names wrap rather than truncate: the card grows taller instead.
 struct RecapShareCard: View {
     let recap: Recap
 
@@ -14,104 +16,130 @@ struct RecapShareCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            header
-
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 18) {
+                header
                 numbers
 
                 if !recap.rated.isEmpty {
-                    Rectangle().fill(Theme.hairline).frame(height: 1)
-
-                    VStack(alignment: .leading, spacing: 9) {
-                        ForEach(recap.best(limit: 5)) { entry in
-                            row(entry)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("MY BEST SETS")
+                            .font(Self.text(.bold, 11))
+                            .tracking(2.2)
+                            .foregroundStyle(Theme.inkFaint)
+                            .padding(.bottom, 6)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .overlay(alignment: .bottom) {
+                                Rectangle().fill(Theme.ink).frame(height: 2)
+                            }
+                        ForEach(Array(recap.best(limit: 5).enumerated()), id: \.element.id) { index, entry in
+                            row(entry, rank: index + 1)
                         }
                     }
                 }
 
                 footer
             }
-            .padding(20)
+            .padding(.horizontal, 22)
+            .padding(.top, 24)
+
+            Horizon(height: 72, fireflies: 6, isStill: true)
+                .padding(.top, 8)
         }
         .frame(width: width, alignment: .leading)
-        .background(Theme.background)
+        .background(Theme.night)
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 2) {
             Text("MY \(recap.festival.name.uppercased())")
-                .font(.system(size: 12, weight: .heavy))
-                .foregroundStyle(Theme.background.opacity(0.75))
+                .font(Self.text(.heavy, 12))
+                .tracking(2.4)
+                .foregroundStyle(Theme.sodium)
             Text(String(recap.festival.year))
-                .font(.system(size: 46, weight: .black, design: .rounded))
-                .foregroundStyle(Theme.background)
+                .font(.custom(AppFontFace.marquee, fixedSize: 120))
+                .foregroundStyle(Theme.ink)
             if let range = Format.dateRange(recap.festival.startDate, recap.festival.endDate) {
-                Text("\(range) · \(recap.festival.city)")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(Theme.background.opacity(0.75))
+                Text("\(range) · \(recap.festival.city)".uppercased())
+                    .font(Self.text(.bold, 11))
+                    .tracking(1.6)
+                    .foregroundStyle(Theme.inkFaint)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(20)
-        .background(
-            LinearGradient(colors: [Theme.accent, Theme.accent.opacity(0.72)],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
-        )
     }
 
     private var numbers: some View {
-        HStack(alignment: .top, spacing: 0) {
+        HStack(alignment: .top, spacing: 10) {
             stat("\(recap.attendedCount)", recap.attendedCount == 1 ? "set seen" : "sets seen")
             stat(recap.watchedHours.formatted(.number.precision(.fractionLength(0...1))),
                  "hours")
             if let average = recap.average {
-                stat(Format.rating(average), "average", tint: Theme.accent)
+                stat(Format.rating(average), "my average", tint: Theme.sodium)
             }
         }
     }
 
     private func stat(_ value: String, _ label: String, tint: Color = Theme.ink) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .font(.system(size: 27, weight: .black, design: .rounded))
+                .font(.custom(AppFontFace.marquee, fixedSize: 64))
                 .foregroundStyle(tint)
+                .shadow(color: tint == Theme.sodium ? Theme.sodiumGlow : .clear, radius: 12)
             Text(label.uppercased())
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(Theme.tertiaryText)
+                .font(Self.text(.bold, 10))
+                .tracking(1.4)
+                .foregroundStyle(Theme.inkFaint)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(Theme.nightRaised)
     }
 
-    private func row(_ entry: Recap.RatedSet) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 9) {
-            // Drawn as characters rather than as five SF Symbols: this is a picture that
-            // gets looked at small, and the glyphs stay crisp where a stack of tinted
-            // images at 9pt turns to mush.
-            Text(String(repeating: "★", count: entry.rating.stars)
-               + String(repeating: "☆", count: SetRating.scale.upperBound - entry.rating.stars))
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.accent)
-            Text(entry.performance.artist)
-                .font(.system(size: 14, weight: .semibold))
+    private func row(_ entry: Recap.RatedSet, rank: Int) -> some View {
+        HStack(alignment: .center, spacing: 12) {
+            Text("\(rank)")
+                .font(.custom(AppFontFace.marquee, fixedSize: 40))
+                .foregroundStyle(Theme.inkFaint)
+                .frame(minWidth: 18, alignment: .leading)
+            Text(entry.performance.artist.uppercased())
+                .font(.custom(AppFontFace.marquee, fixedSize: 34))
                 .foregroundStyle(Theme.ink)
-                .lineLimit(1)
-            Spacer(minLength: 0)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 8)
+            // Fireflies rather than stars, as in the app. Drawn, not typed: neither
+            // bundled face has a star, and a fallback glyph would break the set.
+            HStack(spacing: 4) {
+                ForEach(Array(SetRating.scale), id: \.self) { value in
+                    let lit = value <= entry.rating.stars
+                    Circle()
+                        .fill(lit ? Theme.sodium : Theme.unlit)
+                        .frame(width: 8, height: 8)
+                        .shadow(color: lit ? Theme.sodium.opacity(0.7) : .clear, radius: 3)
+                }
+            }
+        }
+        .padding(.vertical, 8)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.hairline).frame(height: 1)
         }
     }
 
     private var footer: some View {
-        HStack(spacing: 4) {
-            Image(systemName: "music.mic")
-                .font(.system(size: 9))
-            Text(recap.festival.venue)
-                .font(.system(size: 9, weight: .medium))
-                .lineLimit(1)
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(recap.festival.venue.uppercased())
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
             if recap.ratedCount > 5 {
-                Text("+\(recap.ratedCount - 5) more")
-                    .font(.system(size: 9, weight: .medium))
+                Text("+\(recap.ratedCount - 5) MORE")
             }
         }
-        .foregroundStyle(Theme.tertiaryText)
+        .font(Self.text(.bold, 10))
+        .tracking(1.4)
+        .foregroundStyle(Theme.inkFaint)
+    }
+
+    /// Barlow Condensed at a fixed size: a picture's type doesn't follow Dynamic Type.
+    private static func text(_ weight: Font.Weight, _ size: CGFloat) -> Font {
+        .custom(AppFontFace.text(weight), fixedSize: size)
     }
 }

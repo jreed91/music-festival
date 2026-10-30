@@ -26,12 +26,14 @@ struct FoodDrinkView: View {
                         .accessibilityAddTraits(.isHeader)
                 }
 
+                SearchField(prompt: "Search stands, dishes or towns", text: $query)
+                    .padding(.top, 16)
+
                 filters
                     .padding(.top, 12)
 
                 if areas.isEmpty {
                     EmptyStateView(
-                        symbol: "fork.knife",
                         title: "No stands match",
                         message: "Try fewer dietary filters, or a different search.")
                         .frame(maxWidth: .infinity)
@@ -48,30 +50,47 @@ struct FoodDrinkView: View {
 
                 legend
                     .padding(.top, 32)
+
+                Horizon()
+                    .padding(.top, 48)
+                    .padding(.horizontal, -22)
             }
             .padding(.horizontal, 22)
             .padding(.top, 8)
-            .padding(.bottom, 32)
         }
         .background(Theme.night)
         .navigationTitle("Food & Drink")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query, prompt: "Search stands, dishes or towns")
+        // The field is in the page, so dragging the list is the natural way to put the
+        // keyboard away.
+        .scrollDismissesKeyboard(.immediately)
     }
 
-    /// The area in Six Caps over a 2pt cream rule, with how many of its stands show.
+    /// True while a search or a dietary filter is narrowing the list.
+    private var isFiltering: Bool {
+        !tags.isEmpty || !query.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    /// The area in Six Caps over a 2pt cream rule, with how many of its stands show:
+    /// "9 STANDS", or "3 OF 9 STANDS" while something is filtering them.
     private func areaHeader(_ area: VendorArea) -> some View {
-        HStack(alignment: .lastTextBaseline, spacing: 12) {
+        let shown = area.vendors.count
+        let total = store.vendors.areas.first { $0.id == area.id }?.vendors.count ?? shown
+        let count = isFiltering && shown != total
+            ? "\(shown) of \(total) \(total == 1 ? "stand" : "stands")"
+            : "\(shown) \(shown == 1 ? "stand" : "stands")"
+        return HStack(alignment: .lastTextBaseline, spacing: 12) {
             Text(area.name.uppercased())
-                .marqueeFont(52)
+                .marqueeFont(56)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 8)
-            Text("\(area.vendors.count) \(area.vendors.count == 1 ? "stand" : "stands")".uppercased())
+            Text(count.uppercased())
                 .appFont(11, weight: .bold)
                 .tracking(1.6)
                 .foregroundStyle(Theme.inkFaint)
-                .fixedSize()
+                .multilineTextAlignment(.trailing)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.top, 32)
         .padding(.bottom, 6)
@@ -79,8 +98,7 @@ struct FoodDrinkView: View {
             Rectangle().fill(Theme.ink).frame(height: 2)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(area.name), \(area.vendors.count) "
-                          + "\(area.vendors.count == 1 ? "stand" : "stands")")
+        .accessibilityLabel("\(area.name), \(count)")
         .accessibilityAddTraits(.isHeader)
     }
 
@@ -130,50 +148,46 @@ struct FoodDrinkView: View {
             if let source = store.vendors.source, let url = URL(string: source) {
                 Link(destination: url) {
                     Label("Vendor list on hinterlandiowa.com", systemImage: "arrow.up.right")
-                        .appFont(14, weight: .semibold)
-                        .foregroundStyle(Theme.ink)
                 }
+                .buttonStyle(GlowButtonStyle(.quiet))
+                .padding(.top, 4)
             }
         }
     }
 }
 
 /// One stand: what they sell, where they're from, and what they can feed you. The
-/// VendorRow of the design system.
+/// VendorRow of the design system: when the stand has a website, the whole row opens it
+/// rather than a separate link inside it, with the address in a caption so it's clear
+/// where a tap goes.
 struct VendorCard: View {
     let vendor: Vendor
     /// Other areas the same stand appears in, so a second location isn't a surprise.
     var alsoIn: [VendorArea] = []
 
+    private var website: URL? { vendor.url.flatMap { URL(string: $0) } }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            details
-            if let link = vendor.url, let url = URL(string: link) {
-                Link(destination: url) {
-                    Label(url.host()?.replacingOccurrences(of: "www.", with: "") ?? link,
-                          systemImage: "arrow.up.right")
-                        .appFont(13, weight: .semibold)
-                        .foregroundStyle(Theme.inkMuted)
-                }
+        if let website {
+            Link(destination: website) {
+                row(host: website.host()?.replacingOccurrences(of: "www.", with: ""))
             }
-        }
-        .padding(.top, 14)
-        .padding(.bottom, 16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Theme.hairline).frame(height: 1)
+            .buttonStyle(.plain)
+            .accessibilityHint("Opens their website")
+        } else {
+            row(host: nil)
         }
     }
 
-    /// Everything but the link, as one stop for VoiceOver: a stand's name, town, menu and
-    /// tags were five or more swipes each, which across a food court is a long way to
-    /// scroll by ear. The link stays its own stop so it's still something you can open.
-    private var details: some View {
+    /// A stand's name, town, menu and tags as one stop for VoiceOver: they were five or
+    /// more swipes each, which across a food court is a long way to scroll by ear.
+    private func row(host: String?) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Text(vendor.name.uppercased())
                     .marqueeFont(36)
                     .foregroundStyle(Theme.ink)
+                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 if let hometown = vendor.hometown {
@@ -190,6 +204,7 @@ struct VendorCard: View {
                 Text(vendor.offerings)
                     .appFont(15)
                     .foregroundStyle(Theme.inkMuted)
+                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -202,15 +217,33 @@ struct VendorCard: View {
                 Text(note)
                     .appFont(13)
                     .foregroundStyle(Theme.inkFaint)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if !alsoIn.isEmpty {
                 Text("Also at \(alsoIn.map(\.name).joined(separator: ", "))")
                     .appFont(13)
                     .foregroundStyle(Theme.inkFaint)
+                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            if let host {
+                Label(host, systemImage: "arrow.up.right")
+                    .appFont(13, weight: .semibold)
+                    .foregroundStyle(Theme.inkFaint)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityHidden(true)
+            }
         }
+        .padding(.top, 14)
+        .padding(.bottom, 16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(Theme.hairline).frame(height: 1)
+        }
+        .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
 }

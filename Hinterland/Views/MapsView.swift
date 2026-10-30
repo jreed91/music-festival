@@ -57,10 +57,13 @@ struct MapsView: View {
 
                     gettingHere
                         .padding(.top, 24)
+
+                    Horizon()
+                        .padding(.top, 48)
+                        .padding(.horizontal, -22)
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, 8)
-                .padding(.bottom, 32)
             }
             .background(Theme.night)
             .navigationTitle("Maps")
@@ -80,30 +83,22 @@ struct MapsView: View {
 
     private var gettingHere: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("GETTING HERE")
-                .appFont(12, weight: .bold)
-                .tracking(2.4)
-                .foregroundStyle(Theme.inkFaint)
-                .accessibilityAddTraits(.isHeader)
-            Text(store.data.festival.venue)
-                .appFont(19, weight: .semibold)
+            SectionHeading(title: "Getting here")
+            Text(store.data.festival.venue.uppercased())
+                .marqueeFont(56)
                 .foregroundStyle(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 6)
             Text(store.data.festival.city)
                 .appFont(17)
                 .foregroundStyle(Theme.inkMuted)
+                .fixedSize(horizontal: false, vertical: true)
             if let venue = venueInMaps {
                 Link(destination: venue) {
                     Label("Open in Apple Maps", systemImage: "arrow.up.right")
-                        .appFont(14, weight: .bold)
-                        .tracking(1.6)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Theme.ink)
-                        .padding(.horizontal, 16)
-                        .frame(minHeight: 44)
-                        .overlay(RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Theme.hairline, lineWidth: 1.5))
                 }
+                .buttonStyle(GlowButtonStyle(.quiet))
+                .padding(.top, 4)
             }
             Text("Every map is bundled with the app and opens offline. Apple Maps needs "
                + "signal.")

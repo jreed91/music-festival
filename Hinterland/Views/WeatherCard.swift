@@ -28,42 +28,51 @@ struct WeatherCard: View {
     var body: some View {
         NavigationLink(value: WeatherRoute.forecast) {
             layout {
-                Image(systemName: current?.symbolName ?? "cloud.sun")
-                    .symbolRenderingMode(current == nil ? .monochrome : .multicolor)
-                    .appFont(24)
-                    .foregroundStyle(Theme.tertiaryText)
-                    .frame(minWidth: 30)
-
                 if let current {
+                    // A big word in the design system's sense: the one number anyone
+                    // reads off this card.
                     Text(Format.temperature(current.temperature))
-                        .appFont(22, weight: .semibold, design: .rounded)
+                        .marqueeFont(56)
                         .foregroundStyle(Theme.ink)
+                        .fixedSize()
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(current.condition)
-                            .appFont(13, weight: .medium)
-                            .foregroundStyle(Theme.secondaryText)
-                            .fixedSize(horizontal: false, vertical: true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                            // One colour, not the system's multicolour suns and clouds:
+                            // the screen's only glow is what's on air.
+                            Image(systemName: current.symbolName)
+                                .symbolRenderingMode(.hierarchical)
+                                .appFont(15, weight: .semibold)
+                                .accessibilityHidden(true)
+                            Text(current.condition.uppercased())
+                                .appFont(15, weight: .bold)
+                                .tracking(1.2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .foregroundStyle(Theme.inkMuted)
                         if let wetHour {
                             Label("\(Format.percent(wetHour.precipitationChance)) rain by "
                                 + Format.hour(wetHour.date),
                                   systemImage: "umbrella")
-                                .appFont(11, weight: .semibold)
+                                .appFont(13, weight: .bold)
                                 .foregroundStyle(Theme.rain)
+                                .fixedSize(horizontal: false, vertical: true)
                         } else if current.showsApparentTemperature {
                             Text("Feels like \(Format.temperature(current.apparentTemperature))")
-                                .appFont(11)
-                                .foregroundStyle(Theme.tertiaryText)
+                                .appFont(13)
+                                .foregroundStyle(Theme.inkFaint)
                         }
                     }
                 } else {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Forecast")
-                            .appFont(15, weight: .semibold)
-                            .foregroundStyle(Theme.ink)
-                        Text(weather.isRefreshing ? "Loading…" : "Tap to load — needs a signal once")
-                            .appFont(11)
-                            .foregroundStyle(Theme.tertiaryText)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("FORECAST")
+                            .appFont(13, weight: .bold)
+                            .tracking(2.4)
+                            .foregroundStyle(Theme.inkFaint)
+                        Text(weather.isRefreshing ? "Tuning in…" : "Tap to load. It needs a signal once.")
+                            .appFont(15)
+                            .foregroundStyle(Theme.inkMuted)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
 
@@ -71,15 +80,16 @@ struct WeatherCard: View {
 
                 Image(systemName: "chevron.right")
                     .appFont(12, weight: .semibold)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .foregroundStyle(Theme.inkFaint)
+                    .accessibilityHidden(true)
             }
             // Stacked, nothing is left pushing the card open, so it would shrink to its
             // widest line and stop matching the cards above and below it.
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Theme.surface,
-                        in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Theme.nightRaised)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(spokenSummary)
@@ -108,30 +118,36 @@ struct WeatherAlertBanner: View {
 
     var body: some View {
         NavigationLink(value: WeatherRoute.forecast) {
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
                 Image(systemName: advisory.severity.symbol)
-                    .appFont(18, weight: .semibold)
-                VStack(alignment: .leading, spacing: 2) {
+                    .appFont(20, weight: .bold)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(advisory.severity.label) · \(advisory.source)".uppercased())
+                        .appFont(11, weight: .heavy)
+                        .tracking(1.6)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(advisory.summary)
-                        .appFont(14, weight: .bold)
+                        .appFont(17, weight: .bold)
                         .multilineTextAlignment(.leading)
-                    Text("\(advisory.severity.label) · \(advisory.source)")
-                        .appFont(11, weight: .medium)
-                        .opacity(0.85)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
-                    .appFont(12, weight: .semibold)
-                    .opacity(0.7)
+                    .appFont(12, weight: .bold)
                     .accessibilityHidden(true)
             }
-            .foregroundStyle(Theme.background)
+            // An alert is `signal`, the same red as the now line: the one thing allowed to
+            // shout over the on-air glow.
+            .foregroundStyle(Theme.night)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(advisory.severity.tint,
-                        in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(advisory.severity.tint)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -143,36 +159,37 @@ struct WeatherAlertCard: View {
     var body: some View {
         Link(destination: advisory.detailsURL) {
             VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Image(systemName: advisory.severity.symbol)
                         .appFont(15, weight: .semibold)
+                        .accessibilityHidden(true)
                     Text(advisory.severity.label.uppercased())
-                        .appFont(11, weight: .heavy)
+                        .appFont(13, weight: .heavy)
+                        .tracking(2)
                     Spacer(minLength: 0)
                     Image(systemName: "arrow.up.right")
                         .appFont(11, weight: .semibold)
-                        .opacity(0.7)
+                        .accessibilityHidden(true)
                 }
                 .foregroundStyle(advisory.severity.tint)
 
                 Text(advisory.summary)
-                    .appFont(15, weight: .semibold)
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(Theme.ink)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text([advisory.region, advisory.source].compactMap { $0 }.joined(separator: " · "))
-                    .appFont(11)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(13)
+                    .foregroundStyle(Theme.inkMuted)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(14)
-            .background(advisory.severity.tint.opacity(0.14),
-                        in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(advisory.severity.tint.opacity(0.5), lineWidth: 1)
-            )
+            .background(Theme.nightRaised)
+            .overlay(Rectangle().strokeBorder(advisory.severity.tint, lineWidth: 1.5))
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -186,20 +203,21 @@ struct SetForecastBadge: View {
     var body: some View {
         HStack(spacing: 5) {
             Image(systemName: hour.symbolName)
-                .symbolRenderingMode(.multicolor)
-                .appFont(11)
-            Text(Format.temperature(hour.temperature))
+                .symbolRenderingMode(.hierarchical)
                 .appFont(11, weight: .semibold)
+                .foregroundStyle(Theme.inkMuted)
+            Text(Format.temperature(hour.temperature))
+                .appFont(12, weight: .bold)
                 .foregroundStyle(Theme.ink)
             if hour.precipitationChance >= 0.2 {
                 Text(Format.percent(hour.precipitationChance))
-                    .appFont(11, weight: .semibold)
+                    .appFont(12, weight: .bold)
                     .foregroundStyle(Theme.rain)
             }
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 7)
         .padding(.vertical, 4)
-        .background(Theme.surfaceRaised, in: Capsule())
+        .overlay(Rectangle().strokeBorder(Theme.hairline, lineWidth: 1))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Self.spokenLabel(for: hour))
     }
@@ -231,8 +249,8 @@ struct WeatherAttributionView: View {
                             textMark(attribution.serviceName)
                         }
                         Text(attribution.legalText)
-                            .appFont(9)
-                            .foregroundStyle(Theme.tertiaryText)
+                            .appFont(11)
+                            .foregroundStyle(Theme.inkFaint)
                             .multilineTextAlignment(.center)
                     }
                 }
@@ -250,17 +268,19 @@ struct WeatherAttributionView: View {
             Text(name)
         }
         .appFont(11, weight: .medium)
-        .foregroundStyle(Theme.secondaryText)
+        .foregroundStyle(Theme.inkMuted)
     }
 }
 
 extension AdvisorySeverity {
+    /// Severe and worse are alerts, so `signal`. Below that an advisory is something to
+    /// know rather than act on, and stays in the text colours: never `sodium`, which
+    /// would read as on air, and never `rain`, which is only the chance of it.
     var tint: Color {
         switch self {
-        case .extreme: return Color(red: 1.0, green: 0.36, blue: 0.36)
-        case .severe: return Theme.warning
-        case .moderate: return Theme.accent
-        case .minor, .unknown: return Color(red: 0.55, green: 0.75, blue: 0.98)
+        case .extreme, .severe: return Theme.signal
+        case .moderate: return Theme.ink
+        case .minor, .unknown: return Theme.inkMuted
         }
     }
 }

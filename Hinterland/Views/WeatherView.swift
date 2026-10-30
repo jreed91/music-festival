@@ -17,7 +17,9 @@ struct WeatherView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 14) {
+            VStack(alignment: .leading, spacing: 14) {
+                header
+
                 if let snapshot = weather.snapshot {
                     ForEach(snapshot.alertsBySeverity) { advisory in
                         WeatherAlertCard(advisory: advisory)
@@ -32,14 +34,30 @@ struct WeatherView: View {
                 }
                 footer
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.horizontal, 22)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
         }
-        .background(Theme.background)
+        .background(Theme.night)
         .navigationTitle("Weather")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable { await weather.refresh(force: true) }
         .task { await weather.refresh() }
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("OVER \(store.map.venue.name)".uppercased())
+                .appFont(12, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.inkFaint)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("THE SKY")
+                .marqueeFont(88)
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+        }
     }
 
     // MARK: - Now
@@ -47,35 +65,39 @@ struct WeatherView: View {
     private func currentCard(_ current: CurrentConditions) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(Format.temperature(current.temperature))
-                        .appFont(56, weight: .semibold, design: .rounded)
+                        .marqueeFont(96)
                         .foregroundStyle(Theme.ink)
-                    Text(current.condition)
-                        .appFont(15, weight: .medium)
-                        .foregroundStyle(Theme.secondaryText)
+                        .fixedSize()
+                    Text(current.condition.uppercased())
+                        .appFont(20, weight: .medium)
+                        .tracking(0.8)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                     if current.showsApparentTemperature {
                         Text("Feels like \(Format.temperature(current.apparentTemperature))")
-                            .appFont(13)
-                            .foregroundStyle(Theme.tertiaryText)
+                            .appFont(15)
+                            .foregroundStyle(Theme.inkMuted)
                     }
                 }
                 .accessibilityElement(children: .combine)
                 Spacer(minLength: 0)
                 Image(systemName: current.symbolName)
-                    .symbolRenderingMode(.multicolor)
-                    .appFont(46)
-                    .padding(.top, 6)
+                    .symbolRenderingMode(.hierarchical)
+                    .appFont(40, weight: .semibold)
+                    .foregroundStyle(Theme.inkMuted)
+                    .padding(.top, 10)
                     .accessibilityHidden(true)
             }
 
-            Divider().overlay(Theme.hairline)
+            Rectangle().fill(Theme.hairline).frame(height: 1)
 
             // Two columns rather than a row of four: "12 mph NNW" doesn't survive a
             // quarter of a phone's width at a legible size.
-            LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading),
-                                GridItem(.flexible(), alignment: .leading)],
-                      alignment: .leading, spacing: 12) {
+            LazyVGrid(columns: [GridItem(.flexible(), alignment: .topLeading),
+                                GridItem(.flexible(), alignment: .topLeading)],
+                      alignment: .leading, spacing: 14) {
                 WeatherStat(symbol: "wind", label: "Wind",
                             value: "\(Format.windSpeed(current.windSpeed)) \(current.windDirection)")
                 if let gust = current.windGust {
@@ -84,16 +106,12 @@ struct WeatherView: View {
                 }
                 WeatherStat(symbol: "humidity", label: "Humidity",
                             value: Format.percent(current.humidity))
-                WeatherStat(symbol: "sun.max.trianglebadge.exclamationmark", label: "UV index",
+                WeatherStat(symbol: "sun.max", label: "UV index",
                             value: "\(current.uvIndex) · \(current.uvCategory)")
             }
         }
         .padding(16)
-        .background(
-            LinearGradient(colors: [Theme.accent.opacity(0.18), Theme.surface],
-                           startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-        )
+        .background(Theme.nightRaised)
     }
 
     // MARK: - Hourly
@@ -102,29 +120,36 @@ struct WeatherView: View {
     private func hourlyStrip(_ snapshot: WeatherSnapshot) -> some View {
         let hours = snapshot.upcomingHours()
         if !hours.isEmpty {
-            WeatherSection(title: "Next 24 hours", symbol: "clock") {
+            WeatherSection(title: "Next 24 hours") {
+                // Sideways on purpose: a day of hours is a strip you drag, and the next
+                // one peeking in at the edge says there's more.
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 14) {
+                    HStack(alignment: .top, spacing: 18) {
                         ForEach(hours) { hour in
                             VStack(spacing: 6) {
-                                Text(Format.hour(hour.date))
-                                    .appFont(11, weight: .semibold)
-                                    .foregroundStyle(Theme.secondaryText)
+                                Text(Format.hour(hour.date).uppercased())
+                                    .appFont(11, weight: .bold)
+                                    .tracking(1.2)
+                                    .foregroundStyle(Theme.inkFaint)
+                                    .fixedSize()
                                 Image(systemName: hour.symbolName)
-                                    .symbolRenderingMode(.multicolor)
-                                    .appFont(18)
-                                    .frame(height: 22)
+                                    .symbolRenderingMode(.hierarchical)
+                                    .appFont(18, weight: .semibold)
+                                    .foregroundStyle(Theme.inkMuted)
+                                    .frame(height: 24)
                                 Text(Format.temperature(hour.temperature))
-                                    .appFont(14, weight: .semibold, design: .rounded)
+                                    .appFont(17, weight: .bold)
+                                    .monospacedDigit()
                                     .foregroundStyle(Theme.ink)
+                                    .fixedSize()
                                 // Only worth the ink once rain is actually plausible, but
                                 // the row still reserves its height so the strip doesn't
                                 // jog up and down between hours.
                                 Text(hour.precipitationChance >= 0.1
-                                     ? Format.percent(hour.precipitationChance) : "")
-                                    .appFont(10, weight: .semibold)
+                                     ? Format.percent(hour.precipitationChance) : " ")
+                                    .appFont(12, weight: .bold)
                                     .foregroundStyle(Theme.rain)
-                                    .frame(height: 12)
+                                    .fixedSize()
                             }
                             .frame(minWidth: 40)
                             // One stop per hour, read as a sentence, rather than the
@@ -133,8 +158,7 @@ struct WeatherView: View {
                             .accessibilityLabel(spokenHour(hour))
                         }
                     }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 14)
                 }
             }
         }
@@ -152,74 +176,77 @@ struct WeatherView: View {
     // MARK: - The weekend
 
     private func festivalDays(_ snapshot: WeatherSnapshot) -> some View {
-        WeatherSection(title: "The weekend", symbol: "calendar") {
+        WeatherSection(title: "The weekend") {
             VStack(spacing: 0) {
                 ForEach(store.days) { day in
                     dayRow(day, conditions: snapshot.day(for: day, in: store.data.timeZone))
-                    if day.id != store.days.last?.id {
-                        Divider().overlay(Theme.hairline).padding(.leading, 14)
-                    }
+                        .overlay(alignment: .bottom) {
+                            if day.id != store.days.last?.id {
+                                Rectangle().fill(Theme.hairline).frame(height: 1)
+                            }
+                        }
                 }
             }
         }
     }
 
+    /// The day's name and its high and low on one line, everything else wrapping under
+    /// it, so nothing has to squeeze into a fixed column at large text sizes.
     private func dayRow(_ day: FestivalDay, conditions: DayConditions?) -> some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(day.weekday)
-                    .appFont(15, weight: .semibold)
-                    .foregroundStyle(Theme.ink)
-                Text(Format.dayLabel(day))
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .lastTextBaseline, spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(day.weekday.uppercased())
+                        .marqueeFont(40)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(Format.dayLabel(day).uppercased())
+                        .appFont(11, weight: .bold)
+                        .tracking(1.4)
+                        .foregroundStyle(Theme.inkFaint)
+                }
+                Spacer(minLength: 8)
+                if let conditions {
+                    Text(Format.temperature(conditions.high))
+                        .appFont(20, weight: .bold)
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize()
+                    Text(Format.temperature(conditions.low))
+                        .appFont(20, weight: .medium)
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.inkFaint)
+                        .fixedSize()
+                }
             }
-            .frame(width: 78, alignment: .leading)
 
             if let conditions {
-                Image(systemName: conditions.symbolName)
-                    .symbolRenderingMode(.multicolor)
-                    .appFont(20)
-                    .frame(width: 28)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(conditions.condition)
-                        .appFont(12)
-                        .foregroundStyle(Theme.secondaryText)
-                        .fixedSize(horizontal: false, vertical: true)
-                    HStack(spacing: 8) {
-                        if conditions.precipitationChance >= 0.1 {
-                            Label(Format.percent(conditions.precipitationChance),
-                                  systemImage: "umbrella")
-                                .appFont(10, weight: .semibold)
-                                .foregroundStyle(Theme.rain)
-                        }
-                        if let sunset = conditions.sunset {
-                            Label(Format.time(sunset), systemImage: "sunset")
-                                .appFont(10, weight: .semibold)
-                                .foregroundStyle(Theme.tertiaryText)
-                        }
+                FlowLayout(spacing: 12, lineSpacing: 4) {
+                    Label(conditions.condition, systemImage: conditions.symbolName)
+                        .symbolRenderingMode(.hierarchical)
+                        .appFont(15)
+                        .foregroundStyle(Theme.inkMuted)
+                    if conditions.precipitationChance >= 0.1 {
+                        Label(Format.percent(conditions.precipitationChance),
+                              systemImage: "umbrella")
+                            .appFont(13, weight: .bold)
+                            .foregroundStyle(Theme.rain)
+                    }
+                    if let sunset = conditions.sunset {
+                        Label(Format.time(sunset), systemImage: "sunset")
+                            .appFont(13, weight: .bold)
+                            .foregroundStyle(Theme.inkFaint)
                     }
                 }
-
-                Spacer(minLength: 0)
-
-                Text(Format.temperature(conditions.high))
-                    .appFont(17, weight: .semibold, design: .rounded)
-                    .foregroundStyle(Theme.ink)
-                Text(Format.temperature(conditions.low))
-                    .appFont(17, weight: .regular, design: .rounded)
-                    .foregroundStyle(Theme.tertiaryText)
             } else {
                 // WeatherKit reaches about ten days out. Before that the honest answer
                 // is that nobody knows yet.
-                Text("Too far out to forecast")
-                    .appFont(12)
-                    .foregroundStyle(Theme.tertiaryText)
-                Spacer(minLength: 0)
+                Text("Too far out to forecast.")
+                    .appFont(15)
+                    .foregroundStyle(Theme.inkFaint)
             }
         }
-        .padding(14)
+        .padding(.vertical, 12)
         // High and low sit side by side as two bare numbers; spoken, they need saying
         // which is which.
         .accessibilityElement(children: .ignore)
@@ -248,75 +275,71 @@ struct WeatherView: View {
 
     private var noForecast: some View {
         EmptyStateView(
-            symbol: weather.isRefreshing ? "arrow.clockwise" : "cloud.slash",
             title: weather.isRefreshing ? "Fetching the forecast" : "No forecast yet",
             message: weather.isRefreshing
                 ? "One moment."
                 : "The forecast needs a signal the first time. Once it's loaded it stays "
-                  + "on your phone and opens offline like everything else here.")
+                  + "on your phone and opens offline like everything else here.",
+            headline: weather.isRefreshing ? "Stand by" : "Dead air")
+            .frame(maxWidth: .infinity)
     }
 
     private var footer: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 12) {
             Button {
                 Task { await weather.refresh(force: true) }
             } label: {
-                HStack(spacing: 6) {
+                HStack(spacing: 8) {
                     if weather.isRefreshing {
-                        ProgressView().controlSize(.small)
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(Theme.ink)
                     } else {
                         Image(systemName: "arrow.clockwise")
                     }
                     Text("Refresh")
                 }
-                .appFont(13, weight: .semibold)
-                .foregroundStyle(Theme.accent)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(GlowButtonStyle(.quiet))
             .disabled(weather.isRefreshing)
 
             if let error = weather.lastError {
                 Text(error)
-                    .appFont(11)
-                    .foregroundStyle(Theme.warning)
+                    .appFont(13)
+                    .foregroundStyle(Theme.signal)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if let snapshot = weather.snapshot {
                 Text("Updated \(snapshot.fetchedAt.formatted(date: .abbreviated, time: .shortened))"
                    + " · \(store.map.venue.name)")
-                    .appFont(11)
-                    .foregroundStyle(Theme.tertiaryText)
+                    .appFont(13)
+                    .foregroundStyle(Theme.inkFaint)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             WeatherAttributionView(attribution: weather.snapshot?.attribution)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 6)
+        .padding(.top, 10)
     }
 }
 
 // MARK: - Pieces
 
-/// A titled card. The weather screen is a stack of these and they all want the same
-/// surface, corner radius and header treatment.
+/// A section of the forecast: a callsign over the 2pt rule, then its rows straight on
+/// `night`, the way every other screen groups things.
 private struct WeatherSection<Content: View>: View {
     let title: String
-    let symbol: String
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(title, systemImage: symbol)
-                .appFont(12, weight: .bold)
-                .foregroundStyle(Theme.tertiaryText)
-                .padding(.horizontal, 2)
-                .accessibilityAddTraits(.isHeader)
+        VStack(alignment: .leading, spacing: 0) {
+            SectionHeading(title: title)
             content
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.surface,
-                            in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -328,21 +351,21 @@ private struct WeatherStat: View {
     let value: String
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: symbol)
-                .appFont(13)
-                .foregroundStyle(Theme.accent)
+                .appFont(13, weight: .semibold)
+                .foregroundStyle(Theme.inkFaint)
                 .frame(width: 18)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(label)
-                    .appFont(10, weight: .semibold)
-                    .foregroundStyle(Theme.tertiaryText)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label.uppercased())
+                    .appFont(11, weight: .bold)
+                    .tracking(1.4)
+                    .foregroundStyle(Theme.inkFaint)
                 Text(value)
-                    .appFont(13, weight: .medium)
+                    .appFont(17, weight: .semibold)
                     .foregroundStyle(Theme.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)

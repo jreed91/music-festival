@@ -45,9 +45,10 @@ struct NowPlayingLiveActivity: Widget {
                         SetProgress(state: state)
                         if let following = state.nextArtist, let start = state.nextStart {
                             Text("Then \(following) · \(Format.time(start))")
-                                .appFont(11)
-                                .foregroundStyle(Theme.secondaryText)
+                                .appFont(12)
+                                .foregroundStyle(Theme.inkMuted)
                                 .lineLimit(1)
+                                .minimumScaleFactor(0.7)
                         }
                     }
                 }
@@ -111,10 +112,12 @@ private struct LockScreenCard: View {
                     .appFont(11, weight: .bold)
                     .tracking(1.4)
                 Text("·")
-                    .foregroundStyle(Theme.tertiaryText)
+                    .foregroundStyle(Theme.inkFaint)
                 Text(Format.range(state.start, state.end))
                     .appFont(12)
-                    .foregroundStyle(Theme.secondaryText)
+                    .foregroundStyle(Theme.inkMuted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
             .foregroundStyle(state.stage.color)
             .accessibilityElement(children: .ignore)
@@ -127,9 +130,12 @@ private struct LockScreenCard: View {
                 Text("Then \(following)"
                      + (state.nextStage.map { " · \($0.displayName)" } ?? "")
                      + " · \(Format.time(start))")
-                    .appFont(11)
-                    .foregroundStyle(Theme.secondaryText)
+                    .appFont(12)
+                    .foregroundStyle(Theme.inkMuted)
+                    // The card has a fixed height on the Lock Screen, so the line shrinks
+                    // to fit rather than wrapping off the bottom or losing its end.
                     .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
         }
         .padding(14)

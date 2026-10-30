@@ -29,10 +29,10 @@ back to what's already on the phone.
 - **Top songs** — each artist's five best-known tracks from the Apple Music catalog, each
   playable as a 30-second preview without an Apple Music subscription. Looked up once and
   cached, so the list is still there in the valley.
-- **Rate a set** — one to five stars on any set once it's under way, with an optional line
-  about it, and a ranked recap of everything you rated. Rating works with no signal and
-  uploads later; scores are pooled through CloudKit so every set also carries the average
-  everyone else gave it. Notes stay on your phone.
+- **Rate a set** — one to five, drawn as fireflies, on any set once it's under way, with
+  an optional line about it, and a ranked recap of everything you rated. Rating works with
+  no signal and uploads later; scores are pooled through CloudKit so every set also
+  carries the average everyone else gave it. Notes stay on your phone.
 - **Food & Drink** — all 33 stands grouped by where they're parked (East, West and South
   Concourse, VIP, GA+, Basecamp and the mobile carts), with what each one sells, where
   they're from, and combinable filters for vegetarian, vegan, gluten-free, dairy-free,
@@ -284,11 +284,13 @@ Where the numbers come from:
   legend panel contributes are dropped, and the four pins traced by hand before this
   landed within 5 px of where the sweep put them.
 
-`GroundsMapView` draws each layer as a rotated `MKOverlay` with an `MKMarkerAnnotationView`
-per POI, the user's location, and walking distance plus a Directions handoff for the
-selected pin. The concourse layer — artwork and pins together — appears only under
-`visibleBelowMeters` (1200 m): it carries its own legend panel, which from a mile up is
-just a beige box sitting on a field. Zooming in therefore swaps the site map for the
+`GroundsMapView` draws each layer as a rotated `MKOverlay` with an After Dark pin
+(`POIAnnotationView`, a small square light) per POI, the user's location, and walking
+distance plus a Directions handoff for the selected pin. A stage pin lights up `sodium`
+and reads `MAIN · LORDE` while a set is on it; tapping a dark stage says who's up next.
+The concourse layer — artwork and pins together — appears only under `visibleBelowMeters`
+(1200 m): it carries its own legend panel, which from a mile up is just a beige box
+sitting on a field. Zooming in therefore swaps the site map for the
 inside-the-gates map, and the title changes with it.
 
 The filter chips follow the same threshold — they list the categories the visible layers
@@ -532,9 +534,11 @@ reason: it's why *you* aren't in it.
 The share button hands off a `RecapShare`, which carries both a PNG and the plain-text
 ranking as two representations of one item, so Messages takes the picture and a notes app
 takes the text without either being asked to choose. The card is drawn by `ImageRenderer`
-from `RecapShareCard` — nothing in that view reads the environment, because the renderer
-draws it outside the view hierarchy, and nothing in it uses `appFont`, because type in a
-shared picture doesn't scale with the settings of the person who sent it. It's rendered
+from `RecapShareCard`, in the same After Dark type and colours as the app, with the
+corn drawn still along its foot. Nothing in that view reads the app's environment
+objects, because the renderer draws it outside the view hierarchy, and nothing in it uses
+`appFont`, because type in a shared picture doesn't scale with the settings of the person
+who sent it. It's rendered
 when the screen appears and again when a rating changes, rather than inside `ShareLink`,
 where a render pass per body evaluation would be a scroll that stutters for a picture
 nobody has asked for yet.
@@ -705,6 +709,26 @@ short version, as it lands in code:
   viewer keeps the original art, because that's where you go to read it.
 - **No clipped text.** Names wrap rather than truncate; anything that has to stay on one
   line shrinks to fit instead. A new view should do the same.
+- **No system styling.** Nothing on screen is a stock iOS control: no grouped `Form` or
+  `List`, no rounded grey cards, no multicolour SF Symbols, no system font. The shared
+  pieces in `Views/Components.swift` cover what the stock ones did:
+  - `GlowButtonStyle` — the design system's buttons. `.primary` (sodium outline, one per
+    screen), `.on` (solid sodium, a toggle that's on) and `.quiet` (hairline, everything
+    else). Works on `Button`, `Link` and `ShareLink`.
+  - `GlowToggleStyle` — a switch drawn as a hardware rocker; VoiceOver gets a system
+    switch in its place.
+  - `SectionHeading` — a quiet callsign over the 2pt `ink` rule, with an optional count.
+  - `SearchField` — the square search box set into the page (Food & Drink), instead of
+    the navigation bar's rounded one.
+  - `EmptyStateView` and `DeadAirScreen` — "Dead air": what's missing, the big words, and
+    one sentence on what to do. `DeadAirScreen` fills a screen and ends in the corn.
+  - `Horizon` — the corn and fireflies that end every scroll view; `isStill` draws it once
+    for pictures like the share card.
+- **Tint** is `sodium` only on the tab bar. Inside each tab it's `ink`, so back buttons,
+  toolbar icons and cursors stay quiet, and the `AccentColor` asset is `ink` too, for the
+  menus and share sheet SwiftUI's tint never reaches. The old colour names (`accent`,
+  `background`, `secondaryText`…) are gone, so a new view can only be built from the
+  design system's own.
 - **App icon** is "Yard light", from `scripts/appicon.svg`.
 
 The app is dark only, and it opts out of the iOS 26 Liquid Glass tab bar
@@ -841,5 +865,6 @@ release.
 
 Song titles, album art and previews come from the Apple Music catalog and belong to
 Apple and the rights holders. Apple's terms ask for the service to be named wherever its
-content appears, which is what the **Apple Music** link in the Top songs header is doing
+content appears, which is what the **Apple Music** link in the top songs header ("On the
+radio" on the artist page) is doing
 as well as being the way out to the full catalog.
