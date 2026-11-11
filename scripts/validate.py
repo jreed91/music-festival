@@ -155,6 +155,27 @@ for entry in past.get("years", []):
         for act in day.get("support", []):
             require(act, ["name"], f'past lineup {year} act')
 
+# ---------------------------------------------------------- announced-lineup.json
+with open(os.path.join(ROOT, "Data", "announced-lineup.json"), encoding="utf-8") as handle:
+    announced = json.load(handle)
+
+require(announced, ["version", "generatedAt", "year", "startDate", "endDate", "days"],
+        "announced lineup")
+check_date(announced.get("generatedAt"), "announced lineup.generatedAt")
+announced_ids = set()
+for day in announced.get("days", []):
+    require(day, ["date", "weekday", "artists"], "announced lineup day")
+    if not str(day.get("date", "")).startswith(f'{announced.get("year")}-'):
+        errors.append(f'announced lineup: {day.get("date")} is outside {announced.get("year")}')
+    for artist in day.get("artists", []):
+        require(artist, ["id", "name"], f'announced lineup {day.get("date")} artist')
+        # ForEach is keyed on the id within a day; one artist twice would misdraw a row.
+        if artist.get("id") in announced_ids:
+            errors.append(f'announced lineup: {artist["id"]} listed twice')
+        announced_ids.add(artist.get("id"))
+if not announced.get("days"):
+    errors.append("announced lineup: no days")
+
 # ------------------------------------------------------------ bundled artwork
 catalog = os.path.join(ROOT, "Hinterland", "Resources", "Assets.xcassets")
 
@@ -175,4 +196,6 @@ if errors:
 
 print(f"OK — {len(schedule['days'])} days, {total} sets, {len(artist_ids)} artists, "
       f"{topics} guide topics, {stands} food stands, "
-      f"{len(seen_years)} past lineups ({past_acts} acts), artwork and icon present")
+      f"{len(seen_years)} past lineups ({past_acts} acts), "
+      f"{announced.get('year')} announced ({len(announced_ids)} artists), "
+      f"artwork and icon present")

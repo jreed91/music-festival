@@ -1,0 +1,34 @@
+# Hinterland 2027 as announced, pasted from the festival's lineup post on 2026-11-11.
+# Days and artists only: the festival publishes set times and stages later, at
+# /set-times-2027, which scrape.py reads once it exists.
+# Format: a date line ("Friday, July 30"), then one artist per line, blank line between days.
+
+Friday, July 30
+Slayyyter
+Remi Wolf
+Ashe
+Caroline Polachek
+Tiffany Day
+Florence Road
+Violet Grohl
+Judith
+
+Saturday, July 31
+Phoebe Bridgers
+Malcolm Todd
+The Backseat Lovers
+Underscores
+Joshua Slone
+Emma Ogier
+Westside Cowboy
+Kinji
+
+Sunday, August 1
+Billy Strings
+Stephen Wilson Jr.
+Avery Anna
+Horsegiirl
+Mon Rovîa
+Medium Build
+Wade Forster
+And a Special Performance by Haywire in a Cornfield

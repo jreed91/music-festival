@@ -36,6 +36,9 @@ final class ScheduleStore {
     /// Every Hinterland before this one. Bundled only — ten summers that already happened
     /// don't move over a weekend the way this one's set times do.
     let pastLineups: PastLineupData
+    /// Next year's bill as announced, before its set times exist. Bundled only; read it
+    /// through `upcomingLineup`, which hides it once the schedule has caught up.
+    let announcedLineup: AnnouncedLineup
     private(set) var isRefreshing = false
     private(set) var lastRefreshed: Date?
     private(set) var refreshError: String?
@@ -58,6 +61,14 @@ final class ScheduleStore {
         map = Self.loadBundled(MapData.self, named: "map")
         vendors = Self.loadBundled(VendorData.self, named: "vendors")
         pastLineups = Self.loadBundled(PastLineupData.self, named: "past-lineups")
+        announcedLineup = Self.loadBundled(AnnouncedLineup.self, named: "announced-lineup")
+    }
+
+    /// The announced lineup, while it's for a year the schedule hasn't reached. Once next
+    /// year's `schedule.json` arrives (bundled or refreshed) the schedule is the better
+    /// account of the same weekend, and this goes quiet without a build.
+    var upcomingLineup: AnnouncedLineup? {
+        announcedLineup.year > data.festival.year ? announcedLineup : nil
     }
 
     // MARK: - Refresh
