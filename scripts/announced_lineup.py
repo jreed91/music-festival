@@ -133,6 +133,15 @@ if __name__ == "__main__":
                           for a in day["artists"])
         print(f'{day["weekday"]} {day["date"]}: {names}')
     if "--write" in sys.argv:
+        # Keep what images.py and applemusic.py added last time, so regenerating never
+        # silently detaches bundled photos or Apple Music pins.
+        if os.path.exists(OUT):
+            with open(OUT, encoding="utf-8") as handle:
+                previous = {a["id"]: a for d in json.load(handle)["days"] for a in d["artists"]}
+            for artist in (a for day in days for a in day["artists"]):
+                for key in ("imageAsset", "appleMusicArtistID"):
+                    if previous.get(artist["id"], {}).get(key):
+                        artist[key] = previous[artist["id"]][key]
         data = {
             "version": 1,
             "generatedAt": datetime.datetime.now(datetime.timezone.utc)

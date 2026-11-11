@@ -2,15 +2,18 @@
 """Download artist artwork and build the bundled asset catalog.
 
 Requires Pillow (`pip install Pillow`). Run after scrape.py, since it reads the artist
-list from Data/schedule.json and writes each artist's asset name back into it.
+list from Data/schedule.json and writes each artist's asset name back into it. With
+`--announced` it does the same for next year's Data/announced-lineup.json, so the
+announced artists' pages have their photos offline too.
 """
-import json, os, urllib.request
+import json, os, sys, urllib.request
 from PIL import Image
 
 from festival_source import UA
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCHEDULE = os.path.join(ROOT, "Data", "schedule.json")
+ANNOUNCED = "--announced" in sys.argv
+SCHEDULE = os.path.join(ROOT, "Data", "announced-lineup.json" if ANNOUNCED else "schedule.json")
 CATALOG = os.path.join(ROOT, "Hinterland", "Resources", "Assets.xcassets")
 RAW = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".cache", "images")
 MAX_WIDTH = 900   # ~2x a full-width phone card; keeps the bundle a few megabytes
@@ -19,7 +22,9 @@ os.makedirs(RAW, exist_ok=True)
 with open(SCHEDULE, encoding="utf-8") as handle:
     data = json.load(handle)
 
-for artist in data["artists"]:
+artists = ([a for day in data["days"] for a in day["artists"]] if ANNOUNCED
+           else data["artists"])
+for artist in artists:
     url = artist.get("imageURL")
     if not url:
         continue
@@ -55,9 +60,11 @@ for folder in (CATALOG, os.path.join(CATALOG, "Artists")):
 
 with open(SCHEDULE, "w", encoding="utf-8") as handle:
     json.dump(data, handle, indent=2, ensure_ascii=False)
+    if ANNOUNCED:
+        handle.write("\n")
 
 total = sum(os.path.getsize(os.path.join(root, name))
             for root, _, names in os.walk(os.path.join(CATALOG, "Artists"))
             for name in names)
-bundled = len([a for a in data["artists"] if a.get("imageAsset")])
+bundled = len([a for a in artists if a.get("imageAsset")])
 print(f"{bundled} artist images bundled ({total / 1024 / 1024:.1f} MB)")

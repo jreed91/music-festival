@@ -21,6 +21,15 @@ struct AnnouncedLineup: Codable, Equatable {
 
     /// The first name on each day, which is how the festival bills its headliners.
     var headliners: [String] { days.compactMap { $0.artists.first?.name } }
+
+    func artist(id: String) -> AnnouncedArtist? {
+        days.flatMap(\.artists).first(where: { $0.id == id })
+    }
+
+    /// The day an artist is billed on.
+    func day(of artistID: String) -> AnnouncedDay? {
+        days.first { day in day.artists.contains { $0.id == artistID } }
+    }
 }
 
 struct AnnouncedDay: Codable, Equatable, Identifiable {
@@ -33,11 +42,29 @@ struct AnnouncedDay: Codable, Equatable, Identifiable {
     var id: String { date }
 }
 
+/// One name on the bill, with what the festival's artist page has on them: the photo
+/// (bundled by `images.py --announced`), Spotify and Instagram, the Apple Music pin from
+/// `applemusic.py --announced`, and a bio once the festival writes one.
 struct AnnouncedArtist: Codable, Equatable, Identifiable, Hashable {
     let id: String
     let name: String
     /// Billed as "a special performance by", at the foot of the day.
     var special: Bool? = nil
+    var imageURL: String? = nil
+    var imageAsset: String? = nil
+    var bio: String? = nil
+    var spotifyArtistID: String? = nil
+    var appleMusicArtistID: String? = nil
+    var instagram: String? = nil
 
     var isSpecial: Bool { special == true }
+
+    /// The same artist as the schedule would carry them, so `ArtistDetailView` and
+    /// everything it uses (artwork, Apple Music, the links) work unchanged before there's
+    /// a set to hang them on.
+    var asArtist: Artist {
+        Artist(id: id, name: name, imageURL: imageURL, imageAsset: imageAsset,
+               sourceSlug: nil, bio: bio, spotifyArtistID: spotifyArtistID,
+               appleMusicArtistID: appleMusicArtistID, instagram: instagram)
+    }
 }

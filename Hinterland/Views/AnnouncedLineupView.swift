@@ -1,13 +1,19 @@
 import Combine
 import SwiftUI
 
+/// Pushes an announced artist's page from the lineup. Its own route rather than a
+/// `Performance`, because there is no set yet to point at.
+struct AnnouncedArtistRoute: Hashable {
+    let artistID: String
+}
+
 /// Next year's bill as announced: each day's names in billing order, no times, no stages.
 ///
 /// The first tab's root once this year's festival is over and next year's bill is out
 /// (see `FestivalHomeView`): the app has moved on to the next summer, with a countdown to
 /// it, and this year's recap is a card away. Set like `PastYearView` because it is the
-/// same kind of thing, a poster, read from the other end. No artist taps through: these
-/// artists have no pages in this build, and a set can't be starred until it has a time.
+/// same kind of thing, a poster, read from the other end. Each name opens the artist's
+/// page (photo, bio, Apple Music, links); a set can't be starred until it has a time.
 /// When next year's schedule arrives the Schedule tab takes over and
 /// `ScheduleStore.upcomingLineup` stops offering this screen.
 struct AnnouncedLineupView: View {
@@ -138,11 +144,21 @@ struct AnnouncedLineupView: View {
             SectionHeading(title: day.weekday, detail: AnnouncedLineupFormat.monthDay(day.date))
                 .padding(.top, 12)
             ForEach(Array(day.artists.enumerated()), id: \.element.id) { index, artist in
-                artistRow(artist, isHeadliner: index == 0)
-                    .padding(.vertical, index == 0 ? 10 : 8)
-                    .overlay(alignment: .bottom) {
-                        Rectangle().fill(Theme.hairline).frame(height: 1)
+                NavigationLink(value: AnnouncedArtistRoute(artistID: artist.id)) {
+                    HStack(spacing: 12) {
+                        artistRow(artist, isHeadliner: index == 0)
+                        Image(systemName: "chevron.right")
+                            .appFont(12, weight: .semibold)
+                            .foregroundStyle(Theme.inkFaint)
+                            .accessibilityHidden(true)
                     }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .padding(.vertical, index == 0 ? 10 : 8)
+                .overlay(alignment: .bottom) {
+                    Rectangle().fill(Theme.hairline).frame(height: 1)
+                }
             }
         }
     }
