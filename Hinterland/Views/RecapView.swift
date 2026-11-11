@@ -46,6 +46,11 @@ struct FestivalHomeView: View {
             .navigationDestination(for: RecapRoute.self) { _ in
                 ScheduleView()
             }
+            .navigationDestination(for: AnnouncedLineupRoute.self) { _ in
+                if let lineup = store.upcomingLineup {
+                    AnnouncedLineupView(lineup: lineup)
+                }
+            }
             .navigationDestination(for: PastLineupRoute.self) { route in
                 switch route {
                 case .index:
@@ -105,6 +110,13 @@ struct RecapView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
                 banner
+
+                // Next summer's bill, once it's announced and until its set times turn
+                // this tab back into a schedule. Above your weekend because it's the one
+                // thing on this screen that's news.
+                if let lineup = store.upcomingLineup {
+                    nextYear(lineup)
+                }
 
                 if recap.isEmpty {
                     nothingOfYourOwn
@@ -189,6 +201,45 @@ struct RecapView: View {
         parts.append("\(sets) sets across \(store.data.days.count) days")
         parts.append(festival.venue)
         return parts.joined(separator: " · ")
+    }
+
+    // MARK: Next year
+
+    private func nextYear(_ lineup: AnnouncedLineup) -> some View {
+        var detail = "\(lineup.artistCount) artists"
+        if let range = Format.dateRange(lineup.startDate, lineup.endDate) {
+            detail += " · " + range
+        }
+        return NavigationLink(value: AnnouncedLineupRoute.lineup) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("NEXT SUMMER · JUST ANNOUNCED")
+                        .appFont(13, weight: .bold)
+                        .tracking(2.4)
+                        .foregroundStyle(Theme.inkFaint)
+                    Text("The \(String(lineup.year)) lineup".uppercased())
+                        .listNameFont()
+                        .foregroundStyle(Theme.ink)
+                    Text(lineup.headliners.joined(separator: " · "))
+                        .appFont(15)
+                        .foregroundStyle(Theme.inkMuted)
+                    Text(detail)
+                        .appFont(13)
+                        .foregroundStyle(Theme.inkFaint)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .appFont(12, weight: .semibold)
+                    .foregroundStyle(Theme.inkFaint)
+                    .accessibilityHidden(true)
+            }
+            .padding(14)
+            .background(Theme.nightRaised)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 8)
     }
 
     // MARK: Your weekend

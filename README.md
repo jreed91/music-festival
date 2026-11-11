@@ -42,6 +42,10 @@ back to what's already on the phone.
   the argument about who played 2017 with no signal.
   Years you were at carry your recap and ratings too, kept after next year's schedule
   replaces them.
+- **Next year's lineup** — once the festival announces next summer's bill, the recap
+  carries a card for it that opens the whole lineup day by day, before there are set
+  times or stages. Bundled, and it steps aside by itself when next year's schedule
+  arrives. See [Announced lineup](#announced-lineup).
 - **The recap** — once the last set has ended, the Schedule tab becomes a wrap-up of the
   weekend: how many sets you saw and for how many hours, your best of the festival, the
   day you gave the most to, and the festival's best sets according to everyone who rated
@@ -218,6 +222,8 @@ python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios
                                #   (this calendar year's /set-times page; --year 2027 for another)
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
 python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
+python3 announced_lineup.py --write # Data/announced-lineup.json — next year's bill, from
+                                    #   lineups/<year>.txt, until set times exist
 python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015,
                                     #   including this year's, folded in from schedule.json
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
@@ -602,6 +608,28 @@ turned up, and what already held:
   querying last year until the next launch; the recap's archive link and Past Lineups
   both assumed the bundled archive already had every year the schedule could name.
 
+## Announced lineup
+
+The festival announces next summer's bill in the autumn, months before it publishes set
+times or says who plays which stage. `schedule.json` can't hold that: every set needs a
+start and an end, and next year's schedule on `main` replaces this year's on every
+installed phone, which has to wait until a build with `FestivalMemories` is live (step 7
+of [Releasing a build](#releasing-a-build)).
+
+So the announcement is kept apart. `scripts/lineups/<year>.txt` is the source input, the
+announcement as published: a date line (`Friday, July 30`), then one artist per line,
+headliner first, blank line between days. "And a Special Performance by …" is kept as a
+flag on that artist rather than part of the name. `announced_lineup.py` checks each date
+falls on its weekday and nobody is listed twice, and `--write` turns the newest file into
+`Data/announced-lineup.json`, which is bundled.
+
+The app shows it only while its year is later than the schedule's
+(`ScheduleStore.upcomingLineup`): a card under the recap's title opens the bill day by
+day. When next year's `schedule.json` lands, bundled or refreshed, the card goes away
+without a build and the Schedule tab takes over. Nothing in it taps through or can be
+starred, because there is no set to point at yet. When `/set-times-<year>` appears,
+`scrape.py --year <year>` is the source again.
+
 ## Past lineups
 
 `Data/past-lineups.json` is the festival's own [archive
@@ -874,7 +902,7 @@ Hinterland/
   Shared/      compiled into the app AND the widget extension — FestivalData, Favorites,
                Theme (palette, fonts, formatting), StageMark, AppGroup, ScheduleFile, Lineup,
                NowPlayingActivity (the ActivityKit attributes)
-  Models/      GuideData, MapData, VendorData, PastLineupData, WeatherData,
+  Models/      GuideData, MapData, VendorData, PastLineupData, AnnouncedLineup, WeatherData,
                AppleMusicData — Codable mirrors of the JSON and of what's kept from the
                Apple Music catalog — plus Recap, which is the counting behind the
                post-festival screen and the phase rule that decides when it appears
@@ -883,7 +911,7 @@ Hinterland/
                FestivalMemories (each year's recap, kept past the next schedule),
                AppleMusicStore (catalog lookups), PreviewPlayer (30-second previews)
   Views/       Schedule, Recap (+ RecapShareCard, PastRecap), MyLineup, Ratings, Maps,
-               FoodDrink, ArtistDetail, AppleMusic, PastLineups, GroundsMap, MapImage, Weather,
+               FoodDrink, ArtistDetail, AppleMusic, PastLineups, AnnouncedLineup, GroundsMap, MapImage, Weather,
                WeatherCard, Timeline (hour timeline, day presets, filter chips, the
                corn Horizon), Components, Motion (glow, lamp strike, dead air)
   Resources/   Assets.xcassets — 48 artist images, 4 maps, app icon; Fonts — Six Caps,
@@ -897,7 +925,9 @@ Data/          schedule.json, info.json — bundled and remotely refreshable
                map.json — georeference and POIs for the grounds map
                vendors.json — food & drink stands by area
                past-lineups.json — every lineup since 2015
-scripts/       scrapers, the map bundler, the icon generator, the Apple Music pinner
+               announced-lineup.json — next year's bill before it has set times
+scripts/       scrapers, the map bundler, the icon generator, the Apple Music pinner;
+               lineups/ holds announced bills as published, the source for the above
 ci_scripts/    ci_post_clone.sh — generates the Xcode project for Xcode Cloud
 ```
 

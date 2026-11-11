@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-11T17:23:01Z",
+  "year": 2027,
+  "startDate": "2027-07-30",
+  "endDate": "2027-08-01",
+  "days": [
+    {
+      "date": "2027-07-30",
+      "weekday": "Friday",
+      "artists": [
+        {
+          "id": "slayyyter",
+          "name": "Slayyyter"
+        },
+        {
+          "id": "remi-wolf",
+          "name": "Remi Wolf"
+        },
+        {
+          "id": "ashe",
+          "name": "Ashe"
+        },
+        {
+          "id": "caroline-polachek",
+          "name": "Caroline Polachek"
+        },
+        {
+          "id": "tiffany-day",
+          "name": "Tiffany Day"
+        },
+        {
+          "id": "florence-road",
+          "name": "Florence Road"
+        },
+        {
+          "id": "violet-grohl",
+          "name": "Violet Grohl"
+        },
+        {
+          "id": "judith",
+          "name": "Judith"
+        }
+      ]
+    },
+    {
+      "date": "2027-07-31",
+      "weekday": "Saturday",
+      "artists": [
+        {
+          "id": "phoebe-bridgers",
+          "name": "Phoebe Bridgers"
+        },
+        {
+          "id": "malcolm-todd",
+          "name": "Malcolm Todd"
+        },
+        {
+          "id": "the-backseat-lovers",
+          "name": "The Backseat Lovers"
+        },
+        {
+          "id": "underscores",
+          "name": "Underscores"
+        },
+        {
+          "id": "joshua-slone",
+          "name": "Joshua Slone"
+        },
+        {
+          "id": "emma-ogier",
+          "name": "Emma Ogier"
+        },
+        {
+          "id": "westside-cowboy",
+          "name": "Westside Cowboy"
+        },
+        {
+          "id": "kinji",
+          "name": "Kinji"
+        }
+      ]
+    },
+    {
+      "date": "2027-08-01",
+      "weekday": "Sunday",
+      "artists": [
+        {
+          "id": "billy-strings",
+          "name": "Billy Strings"
+        },
+        {
+          "id": "stephen-wilson-jr",
+          "name": "Stephen Wilson Jr."
+        },
+        {
+          "id": "avery-anna",
+          "name": "Avery Anna"
+        },
+        {
+          "id": "horsegiirl",
+          "name": "Horsegiirl"
+        },
+        {
+          "id": "mon-rovia",
+          "name": "Mon Rovîa"
+        },
+        {
+          "id": "medium-build",
+          "name": "Medium Build"
+        },
+        {
+          "id": "wade-forster",
+          "name": "Wade Forster"
+        },
+        {
+          "id": "haywire-in-a-cornfield",
+          "name": "Haywire in a Cornfield",
+          "special": true
+        }
+      ]
+    }
+  ]
+}
