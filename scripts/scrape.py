@@ -2,7 +2,7 @@
 """Scrape set times, lineup and artist pages into Data/schedule.json."""
 import re, json, os, sys, datetime
 
-from festival_source import page, clean, strip_tags, slug, full_res
+from festival_source import page, clean, slug, lineup_cards, artist_details
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "Data", "schedule.json")
@@ -82,44 +82,10 @@ for day in days:
 
 # ------------------------------------------------------------------ artist cards
 lineup = page("/lineup", refresh=REFRESH)
-CARD = re.compile(
-    r'href="/artist/(?P<slug>[^"]+)".*?'
-    r'<img src="(?P<img>https://cdn\.prod\.website-files\.com/[^"]+?\.(?:webp|jpg|jpeg|png))".*?'
-    r'class="band-card-name">(?P<name>[^<]+)<',
-    re.S)
 
 cards = {}
-for match in CARD.finditer(lineup):
-    name = clean(match.group("name"))
-    cards.setdefault(name.lower(), {"slug": match.group("slug"),
-                                    "image": full_res(match.group("img"))})
-
-# ------------------------------------------------------------------ artist pages
-def artist_details(page_slug):
-    """Bio, Spotify ID and Instagram handle from an artist's own page."""
-    try:
-        body = page(f"/artist/{page_slug}", refresh=REFRESH)
-    except Exception as error:                  # one missing page shouldn't stop the run
-        print(f"  ! {page_slug}: {error}")
-        return {}
-
-    details = {}
-    spotify = re.search(r"open\.spotify\.com/embed/artist/([A-Za-z0-9]+)", body)
-    if spotify:
-        details["spotifyArtistID"] = spotify.group(1)
-    instagram = re.search(r"https://www\.instagram\.com/([A-Za-z0-9_.]+)/?", body)
-    if instagram:
-        details["instagram"] = instagram.group(1)
-
-    # The bio sits between the "About" heading and the "Connect" social block.
-    text = strip_tags(body)
-    about = re.search(r"\bAbout\b(.*?)(?:\bConnect\b|Past Hinterlands)", text, re.S)
-    if about:
-        bio = re.sub(r'\s+([.,”"])', r"\1", about.group(1).strip())
-        if 40 < len(bio) < 4000:
-            details["bio"] = bio
-    return details
-
+for card in lineup_cards(lineup):
+    cards.setdefault(card["name"].lower(), card)
 
 artists = {}
 for item in (item for day in days for item in day["sets"]):
@@ -132,7 +98,7 @@ for item in (item for day in days for item in day["sets"]):
         entry["imageURL"] = card["image"]
     if card.get("slug"):
         entry["sourceSlug"] = card["slug"]
-        entry.update(artist_details(card["slug"]))
+        entry.update(artist_details(card["slug"], refresh=REFRESH))
     artists[key] = entry
 
 # Preserve imageAsset names assigned by images.py, so re-scraping never silently
