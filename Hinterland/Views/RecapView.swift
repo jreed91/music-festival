@@ -1,19 +1,24 @@
 import Combine
 import SwiftUI
 
-/// Routes out of the recap that aren't a set or a past year.
+/// Routes out of the recap, and back to it, that aren't a set or a past year.
 enum RecapRoute: Hashable {
     /// The day-by-day schedule, which is a screen you go and look at once the festival is
     /// over rather than the screen you live on.
     case schedule
+    /// The recap itself, pushed from next year's announced lineup once that has taken
+    /// over the tab.
+    case recap
 }
 
 /// The first tab, whichever way round the festival is.
 ///
-/// Owns the navigation stack for both screens so the recap can push the schedule and the
-/// schedule can still push everything it always could. Which one is the root is decided by
-/// the clock against the last set in `schedule.json` — no flag, no build, and next year's
-/// schedule turns it back over on its own.
+/// Owns the navigation stack for every root so each can push the others and the schedule
+/// can still push everything it always could. Which one is the root is decided by the clock
+/// against the last set in `schedule.json`, then by whether next year's bill is out:
+/// the schedule while the festival is on, the recap once it's over, and next year's
+/// announced lineup once that exists, with the recap a tap away. No flag, no build, and
+/// next year's schedule turns it back into a schedule on its own.
 struct FestivalHomeView: View {
     @Environment(ScheduleStore.self) private var store
     @Environment(FestivalMemories.self) private var memories
@@ -29,7 +34,11 @@ struct FestivalHomeView: View {
         NavigationStack {
             Group {
                 if store.data.isOver(at: now) {
-                    RecapView()
+                    if let lineup = store.upcomingLineup {
+                        AnnouncedLineupView(lineup: lineup)
+                    } else {
+                        RecapView()
+                    }
                 } else {
                     ScheduleView()
                 }
@@ -43,12 +52,12 @@ struct FestivalHomeView: View {
             .navigationDestination(for: RatingsRoute.self) { _ in
                 RatingsView()
             }
-            .navigationDestination(for: RecapRoute.self) { _ in
-                ScheduleView()
-            }
-            .navigationDestination(for: AnnouncedLineupRoute.self) { _ in
-                if let lineup = store.upcomingLineup {
-                    AnnouncedLineupView(lineup: lineup)
+            .navigationDestination(for: RecapRoute.self) { route in
+                switch route {
+                case .schedule:
+                    ScheduleView()
+                case .recap:
+                    RecapView()
                 }
             }
             .navigationDestination(for: PastLineupRoute.self) { route in
@@ -110,13 +119,6 @@ struct RecapView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
                 banner
-
-                // Next summer's bill, once it's announced and until its set times turn
-                // this tab back into a schedule. Above your weekend because it's the one
-                // thing on this screen that's news.
-                if let lineup = store.upcomingLineup {
-                    nextYear(lineup)
-                }
 
                 if recap.isEmpty {
                     nothingOfYourOwn
@@ -201,45 +203,6 @@ struct RecapView: View {
         parts.append("\(sets) sets across \(store.data.days.count) days")
         parts.append(festival.venue)
         return parts.joined(separator: " · ")
-    }
-
-    // MARK: Next year
-
-    private func nextYear(_ lineup: AnnouncedLineup) -> some View {
-        var detail = "\(lineup.artistCount) artists"
-        if let range = Format.dateRange(lineup.startDate, lineup.endDate) {
-            detail += " · " + range
-        }
-        return NavigationLink(value: AnnouncedLineupRoute.lineup) {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("NEXT SUMMER · JUST ANNOUNCED")
-                        .appFont(13, weight: .bold)
-                        .tracking(2.4)
-                        .foregroundStyle(Theme.inkFaint)
-                    Text("The \(String(lineup.year)) lineup".uppercased())
-                        .listNameFont()
-                        .foregroundStyle(Theme.ink)
-                    Text(lineup.headliners.joined(separator: " · "))
-                        .appFont(15)
-                        .foregroundStyle(Theme.inkMuted)
-                    Text(detail)
-                        .appFont(13)
-                        .foregroundStyle(Theme.inkFaint)
-                }
-                .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .appFont(12, weight: .semibold)
-                    .foregroundStyle(Theme.inkFaint)
-                    .accessibilityHidden(true)
-            }
-            .padding(14)
-            .background(Theme.nightRaised)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .padding(.top, 8)
     }
 
     // MARK: Your weekend

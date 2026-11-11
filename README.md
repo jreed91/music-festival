@@ -42,10 +42,11 @@ back to what's already on the phone.
   the argument about who played 2017 with no signal.
   Years you were at carry your recap and ratings too, kept after next year's schedule
   replaces them.
-- **Next year's lineup** — once the festival announces next summer's bill, the recap
-  carries a card for it that opens the whole lineup day by day, before there are set
-  times or stages. Bundled, and it steps aside by itself when next year's schedule
-  arrives. See [Announced lineup](#announced-lineup).
+- **Next year's lineup** — once the festival is over and next summer's bill is announced,
+  the Schedule tab opens on that lineup day by day, with a countdown to the first day,
+  before there are set times or stages. Last year's recap is a card away. Bundled, and it
+  steps aside by itself when next year's schedule arrives. See
+  [Announced lineup](#announced-lineup).
 - **The recap** — once the last set has ended, the Schedule tab becomes a wrap-up of the
   weekend: how many sets you saw and for how many hours, your best of the festival, the
   day you gave the most to, and the festival's best sets according to everyone who rated
@@ -222,8 +223,9 @@ python3 scrape.py --refresh    # Data/schedule.json — set times, artists, bios
                                #   (this calendar year's /set-times page; --year 2027 for another)
 python3 guide.py  --refresh    # Data/info.json     — the festival guide
 python3 vendors.py --refresh   # Data/vendors.json  — food & drink stands by area
-python3 announced_lineup.py --write # Data/announced-lineup.json — next year's bill, from
-                                    #   lineups/<year>.txt, until set times exist
+python3 announced_lineup.py --site --refresh --write
+                               # Data/announced-lineup.json — next year's bill from /lineup
+                               #   until set times exist (without --site: lineups/<year>.txt)
 python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup since 2015,
                                     #   including this year's, folded in from schedule.json
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
@@ -499,9 +501,11 @@ manifest and have to be in the App Store privacy label too — see [Privacy](#pr
 
 ## After the festival
 
-The Schedule tab has two roots. While the festival is on it's `ScheduleView`, the
-day-by-day list. Once the last band has finished it's `RecapView`, the wrap-up.
-`FestivalHomeView` owns the navigation stack for both, so the recap can push the schedule
+The Schedule tab has three roots. While the festival is on it's `ScheduleView`, the
+day-by-day list. Once the last band has finished it's `RecapView`, the wrap-up. Once next
+summer's bill is announced as well (`ScheduleStore.upcomingLineup`) it's
+`AnnouncedLineupView`, with the recap a card away and the old schedule in the toolbar.
+`FestivalHomeView` owns the navigation stack for all three, so each can push the others
 and the schedule can still push everything it always could.
 
 Which one is the root is a question of the clock, answered by `FestivalData.phase(at:)`
@@ -616,17 +620,25 @@ start and an end, and next year's schedule on `main` replaces this year's on eve
 installed phone, which has to wait until a build with `FestivalMemories` is live (step 7
 of [Releasing a build](#releasing-a-build)).
 
-So the announcement is kept apart. `scripts/lineups/<year>.txt` is the source input, the
-announcement as published: a date line (`Friday, July 30`), then one artist per line,
-headliner first, blank line between days. "And a Special Performance by …" is kept as a
-flag on that artist rather than part of the name. `announced_lineup.py` checks each date
-falls on its weekday and nobody is listed twice, and `--write` turns the newest file into
-`Data/announced-lineup.json`, which is bundled.
+So the announcement is kept apart, in `Data/announced-lineup.json`, which is bundled.
+`announced_lineup.py --site` builds it from the festival's `/lineup` page, the latest
+word on who plays which day: billing order is the order the page first lists each artist
+(it then repeats the bill day by day in a different order), and each artist carries the
+photo URL, Spotify ID and Instagram handle from their own page. It prints who has joined,
+left or moved day since the announcement, because a bill that changed is news.
+
+`scripts/lineups/<year>.txt` is the announcement as first published, pasted in: a date
+line (`Friday, July 30`), then one artist per line, headliner first, blank line between
+days. It is the fallback source when the site can't be reached, and the only place
+"And a Special Performance by …" is recorded, since the site has no marker for it; the
+flag carries over to the site's artist by slug prefix (`haywire` for "Haywire in a
+Cornfield"). The script checks each date falls on its weekday and nobody is listed twice.
 
 The app shows it only while its year is later than the schedule's
-(`ScheduleStore.upcomingLineup`): a card under the recap's title opens the bill day by
-day. When next year's `schedule.json` lands, bundled or refreshed, the card goes away
-without a build and the Schedule tab takes over. Nothing in it taps through or can be
+(`ScheduleStore.upcomingLineup`): once the festival is over it is the Schedule tab's
+root, with a countdown to the first day in the festival's time zone and a card back to
+last year's recap. When next year's `schedule.json` lands, bundled or refreshed, it goes
+away without a build and the Schedule tab takes over. Nothing in it taps through or can be
 starred, because there is no set to point at yet. When `/set-times-<year>` appears,
 `scrape.py --year <year>` is the source again.
 
