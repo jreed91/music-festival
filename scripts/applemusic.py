@@ -11,6 +11,8 @@ the app never has to guess.
 
     python3 scripts/applemusic.py            # check the pins, and find any artist missing one
     python3 scripts/applemusic.py --write    # write the pins into Data/schedule.json
+    python3 scripts/applemusic.py --announced --write   # the same for next year's
+                                                        # Data/announced-lineup.json
 
 Unambiguous names are resolved automatically. Names that more than one catalog artist
 answers to can't be — the tie is broken by listening to the candidates, not by ranking —
@@ -26,6 +28,7 @@ import argparse, json, os, re, sys, time, unicodedata, urllib.parse, urllib.requ
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEDULE = os.path.join(ROOT, "Data", "schedule.json")
+ANNOUNCED = os.path.join(ROOT, "Data", "announced-lineup.json")
 
 # Mirrors AppleMusicStore.searchLimit: the band we want is at the top of a search or
 # nowhere, and looking deeper only turns up more acts with the same name.
@@ -41,6 +44,19 @@ NONE = "none"
 # added to this table should carry the reason they were picked.
 RESOLVED = {
     "amble":           ("1671435415", 'Irish folk trio; "Lonely Island", named in their bio'),
+    # 2027, announced lineup. Its artist pages had no bios yet (2026-11-11), so only
+    # acts whose catalog is unmistakable are pinned; the rest wait for a bio.
+    "ashe":            ("1234718215", 'the singer-songwriter; "Moral of the Story", '
+                                      "The Girl Of Your Dreams"),
+    "mon-rovia":       ("1313944611", 'the folk singer; "Day at the soccer fields"'),
+    "judith":          (NONE,         "five catalog acts by this name and no bio yet to "
+                                      "tell which is the one booked; revisit when the "
+                                      "festival posts one"),
+    "kinji":           (NONE,         "six catalog acts by this name and no bio yet; "
+                                      "revisit when the festival posts one"),
+    "haywire":         (NONE,         "seven catalog acts by this name, none clearly the "
+                                      "Boston band (instagram haywire617); revisit when "
+                                      "the festival posts a bio"),
     "audrey-nuna":     ("1444332093", 'R&B/Soul; "Golden", named in their bio'),
     "between-friends": ("1437540157", 'the LA pop duo; "affection", "Jam!"'),
     "cmat":            ("1506697965", '"EURO-COUNTRY", named in their bio'),
@@ -171,25 +187,33 @@ def check(artists, write):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true",
-                        help="write the pins into Data/schedule.json")
+                        help="write the pins into the data file")
+    parser.add_argument("--announced", action="store_true",
+                        help="next year's announced lineup instead of the schedule")
     args = parser.parse_args()
 
-    with open(SCHEDULE, encoding="utf-8") as handle:
-        schedule = json.load(handle)
+    path = ANNOUNCED if args.announced else SCHEDULE
+    with open(path, encoding="utf-8") as handle:
+        data = json.load(handle)
+    # The announced lineup files its artists under each day rather than in one list.
+    artists = ([artist for day in data["days"] for artist in day["artists"]]
+               if args.announced else data["artists"])
 
-    changes, problems = check(schedule["artists"], args.write)
+    changes, problems = check(artists, args.write)
 
     if args.write and changes:
-        with open(SCHEDULE, "w", encoding="utf-8") as handle:
-            json.dump(schedule, handle, indent=2, ensure_ascii=False)
-        print(f"\nwrote {len(changes)} ids into Data/schedule.json")
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(data, handle, indent=2, ensure_ascii=False)
+            if args.announced:
+                handle.write("\n")
+        print(f"\nwrote {len(changes)} ids into Data/{os.path.basename(path)}")
 
     if problems:
         print("\n" + "\n".join(f"  {problem}" for problem in problems))
-        print(f"\n{len(problems)} artist(s) unresolved of {len(schedule['artists'])}")
+        print(f"\n{len(problems)} artist(s) unresolved of {len(artists)}")
         return 1
 
-    print(f"\nOK — all {len(schedule['artists'])} artists accounted for")
+    print(f"\nOK — all {len(artists)} artists accounted for")
     return 0
 
 

@@ -46,6 +46,9 @@ struct FestivalHomeView: View {
             .navigationDestination(for: Performance.self) { performance in
                 ArtistDetailView(artistID: performance.artistId)
             }
+            .navigationDestination(for: AnnouncedArtistRoute.self) { route in
+                ArtistDetailView(artistID: route.artistID)
+            }
             .navigationDestination(for: WeatherRoute.self) { _ in
                 WeatherView()
             }

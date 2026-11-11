@@ -230,8 +230,10 @@ python3 past_lineups.py --refresh   # Data/past-lineups.json — every lineup si
                                     #   including this year's, folded in from schedule.json
 python3 maps.py                # festival maps -> asset catalog, map list -> info.json
 python3 images.py              # artist artwork -> asset catalog (needs `pip install Pillow`)
+python3 images.py --announced  #   the same for next year's announced lineup
 python3 appicon.py             # re-exports the app icon from appicon.svg
 python3 applemusic.py --write  # Apple Music catalog id per artist -> schedule.json
+python3 applemusic.py --announced --write   # the same for announced-lineup.json
 ```
 
 Run `scrape.py` before `images.py` — the latter reads the artist list and writes each
@@ -638,7 +640,17 @@ The app shows it only while its year is later than the schedule's
 (`ScheduleStore.upcomingLineup`): once the festival is over it is the Schedule tab's
 root, with a countdown to the first day in the festival's time zone and a card back to
 last year's recap. When next year's `schedule.json` lands, bundled or refreshed, it goes
-away without a build and the Schedule tab takes over. Nothing in it taps through or can be
+away without a build and the Schedule tab takes over.
+
+Every name on it opens the same `ArtistDetailView` the schedule uses, built from the
+announced artist (`AnnouncedArtist.asArtist`): the photo, bundled by `images.py
+--announced` so it shows offline, a bio once the festival writes one, Apple Music (pinned
+by `applemusic.py --announced`), Spotify and Instagram. Where set times would go it says
+which day they play and that times aren't out yet. `announced_lineup.py --write` keeps
+the photo and Apple Music pins from the last run, as `scrape.py` does. Names that more
+than one Apple Music act answers to are settled in `applemusic.py`'s `RESOLVED`; for
+2027, judith, Kinji and Haywire are marked not-on-Apple-Music until a bio says which act
+is booked. Nothing in it taps through or can be
 starred, because there is no set to point at yet. When `/set-times-<year>` appears,
 `scrape.py --year <year>` is the source again.
 

@@ -3,6 +3,10 @@ import SwiftUI
 
 /// Artist artwork, bio, set times, the rating for each of them, their top songs on Apple
 /// Music, and links out to Apple Music, Spotify and Instagram.
+///
+/// Also opens for an artist on next year's announced lineup who isn't in the schedule
+/// yet: same page from `AnnouncedArtist.asArtist`, with the day they're billed on in
+/// place of set times.
 struct ArtistDetailView: View {
     let artistID: String
 
@@ -24,7 +28,14 @@ struct ArtistDetailView: View {
     /// time this page is opened. Same 30s cadence as the NOW badge on the schedule.
     private let ticker = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
 
-    private var artist: Artist? { store.data.artist(id: artistID) }
+    private var artist: Artist? { store.data.artist(id: artistID) ?? announced?.asArtist }
+    /// Set only when the schedule doesn't know this artist and next year's bill does.
+    private var announced: AnnouncedArtist? {
+        store.data.artist(id: artistID) == nil ? store.upcomingLineup?.artist(id: artistID) : nil
+    }
+    private var announcedDay: AnnouncedDay? {
+        announced == nil ? nil : store.upcomingLineup?.day(of: artistID)
+    }
     private var performances: [Performance] { store.data.performances(forArtist: artistID) }
 
     var body: some View {
@@ -124,6 +135,9 @@ struct ArtistDetailView: View {
 
     /// "ON AIR · MAIN STAGE" while they're playing, "SATURDAY · MAIN STAGE" otherwise.
     private var heroCallsign: String? {
+        if let day = announcedDay, let lineup = store.upcomingLineup {
+            return "\(day.weekday) · \(String(lineup.year))"
+        }
         guard let performance = heroSet else { return nil }
         let stage = Stage(name: performance.stage).displayName
         if performance.isLive(at: now) { return "On air · \(stage)" }
@@ -133,6 +147,9 @@ struct ArtistDetailView: View {
 
     private var setTimes: some View {
         VStack(alignment: .leading, spacing: 12) {
+            if let day = announcedDay {
+                announcedSet(day)
+            }
             ForEach(performances) { performance in
                 VStack(alignment: .leading, spacing: 14) {
                     setHeader(performance)
@@ -148,6 +165,26 @@ struct ArtistDetailView: View {
                 .background(Theme.nightRaised)
             }
         }
+    }
+
+    /// Where a set card goes for an artist on next year's bill: the day, and why there's
+    /// nothing to star yet.
+    private func announcedSet(_ day: AnnouncedDay) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("\(day.weekday) · \(AnnouncedLineupFormat.monthDay(day.date))".uppercased())
+                .appFont(13, weight: .bold)
+                .tracking(2.4)
+                .foregroundStyle(Theme.inkMuted)
+            Text("Set times and stages aren't out yet. When they are, you can add this set "
+               + "to My Lineup from here.")
+                .readingFont(15)
+                .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.nightRaised)
+        .accessibilityElement(children: .combine)
     }
 
     private func setHeader(_ performance: Performance) -> some View {
